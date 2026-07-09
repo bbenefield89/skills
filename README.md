@@ -10,6 +10,8 @@ skills/
     SKILL.md
   goal-prompt/
     SKILL.md
+  zoom-out/
+    SKILL.md
 ```
 
 Each installable skill lives in its own directory under `skills/` and must contain a `SKILL.md`.
