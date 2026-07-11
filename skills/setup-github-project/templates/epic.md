@@ -1,6 +1,7 @@
 # Goal
 
 <!-- Copy the outcome from the approved planning source. -->
+<!-- Attach this Epic as a native sub-issue of its Phase issue; the `epic` label alone does not establish hierarchy. -->
 
 # Why
 
@@ -20,5 +21,4 @@
 
 # Specification
 
-- <!-- Link a separate specification/PRD issue here; do not make it a sub-issue. -->
-
+- <!-- Link the separate `spec`-labelled issue here. It receives no readiness label and is not a native sub-issue or Project item. -->
