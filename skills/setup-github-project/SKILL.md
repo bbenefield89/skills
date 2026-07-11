@@ -19,6 +19,17 @@ Before any local or GitHub write:
 
 Approval applies only to the presented configuration. Repeat the gate if a material choice changes. Do not create a Project, link a repository, create issues, or write repository files before approval.
 
+## Preflight
+
+Run `scripts/preflight.ps1` before `inspect.ps1` or any GitHub write. Treat its JSON result as a gate:
+
+1. If `Ready` is `false`, report every entry in `Missing` with its matching corrective action from `Guidance`.
+2. Ask the user to resolve the prerequisite or explicitly authorize the proposed corrective action.
+3. Stop setup. Do not continue discovery commands that depend on the missing prerequisite.
+4. Rerun preflight after the user acts. Continue only when `Ready` is `true`.
+
+Preflight must confirm Git, a GitHub remote or explicitly supplied `OWNER/REPO`, GitHub CLI 2.94.0 or newer, authenticated repository access, Project API access, and that Issues and Projects are enabled. Handle a missing planning source separately during discovery: describe what could not be derived and ask the user for the source or an explicit scope decision rather than inventing phases or epics.
+
 ## Discovery
 
 Resolve, without inventing:
@@ -32,7 +43,7 @@ Resolve, without inventing:
 
 Default to a private GitHub Projects V2 Project linked to one repository. Reuse an existing matching Project only after approval.
 
-Run `scripts/inspect.ps1 -Repository OWNER/REPO` for a read-only inventory when PowerShell and `gh` are available.
+Run `scripts/preflight.ps1 -Repository OWNER/REPO` first, then run `scripts/inspect.ps1 -Repository OWNER/REPO` only after preflight succeeds.
 
 ## Approved execution
 

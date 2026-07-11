@@ -12,6 +12,16 @@ An **Implementation ticket** is executable work. It belongs to the Project, must
 
 The repository's issues and their native parent/sub-issue relationships are the source of truth. Labels classify the issue type, but labels alone do not establish hierarchy.
 
+## Preflight contract
+
+Run the bundled preflight before inventory or mutation. A failed check is a user-facing pause, not a reason to continue optimistically or let downstream commands fail repeatedly.
+
+- Report all missing prerequisites together.
+- Provide the exact corrective command when one is safe and deterministic.
+- Ask before installing software, changing authentication scopes, enabling repository features, or selecting a repository/planning source.
+- Rerun preflight after correction and proceed only when it reports `Ready: true`.
+- If no planning source identifies phases and epics, ask for one or ask whether setup should create only the Project structure and labels.
+
 ## Labels and fields
 
 - Required repository labels: `phase`, `epic`, `spec`, `ready-for-agent`, `ready-for-human`.
@@ -109,6 +119,7 @@ When browser control remains necessary, save views explicitly and confirm that a
 
 ## Final verification checklist
 
+- Preflight passed after any prerequisite corrections.
 - Project is linked to the approved repository and owner.
 - Required labels `phase`, `epic`, `spec`, `ready-for-agent`, and `ready-for-human` exist exactly once.
 - Current Work has three status columns, no grouping by Epic or Parent issue, and no swimlanes.
