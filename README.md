@@ -8,7 +8,21 @@ skills/
     SKILL.md
   clarify-with-docs/
     SKILL.md
+  deliver/
+    SKILL.md
+  engineering-principles/
+    SKILL.md
+  gdscript-cleanup/
+    SKILL.md
   goal-prompt/
+    SKILL.md
+  setup-github-project/
+    SKILL.md
+  setup-godot-project/
+    SKILL.md
+  tldr/
+    SKILL.md
+  write-a-skill/
     SKILL.md
   zoom-out/
     SKILL.md

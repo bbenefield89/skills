@@ -1,0 +1,4 @@
+interface:
+  display_name: "GDScript Cleanup"
+  short_description: "Clean typed GDScript and Godot scene changes"
+  default_prompt: "Use $gdscript-cleanup to clean the GDScript changed by this task and validate the fixes."

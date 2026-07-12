@@ -1,0 +1,30 @@
+{
+  "metadata": {
+    "pluginRoot": "./"
+  },
+  "plugins": [
+    {
+      "name": "general-skills",
+      "source": "./",
+      "skills": [
+        "./skills/branch-risk-audit",
+        "./skills/clarify-with-docs",
+        "./skills/deliver",
+        "./skills/engineering-principles",
+        "./skills/goal-prompt",
+        "./skills/setup-github-project",
+        "./skills/tldr",
+        "./skills/write-a-skill",
+        "./skills/zoom-out"
+      ]
+    },
+    {
+      "name": "godot-skills",
+      "source": "./",
+      "skills": [
+        "./skills/gdscript-cleanup",
+        "./skills/setup-godot-project"
+      ]
+    }
+  ]
+}

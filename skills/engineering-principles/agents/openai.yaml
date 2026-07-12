@@ -1,0 +1,4 @@
+interface:
+  display_name: "Engineering Principles"
+  short_description: "Apply Clean Code, SOLID, and architecture rules"
+  default_prompt: "Use $engineering-principles to evaluate this work and apply proportional engineering standards."
