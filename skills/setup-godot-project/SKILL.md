@@ -11,9 +11,13 @@ Configure only universal infrastructure. Do not invent gameplay structure or aud
 
 Require `project.godot`. Read [references/discovery.md](references/discovery.md), inspect every listed prerequisite and repository artifact, and classify missing items, compatible drift, and hard conflicts. Do not write during discovery.
 
+Invoke `$setup-matt-pocock-skills` during discovery and reconciliation so issue tracking, triage-state labels, and domain-document conventions are configured through their owning workflow. Do not substitute project-specific labels for its canonical triage labels.
+
 ## 2. Propose and approve
 
 Read [references/reconciliation.md](references/reconciliation.md). Present one complete plan containing every local write, dependency/version choice, exact installation command, conflict, and skipped capability. Wait for explicit approval.
+
+When GitHub is selected, read [references/github-planning-labels.md](references/github-planning-labels.md). Offer the project-planning labels separately from triage labels and record the accepted convention in `docs/agents/issue-tracker.md`. Creating or changing labels on GitHub is an external mutation requiring separate approval.
 
 One approval covers only the proposed non-conflicting local actions. Obtain separate approval for system `PATH`, GitHub/tracker/remotes, downloads, or other external mutations. A newly discovered hard conflict pauses work with evidence and a recommendation.
 
