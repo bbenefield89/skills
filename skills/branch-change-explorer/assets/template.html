@@ -71,6 +71,8 @@
     margin:22px 0 7px; border-bottom:1px solid var(--border); padding-bottom:5px;
   }
   #detail p { margin:0 0 8px; }
+  #detail ul.changes { margin:0 0 8px; padding-left:20px; }
+  #detail ul.changes li { margin:4px 0; }
   #detail code { font-family:ui-monospace,Menlo,monospace; font-size:.88em; background:var(--chip); padding:1px 5px; border-radius:4px; }
   pre {
     background:var(--panel); border:1px solid var(--border); border-radius:8px;
@@ -158,6 +160,12 @@ const detailEl = document.getElementById("detail");
 const STAT = { A:"Added", M:"Modified", D:"Deleted" };
 let current = null;
 
+// Render a summary/why field: an array becomes a bullet list; a string a paragraph.
+function block(field) {
+  if (Array.isArray(field)) return `<ul class="changes">${field.map(x => `<li>${x}</li>`).join("")}</ul>`;
+  return `<p>${field}</p>`;
+}
+
 function select(path) {
   const f = byPath[path];
   if (!f) return;
@@ -170,8 +178,8 @@ function select(path) {
     `<h2>${path.split("/").pop()}</h2>` +
     `<div class="path">${path}</div>` +
     `<span class="status-pill ${f.status}">${STAT[f.status]}</span>` +
-    `<h3>What changed</h3><p>${f.summary}</p>` +
-    `<h3>Why</h3><p>${f.why}</p>` +
+    `<h3>What changed</h3>${block(f.summary)}` +
+    `<h3>Why</h3>${block(f.why)}` +
     `<h3>Pseudocode</h3><pre><code>${f.pseudo}</code></pre>`;
   detailEl.scrollTop = 0;
 }

@@ -25,13 +25,16 @@ left, and a per-file **summary / why / pseudocode** panel on the right.
      grounded in the real change — never guess from the filename.
 
 3. **Explain each file.** For every changed file write three fields:
-   - **summary** — what changed, concretely (structs/functions/routes added, removed,
-     reshaped). One short paragraph.
-   - **why** — the rationale. Infer from the diff, commit messages, ticket/ADR context,
-     and surrounding code. Say *why this change exists*, not just what it does.
+   - **summary** — a bullet list of what changed, concretely (structs/functions/routes
+     added, removed, reshaped). One terse fragment per bullet, not a paragraph.
+   - **why** — a bullet list of the rationale. Infer from the diff, commit messages,
+     ticket/ADR context, and surrounding code. Say *why this change exists*, not just
+     what it does — one point per bullet.
    - **pseudo** — a language-agnostic sketch of the change, not a copy of the diff.
      Show the shape of the new/removed logic; mark removed lines and asides with
      comment spans (see markup below).
+
+   Keep it scannable: prefer several short bullets over one dense sentence.
 
 4. **Assemble the data** as a JSON object matching the schema below.
 
@@ -46,14 +49,18 @@ left, and a per-file **summary / why / pseudocode** panel on the right.
 {
   files: [
     { path: "internal/foo.go", status: "M",
-      summary: "…HTML string…", why: "…HTML string…", pseudo: "…HTML string…" }
+      summary: ["…bullet…", "…bullet…"],   // array → bullet list
+      why:     ["…bullet…", "…bullet…"],   // array → bullet list
+      pseudo:  "…HTML string…" }
   ]
 }
 ```
 
-- `files` order controls keyboard (<kbd>↑</kbd>/<kbd>↓</kbd>) navigation and the deleted-file fallback;
+- `files` order controls keyboard (<kbd>↑</kbd>/<kbd>↓</kbd>) navigation;
   the tree itself is built from the `path`s (directories first, then alphabetical).
-- `summary` / `why` render as HTML — use `<code>…</code>` for identifiers.
+- `summary` / `why` are **arrays of bullet strings** and render as a `<ul>`. Each item
+  is HTML — use `<code>…</code>` for identifiers. (A plain string is still accepted and
+  renders as a paragraph, but prefer the array form.)
 - `pseudo` renders inside `<pre><code>` — wrap comments/removed-line notes in
   `<span class="c">…</span>`. Escape literal `<`, `>`, `&` that are not markup.
 - Keep the JSON valid (escape quotes/newlines). Every path in `files` must be unique.
