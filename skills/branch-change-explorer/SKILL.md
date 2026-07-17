@@ -61,8 +61,11 @@ left, and a per-file **summary / why / pseudocode** panel on the right.
 - `summary` / `why` are **arrays of bullet strings** and render as a `<ul>`. Each item
   is HTML — use `<code>…</code>` for identifiers. (A plain string is still accepted and
   renders as a paragraph, but prefer the array form.)
-- `pseudo` renders inside `<pre><code>` — wrap comments/removed-line notes in
-  `<span class="c">…</span>`. Escape literal `<`, `>`, `&` that are not markup.
+- `pseudo` renders inside `<pre><code>` and is auto-highlighted (heuristic: keywords,
+  strings, numbers, `//`/`#` comments, `fn(` calls). You don't need to tag tokens.
+  You may still wrap a note in `<span class="c">…</span>` to force it to render as a
+  comment — pre-tagged spans are left untouched by the highlighter. Escape literal
+  `<`, `>`, `&` that are not markup.
 - Keep the JSON valid (escape quotes/newlines). Every path in `files` must be unique.
 
 ## Quality bar

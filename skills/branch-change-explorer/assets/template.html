@@ -8,13 +8,13 @@
   :root {
     --bg:#0f1115; --panel:#171a21; --panel2:#1d2129; --border:#2a2f3a;
     --text:#e6e9ef; --muted:#9aa4b2; --accent:#6ea8fe;
-    --add:#7ee787; --mod:#ffcb6b; --del:#ff7b72; --chip:#232833;
+    --add:#7ee787; --mod:#ffcb6b; --del:#ff7b72; --chip:#232833; --kw:#d2a8ff;
   }
   @media (prefers-color-scheme: light) {
     :root {
       --bg:#f6f7f9; --panel:#fff; --panel2:#eef1f5; --border:#dfe3ea;
       --text:#1b1f27; --muted:#5c6673; --accent:#1c64f2;
-      --add:#1a7f37; --mod:#9a6700; --del:#cf222e; --chip:#eef1f5;
+      --add:#1a7f37; --mod:#9a6700; --del:#cf222e; --chip:#eef1f5; --kw:#8250df;
     }
   }
   * { box-sizing:border-box; }
@@ -81,6 +81,10 @@
   }
   pre code { background:none; padding:0; font-size:1em; }
   pre .c { color:var(--muted); }
+  pre .str { color:var(--add); }
+  pre .num { color:var(--mod); }
+  pre .kw { color:var(--kw); font-weight:600; }
+  pre .fn { color:var(--accent); }
   .hint { color:var(--muted); font-size:12px; margin-top:16px; }
   kbd { font-family:ui-monospace,Menlo,monospace; background:var(--chip); border:1px solid var(--border); border-radius:4px; padding:0 5px; font-size:12px; }
 </style>
@@ -166,6 +170,46 @@ function block(field) {
   return `<p>${field}</p>`;
 }
 
+// Lightweight pseudocode highlighter. Runs over TEXT NODES only, so it never
+// touches author-supplied markup (e.g. existing <span class="c"> comments) or
+// corrupts escaped entities. Heuristic by design — pseudocode is not a real
+// language, so tokens are best-effort.
+const HL_RE = new RegExp(
+  "(\\/\\/[^\\n]*|#[^\\n]*)" +                              // 1 comment
+  "|(\"(?:[^\"\\\\]|\\\\.)*\"|'(?:[^'\\\\]|\\\\.)*')" +     // 2 string
+  "|(\\b\\d+(?:\\.\\d+)?\\b)" +                             // 3 number
+  "|(\\b(?:if|else|for|foreach|return|func|type|struct|const|var|new|emit|assert|nil|true|false)\\b)" + // 4 keyword
+  "|([A-Za-z_]\\w*)(?=\\s*\\()",                            // 5 function call
+  "g");
+const HL_CLASS = [null, "c", "str", "num", "kw", "fn"];
+
+function highlightPre(pre) {
+  const walker = document.createTreeWalker(pre, NodeFilter.SHOW_TEXT);
+  const targets = [];
+  while (walker.nextNode()) {
+    const n = walker.currentNode;
+    if (n.parentElement.closest(".c,.str,.num,.kw,.fn")) continue; // leave tagged text alone
+    if (n.nodeValue.trim()) targets.push(n);
+  }
+  for (const node of targets) {
+    const text = node.nodeValue;
+    const frag = document.createDocumentFragment();
+    let last = 0, m;
+    HL_RE.lastIndex = 0;
+    while ((m = HL_RE.exec(text)) !== null) {
+      if (m.index > last) frag.appendChild(document.createTextNode(text.slice(last, m.index)));
+      const gi = [1, 2, 3, 4, 5].find(i => m[i] !== undefined);
+      const span = document.createElement("span");
+      span.className = HL_CLASS[gi];
+      span.textContent = m[gi];          // textContent auto-escapes
+      frag.appendChild(span);
+      last = m.index + m[0].length;
+    }
+    if (last < text.length) frag.appendChild(document.createTextNode(text.slice(last)));
+    node.parentNode.replaceChild(frag, node);
+  }
+}
+
 function select(path) {
   const f = byPath[path];
   if (!f) return;
@@ -181,6 +225,8 @@ function select(path) {
     `<h3>What changed</h3>${block(f.summary)}` +
     `<h3>Why</h3>${block(f.why)}` +
     `<h3>Pseudocode</h3><pre><code>${f.pseudo}</code></pre>`;
+  const pre = detailEl.querySelector("pre");
+  if (pre) highlightPre(pre);
   detailEl.scrollTop = 0;
 }
 
