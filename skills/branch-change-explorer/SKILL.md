@@ -1,12 +1,13 @@
 ---
 name: branch-change-explorer
-description: Generates a self-contained interactive HTML artifact — a collapsible tree of the files changed on the current branch, where clicking a file reveals a plain-language summary of the change, why it was made, and pseudocode of that file's change. Use when the user asks to visualize, explore, or explain branch/PR changes as an HTML tree view, or requests a clickable file-tree walkthrough of a diff.
+description: Generates a self-contained interactive HTML artifact with a branch-level goal and implemented-result overview plus a collapsible tree of changed files, where each file has a plain-language summary, rationale, and pseudocode. Use when the user asks to visualize, explore, or explain branch/PR changes as an HTML tree view, or requests a clickable file-tree walkthrough of a diff.
 ---
 
 # Branch Change Explorer
 
-Turn the current branch's diff into one self-contained HTML page: a file tree on the
-left, and a per-file **summary / why / pseudocode** panel on the right.
+Turn the current branch's diff into one self-contained HTML page: a branch-level
+**goal / implemented** overview in the header, a file tree on the left, and a per-file
+**summary / why / pseudocode** panel on the right.
 
 ## Workflow
 
@@ -24,7 +25,16 @@ left, and a per-file **summary / why / pseudocode** panel on the right.
    - Read each file's actual hunks (`git diff` / read the file) so every summary is
      grounded in the real change — never guess from the filename.
 
-3. **Explain each file.** For every changed file write three fields:
+3. **Explain the overall change.** Write two concise header fields:
+   - **goal** — the user, ticket, or specification outcome the change is meant to
+     achieve. Describe the behavioral objective, not the implementation plan.
+   - **implemented** — a plain-language summary of what the complete diff now does.
+     Mention the main behavior and important scope decisions without listing files.
+
+   Keep each field to one short paragraph. Ground both in the request, ticket, commit
+   context, and actual diff; never invent intent that the available evidence does not support.
+
+4. **Explain each file.** For every changed file write three fields:
    - **summary** — a bullet list of what changed, concretely (structs/functions/routes
      added, removed, reshaped). One terse fragment per bullet, not a paragraph.
    - **why** — a bullet list of the rationale. Infer from the diff, commit messages,
@@ -36,12 +46,14 @@ left, and a per-file **summary / why / pseudocode** panel on the right.
 
    Keep it scannable: prefer several short bullets over one dense sentence.
 
-4. **Assemble the data** as a JSON object matching the schema below.
+5. **Assemble the data** as a JSON object matching the schema below.
 
-5. **Render.** Copy `assets/template.html` to a temp location, then replace the four
+6. **Render.** Copy `assets/template.html` to a temp location, then replace the six
    placeholders: `__TITLE__` (a short branch/change title), `__HEAD__` (branch name),
-   `__BASE__` (base ref, short sha ok), and `__DATA__` (the JSON object literal). Save
-   to the OS temp/scratch dir — **not** the repo — and return a clickable `file://` link.
+   `__BASE__` (base ref, short sha ok), `__GOAL__` (HTML-escaped overall objective),
+   `__IMPLEMENTED__` (HTML-escaped overall result), and `__DATA__` (the JSON object
+   literal). Save to the OS temp/scratch dir — **not** the repo — and return a clickable
+   `file://` link.
 
 ## Data schema
 
@@ -72,6 +84,8 @@ left, and a per-file **summary / why / pseudocode** panel on the right.
 
 - **One artifact, zero dependencies** — all CSS/JS is inline in the template; it must
   open offline from a `file://` link.
+- **Immediate context** — the header explains the overall goal and implemented result
+  without requiring the reader to inspect individual files first.
 - **Grounded** — each summary/why reflects the actual hunks, not assumptions.
 - **Pseudocode, not diff** — convey intent at the idea level; don't paste raw lines.
 - When many files are removed for one reason (e.g. a deleted stack), give each its own

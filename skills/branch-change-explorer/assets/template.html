@@ -28,6 +28,10 @@
   header h1 { margin:0 0 3px; font-size:18px; letter-spacing:-.01em; }
   header .sub { color:var(--muted); font-size:13px; }
   header .sub b { color:var(--text); font-family:ui-monospace,Menlo,monospace; font-weight:600; }
+  header .overview { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }
+  header .overview section { background:var(--panel2); border:1px solid var(--border); border-radius:7px; padding:9px 11px; }
+  header .overview h2 { margin:0 0 3px; color:var(--accent); font-size:11px; letter-spacing:.06em; text-transform:uppercase; }
+  header .overview p { margin:0; color:var(--text); font-size:13px; line-height:1.45; }
   header .legend { margin-top:8px; font-size:12px; color:var(--muted); }
   .legend b { font-family:ui-monospace,Menlo,monospace; }
   .legend .A { color:var(--add); } .legend .M { color:var(--mod); } .legend .D { color:var(--del); }
@@ -87,12 +91,23 @@
   pre .fn { color:var(--accent); }
   .hint { color:var(--muted); font-size:12px; margin-top:16px; }
   kbd { font-family:ui-monospace,Menlo,monospace; background:var(--chip); border:1px solid var(--border); border-radius:4px; padding:0 5px; font-size:12px; }
+  @media (max-width: 760px) { header .overview { grid-template-columns:1fr; } }
 </style>
 </head>
 <body>
 <header>
   <h1>__TITLE__</h1>
   <div class="sub">Changes on <b>__HEAD__</b> vs <b>__BASE__</b> · <span id="count"></span></div>
+  <div class="overview">
+    <section>
+      <h2>Goal</h2>
+      <p>__GOAL__</p>
+    </section>
+    <section>
+      <h2>Implemented</h2>
+      <p>__IMPLEMENTED__</p>
+    </section>
+  </div>
   <div class="legend"><b class="A">A</b> added &nbsp; <b class="M">M</b> modified &nbsp; <b class="D">D</b> deleted &nbsp;·&nbsp; <kbd>↑</kbd><kbd>↓</kbd> to move between files</div>
 </header>
 <main>
