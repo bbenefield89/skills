@@ -20,6 +20,7 @@ Repository conventions win when healthy and compatible with the specification. C
 - Reject speculative features, layers, extension points, and abstractions justified only by imagined future needs.
 - Keep work scoped to changed code and directly affected interfaces.
 - Use intention-revealing names and make control flow read top-to-bottom like a story.
+- Do not declare a local, parameter, member, type, or callable that shadows an accessible symbol from an enclosing, inherited, language, or framework scope. Rename it to express its distinct role. Treat shadowing in changed code or directly affected interfaces as a Required finding; intentional language-supported overrides and overloads are not shadowing.
 - Prefer guard clauses for disqualifying paths and named helpers for genuinely complex concepts.
 - Replace dense or unusual conditions with meaningful names when doing so improves the narrative.
 - Do not create meaningless helpers merely to reduce line counts.
