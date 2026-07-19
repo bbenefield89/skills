@@ -35,6 +35,8 @@ Present one complete plan that enumerates:
 - conflicts and reduced setup decisions;
 - every proposed external mutation.
 
+Include only actions that would change local or external state. Omit dependencies and setup steps classified as **Current** from the proposed action list; summarize them separately only when useful. In particular, never propose installing Just or changing `PATH` when discovery already resolves a Just executable.
+
 Wait for explicit approval before local writes. Obtain separate approval for persistent `PATH` changes, downloads, GitHub/tracker/remotes, or other external mutations. A newly discovered hard conflict pauses only the affected step until resolved.
 
 When GitHub is selected, read [references/github-planning-labels.md](references/github-planning-labels.md). Offer project-planning labels separately. Remote label creation or changes require separate approval.

@@ -11,6 +11,8 @@ Classify every owned step independently:
 
 Never choose one repository-wide setup/consolidation mode. Report greenfield, brownfield, or mixed only as a summary if useful.
 
+Do not include **Current** steps as proposed setup actions. A detected Just executable makes installation and `PATH` remediation no-ops even when version execution is blocked by the current agent sandbox; handle that execution problem as discovery evidence, not as proof that Just is absent.
+
 ## Current owned artifacts
 
 | Step | Current version | Owned artifacts |
