@@ -1,32 +1,73 @@
 ---
 name: setup-godot-project
-description: Configures or reconciles universal delivery guidance, GUT tests, Just recipes, and validation infrastructure in new or existing Godot projects. Use when a directory containing project.godot needs the standard Godot agent workflow or when $deliver reports missing project guardrails.
+description: Configures or reconciles universal GUT, Just, validation, warning, and version-control infrastructure in a new or existing Godot project. Use when a directory containing project.godot needs reproducible Godot project guardrails or prior setup-godot-project artifacts need consolidation.
 ---
 
 # Set Up a Godot Project
 
-Configure only universal infrastructure. Do not invent gameplay structure or audit gameplay quality.
+Configure universal Godot infrastructure only. Do not invent gameplay structure, audit gameplay quality, or refactor gameplay code.
 
 ## 1. Discover read-only
 
-Require `project.godot`. Read [references/discovery.md](references/discovery.md), inspect every listed prerequisite and repository artifact, and classify missing items, compatible drift, and hard conflicts. Do not write during discovery.
+Require `project.godot`. Read [references/discovery.md](references/discovery.md) and [references/reconciliation.md](references/reconciliation.md). When legacy setup-godot-project policy artifacts are present, also read [references/legacy-v1.md](references/legacy-v1.md).
 
-Invoke `$setup-matt-pocock-skills` during discovery and reconciliation so issue tracking, triage-state labels, and domain-document conventions are configured through their owning workflow. Do not substitute project-specific labels for its canonical triage labels.
+Inspect every owned setup step independently. Do not classify the whole repository as being in setup mode or consolidation mode. For each step classify:
+
+- **Missing:** create the current artifact.
+- **Current:** no-op.
+- **Recognized legacy:** migrate or remove according to the documented rule.
+- **Compatible customization:** preserve it and add only unambiguous missing behavior.
+- **Hard conflict:** show focused evidence and ask how to proceed.
+- **External mutation:** require separate explicit approval.
+
+A single run may contain every classification.
+
+When issue-tracking/domain setup is selected, invoke `$setup-matt-pocock-skills` for its owned issue-tracking, triage-state, and domain-document conventions. Do not recreate those policies or substitute project-planning labels for canonical triage labels. If that skill is unavailable, stop only the owning-workflow step, offer precise installation/remediation, and preserve its existing artifacts. Continue core Godot infrastructure only through an explicitly approved reduced setup.
 
 ## 2. Propose and approve
 
-Read [references/reconciliation.md](references/reconciliation.md). Present one complete plan containing every local write, dependency/version choice, exact installation command, conflict, and skipped capability. Wait for explicit approval.
+Present one complete plan that enumerates:
 
-When GitHub is selected, read [references/github-planning-labels.md](references/github-planning-labels.md). Offer the project-planning labels separately from triage labels and record the accepted convention in `docs/agents/issue-tracker.md`. Creating or changing labels on GitHub is an external mutation requiring separate approval.
+- every local file creation, edit, migration, and deletion;
+- dependency and version choices;
+- exact installation or download commands;
+- preserved customizations;
+- conflicts and reduced setup decisions;
+- every proposed external mutation.
 
-One approval covers only the proposed non-conflicting local actions. Obtain separate approval for system `PATH`, GitHub/tracker/remotes, downloads, or other external mutations. A newly discovered hard conflict pauses work with evidence and a recommendation.
+Wait for explicit approval before local writes. Obtain separate approval for persistent `PATH` changes, downloads, GitHub/tracker/remotes, or other external mutations. A newly discovered hard conflict pauses only the affected step until resolved.
 
-## 3. Apply
+When GitHub is selected, read [references/github-planning-labels.md](references/github-planning-labels.md). Offer project-planning labels separately. Remote label creation or changes require separate approval.
 
-Reconcile from `assets/project-template/`; do not wholesale replace customized files. Install GUT only through [references/gut-installation.md](references/gut-installation.md). Initialize local Git only when approved. Do not create GitHub Actions, placeholder scenes, game folders, commits, pushes, or external resources by default.
+## 3. Reconcile
+
+Reconcile these independent steps:
+
+1. Godot, Just, Git, and conditionally GitHub tool discovery.
+2. GUT installation and editor-plugin activation.
+3. Public Just recipes for import, focused tests, all tests, runtime, and aggregate validation.
+4. GUT setup smoke test and runtime verification script.
+5. Applicable Godot warning settings.
+6. Universal version-control ignore rules.
+7. Optional issue-tracking/domain setup through `$setup-matt-pocock-skills`.
+8. Optional GitHub planning labels.
+9. Recognized legacy setup-godot-project policy documents and AGENTS blocks.
+
+Use `assets/project-template/` as merge input, never as authority to replace customized files wholesale. Install GUT only through [references/gut-installation.md](references/gut-installation.md).
+
+Do not generate Deliver policy, workflow-adapter bindings, implementation guidance, architecture rules, language standards, testing policy, or code-review policy in the target repository. Deliver owns those standards internally.
+
+Do not create GitHub Actions, placeholder scenes, gameplay folders, speculative architecture layers, or gameplay debt reports. Never commit or push unless the current user explicitly instructs it. An explicit instruction not to commit or push always wins.
 
 ## 4. Verify
 
-Verify required adapters, managed-block uniqueness, GUT smoke coverage, and the public recipes `just import`, `just test <test-path>`, `just test-all`, `just runtime`, and `just validate`. With no main scene, runtime must report `NOT_APPLICABLE` successfully; do not create a scene.
+Run discovery again after reconciliation. Verify:
 
-Use [references/report-schema.md](references/report-schema.md). A reduced setup must enumerate every missing capability and never claim the standard contract.
+- every owned step now classifies as Current, approved customization, or explicitly reduced;
+- managed markers are unique and well formed;
+- the GUT plugin is enabled without disturbing other plugins;
+- `just --list` or `just --summary` exposes the required public recipes;
+- `just import`, the focused setup smoke test, `just test-all`, `just runtime`, and `just validate` behave correctly on the detected operating system;
+- runtime reports `NOT_APPLICABLE` successfully when no main scene exists.
+
+Do not create a main scene to satisfy runtime validation. Use [references/report-schema.md](references/report-schema.md).

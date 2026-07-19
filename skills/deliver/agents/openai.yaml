@@ -1,4 +1,4 @@
 interface:
   display_name: "Deliver"
-  short_description: "Implement, clean, review, and validate in one flow"
-  default_prompt: "Use $deliver to implement this specification through cleanup, review, and final validation."
+  short_description: "Implement, review, and validate in one flow"
+  default_prompt: "Use $deliver to implement this request through test-driven implementation, independent review, and final validation."

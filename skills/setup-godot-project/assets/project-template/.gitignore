@@ -1,1 +1,5 @@
+# setup-godot-project:gitignore:start;version=2
 .godot/
+*.translation
+/android/
+# setup-godot-project:gitignore:end

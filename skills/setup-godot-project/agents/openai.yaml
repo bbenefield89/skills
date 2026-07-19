@@ -1,4 +1,4 @@
 interface:
   display_name: "Set Up Godot Project"
-  short_description: "Reconcile Godot delivery and validation guardrails"
-  default_prompt: "Use $setup-godot-project to inspect this Godot project and propose its universal setup plan."
+  short_description: "Reconcile universal Godot project guardrails"
+  default_prompt: "Use $setup-godot-project to reconcile GUT, Just, validation, warnings, and version-control infrastructure in this Godot project."

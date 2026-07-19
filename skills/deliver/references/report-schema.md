@@ -1,9 +1,11 @@
 # Completion report
 
+Keep the delivery summary concise. Do not summarize, rewrite, merge, or truncate either final review output.
+
 ```markdown
 **Outcome**
 
-<Concise result.>
+<Verified, Unverified, Failed, or Blocked — concise result.>
 
 
 **Changed files**
@@ -15,12 +17,17 @@
 
 **Validation**
 
-`just validate` — <exact result and applicable subchecks>.
+`<exact final command>` — <result and relevant subchecks>.
 
 
-**Code review output**
+**Standards review output**
 
-<Complete, unabridged final output from the change-review adapter.>
+<Complete, unabridged final Standards review output.>
+
+
+**Spec review output**
+
+<Complete, unabridged final Spec review output.>
 ```
 
-Do not add routine commit status.
+For Unverified, name the missing validation interface and the focused proof that did run. For Failed or Blocked, include the unresolved failure or decision needed. Do not add routine commit status.

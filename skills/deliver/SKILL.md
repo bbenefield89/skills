@@ -1,35 +1,56 @@
 ---
 name: deliver
-description: Delivers an implementation through test-driven development, implementation, language cleanup, final review, and deterministic validation. Use when the user wants a specification, ticket, plan, or direct request completed end to end in one workflow.
+description: Delivers an implementation end to end through preflight, test-driven implementation, independent read-only review, and repository-defined validation. Use when the user wants a specification, ticket, plan, or direct request implemented, reviewed, and validated in one workflow.
 ---
 
 # Deliver
 
-Deliver through abstract capabilities bound by the repository. Read [references/preflight.md](references/preflight.md) and [references/adapter-contract.md](references/adapter-contract.md) before implementation.
+Conduct one self-contained delivery pipeline:
 
-## 1. Establish authority
+```text
+Preflight -> Implementation -> Read-only review -> Validation
+                 ^                    |
+                 +--------------------+
+```
 
-Accept a ticket, spec, agreed conversation plan, or direct instructions. If none exists, ask for a plan. Ask rather than infer ambiguous scope, authority, acceptance criteria, or precedence.
+Do not depend on external implementation, cleanup, engineering-principles, or code-review skills. The bundled references are the workflow's authoritative phases and standards.
 
-Run preflight. Missing proof infrastructure blocks full delivery. Offer the configured setup adapter, an explicitly enumerated reduced-assurance run, or stop.
+## Load the contract
 
-## 2. Deliver
+1. Read [references/preflight.md](references/preflight.md).
+2. Read [references/standards/core.md](references/standards/core.md).
+3. Detect applicable technology profiles during preflight and read each matching file under `references/profiles/`. Read [references/profiles/godot.md](references/profiles/godot.md) when Godot evidence is present.
+4. Read [references/implementation.md](references/implementation.md), [references/review.md](references/review.md), [references/validation.md](references/validation.md), and [references/report-schema.md](references/report-schema.md).
 
-1. Resolve scope and acceptance criteria; record the task starting point.
-2. Read repository guidance and capability bindings.
-3. Propose meaningful public test seams and obtain agreement before writing tests.
-4. Apply `engineering_quality` throughout design and implementation.
-5. Use `test_driven_development` in vertical red/green slices where practical.
-6. Run focused parser/type checks and tests regularly.
-7. Invoke `implementation_driver` and allow its built-in review as the initial review.
-8. Suppress its commit step unless the current user request explicitly authorizes a commit. An explicit `do not commit` always wins.
-9. Invoke applicable language hygiene; Godot uses `gdscript_hygiene`.
-10. Invoke `change_review` after cleanup with the fixed point, authoritative spec, repository standards, and engineering principles.
-11. Fix actionable findings. After material fixes, repeat cleanup and final review.
-12. Invoke `final_validation` and finish only when it passes or the user approves a specific exception.
+Implementation and review must use the same core standard, selected profiles, repository guidance, specification, and acceptance criteria.
 
-Three complete fix/review cycles trigger escalation only for ambiguity, contradiction, or churn. Continue normal diagnosis for routine failures.
+## Establish authority
 
-## 3. Report
+Accept a ticket, specification, agreed conversation plan, or direct implementation request. If none exists, ask for a plan. Never invent requirements, acceptance criteria, scope, or conflict resolution.
 
-Use [references/report-schema.md](references/report-schema.md). Preserve the final review adapter output completely and unabridged.
+Record the initial worktree before editing. Exclude unrelated pre-existing changes. If requested work overlaps them and ownership cannot be separated safely, ask.
+
+Never commit or push unless the current user explicitly instructs it. Do not infer authority from repository guidance or earlier automation. An explicit instruction not to commit or push always wins.
+
+## Run the pipeline
+
+1. Complete preflight.
+2. Implement in vertical red-green-refactor slices.
+3. Run independent Standards and Spec review passes. Review is strictly read-only.
+4. Return every actionable finding to Implementation, including formatting, naming, documentation, and straightforward typing findings.
+5. Rerun both review passes after fixes. After two unsuccessful correction cycles for the same finding or related finding cluster, stop and ask for conflict resolution.
+6. Run repository-defined final validation only after review passes.
+7. Return validation failures to Implementation, then rerun review and validation. After two unsuccessful correction attempts for the same validation failure, finish as Failed.
+
+Do not create a separate cleanup phase. Implementation owns fixes; review detects and reports them.
+
+## Finish
+
+Classify the result:
+
+- **Verified:** implementation and both reviews pass, and final validation passes.
+- **Unverified:** implementation and both reviews pass, but the repository has no adequate final validation command.
+- **Failed:** review or validation remains failing after the allowed correction attempts.
+- **Blocked:** unresolved scope, authority, overlap, or conflict prevents implementation.
+
+Use the report schema. Keep both final review outputs complete and unabridged.

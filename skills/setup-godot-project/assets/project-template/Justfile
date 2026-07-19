@@ -1,16 +1,20 @@
+# setup-godot-project:template=justfile;version=2;section=godot-validation
+set windows-shell := ["powershell.exe", "-NoLogo", "-NoProfile", "-Command"]
+
 godot_repository_executable := "godot"
 godot_executable := env_var_or_default("GODOT", godot_repository_executable)
+invoke := if os() == "windows" { "&" } else { "" }
 
 import:
-    "{{godot_executable}}" --path . --headless --import --quit
+    {{ invoke }} "{{ godot_executable }}" --path . --headless --import --quit
 
 test test_path:
-    "{{godot_executable}}" --path . --headless -s addons/gut/gut_cmdln.gd -gtest={{test_path}} -gexit
+    {{ invoke }} "{{ godot_executable }}" --path . --headless --script addons/gut/gut_cmdln.gd -- -gtest res://{{ test_path }} -gexit
 
 test-all:
-    "{{godot_executable}}" --path . --headless -s addons/gut/gut_cmdln.gd -gdir=res://tests -gexit
+    {{ invoke }} "{{ godot_executable }}" --path . --headless --script addons/gut/gut_cmdln.gd -- -gdir res://tests -gexit
 
 runtime:
-    "{{godot_executable}}" --path . --headless -s tests/verify_runtime.gd
+    {{ invoke }} "{{ godot_executable }}" --path . --headless --script tests/verify_runtime.gd
 
 validate: import test-all runtime
