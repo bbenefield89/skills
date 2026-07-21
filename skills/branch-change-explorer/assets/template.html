@@ -32,6 +32,9 @@
   header .overview section { background:var(--panel2); border:1px solid var(--border); border-radius:7px; padding:9px 11px; }
   header .overview h2 { margin:0 0 3px; color:var(--accent); font-size:11px; letter-spacing:.06em; text-transform:uppercase; }
   header .overview p { margin:0; color:var(--text); font-size:13px; line-height:1.45; }
+  header .overview ul { margin:0; padding-left:18px; color:var(--text); font-size:13px; line-height:1.45; }
+  header .overview li { margin:3px 0; }
+  header .overview code { font-family:ui-monospace,Menlo,monospace; font-size:.9em; background:var(--chip); padding:1px 5px; border-radius:4px; }
   header .legend { margin-top:8px; font-size:12px; color:var(--muted); }
   .legend b { font-family:ui-monospace,Menlo,monospace; }
   .legend .A { color:var(--add); } .legend .M { color:var(--mod); } .legend .D { color:var(--del); }
@@ -101,11 +104,11 @@
   <div class="overview">
     <section>
       <h2>Goal</h2>
-      <p>__GOAL__</p>
+      __GOAL__
     </section>
     <section>
       <h2>Implemented</h2>
-      <p>__IMPLEMENTED__</p>
+      __IMPLEMENTED__
     </section>
   </div>
   <div class="legend"><b class="A">A</b> added &nbsp; <b class="M">M</b> modified &nbsp; <b class="D">D</b> deleted &nbsp;·&nbsp; <kbd>↑</kbd><kbd>↓</kbd> to move between files</div>

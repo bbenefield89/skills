@@ -25,14 +25,30 @@ Turn the current branch's diff into one self-contained HTML page: a branch-level
    - Read each file's actual hunks (`git diff` / read the file) so every summary is
      grounded in the real change — never guess from the filename.
 
-3. **Explain the overall change.** Write two concise header fields:
+3. **Explain the overall change.** Write two header fields, each as a **short bullet
+   list** (not a paragraph) — one idea per bullet, scannable top to bottom:
    - **goal** — the user, ticket, or specification outcome the change is meant to
-     achieve. Describe the behavioral objective, not the implementation plan.
-   - **implemented** — a plain-language summary of what the complete diff now does.
-     Mention the main behavior and important scope decisions without listing files.
+     achieve. Describe the behavioral objective, not the implementation plan. A good
+     goal often reads as a mini story: the bug/need, its cause, its effect, then the fix.
+   - **implemented** — what the complete diff now does. Cover the main behavior and
+     important scope decisions without listing files.
 
-   Keep each field to one short paragraph. Ground both in the request, ticket, commit
-   context, and actual diff; never invent intent that the available evidence does not support.
+   Aim for ~2–5 bullets each. Ground both in the request, ticket, commit context, and
+   actual diff; never invent intent the evidence does not support.
+
+   **Name every subject explicitly — leave no dangling reference.** A reader landing on
+   any single bullet must know what it refers to without hunting. Avoid bare "the id",
+   "it", "the param", "the value"; say "the encounter id" or `encounterId`. Repeat the
+   noun rather than relying on a pronoun whose antecedent is in another bullet. Example
+   of the target style:
+
+   ```
+   Goal
+   • Bug: a vitals lookup should be scoped to one hospital stay using the encounter id.
+   • The encounter id was computed and attached to the outgoing request, then dropped before the request left FSI.
+   • Because the encounter id never arrived, the private API's Cerner/Oracle encounter-fallback filter never ran.
+   • Fix: forward the encounter id to the private API — Epic behavior stays unchanged.
+   ```
 
 4. **Explain each file.** For every changed file write three fields:
    - **summary** — a bullet list of what changed, concretely (structs/functions/routes
@@ -50,10 +66,12 @@ Turn the current branch's diff into one self-contained HTML page: a branch-level
 
 6. **Render.** Copy `assets/template.html` to a temp location, then replace the six
    placeholders: `__TITLE__` (a short branch/change title), `__HEAD__` (branch name),
-   `__BASE__` (base ref, short sha ok), `__GOAL__` (HTML-escaped overall objective),
-   `__IMPLEMENTED__` (HTML-escaped overall result), and `__DATA__` (the JSON object
-   literal). Save to the OS temp/scratch dir — **not** the repo — and return a clickable
-   `file://` link.
+   `__BASE__` (base ref, short sha ok), `__GOAL__` and `__IMPLEMENTED__` (each a
+   `<ul class="changes"><li>…</li></ul>` bullet list — the template drops these straight
+   into the header, so emit the `<ul>` markup, not a bare paragraph; escape literal
+   `<`/`>`/`&` inside the text and wrap identifiers in `<code>…</code>`), and `__DATA__`
+   (the JSON object literal). Save to the OS temp/scratch dir — **not** the repo — and
+   return a clickable `file://` link.
 
 ## Data schema
 
