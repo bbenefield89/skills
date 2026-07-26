@@ -19,12 +19,14 @@ Repository conventions win when healthy and compatible with the specification. C
 - Choose the simplest design that fully satisfies current behavior.
 - Reject speculative features, layers, extension points, and abstractions justified only by imagined future needs.
 - Keep work scoped to changed code and directly affected interfaces.
-- Use intention-revealing names and make control flow read top-to-bottom like a story.
+- Use intention-revealing names and make control flow read top-to-bottom like a story. Names identify the owning concept and observable behavior rather than generic implementation activity.
 - Do not declare a local, parameter, member, type, or callable that shadows an accessible symbol from an enclosing, inherited, language, or framework scope. Rename it to express its distinct role. Treat shadowing in changed code or directly affected interfaces as a Required finding; intentional language-supported overrides and overloads are not shadowing.
 - Prefer guard clauses for disqualifying paths and named helpers for genuinely complex concepts.
 - Replace dense or unusual conditions with meaningful names when doing so improves the narrative.
 - Do not create meaningless helpers merely to reduce line counts.
 - Comments and documentation explain intent, contracts, rationale, and non-obvious behavior rather than restating syntax.
+- Make public-contract renames atomic across production callers, configuration, tests, and documentation. Do not leave compatibility remnants unless the specification requires them.
+- Review documentation for contract completeness and accuracy, not merely the presence of comments. Update it when names, ownership, side effects, dependencies, or behavior change.
 
 Treat these as serious design prompts, not automatic failures:
 
@@ -33,8 +35,10 @@ Treat these as serious design prompts, not automatic failures:
 - A boolean parameter selects between distinct operations.
 - Control flow is deeply nested or mixes abstraction levels.
 - A class has many injected dependencies.
+- A state model combines independent state axes that must coexist or change independently.
+- A class coordinates several responsibilities with different reasons to change.
 
-For a 12-plus-line method, decide whether decomposition would make the story clearer. Keep it intact when one cohesive narrative is clearer than fragmented helpers. Prefer a cohesive parameter object when several parameters form one recurring concept; do not wrap unrelated values merely to lower a count. Replace behavior-selecting boolean flags with intention-revealing operations, while permitting booleans that are genuine domain data.
+For a 12-plus-line method, decide whether decomposition would make the story clearer. Keep it intact when one cohesive narrative is clearer than fragmented helpers. Prefer a cohesive parameter object when several parameters form one recurring concept; do not wrap unrelated values merely to lower a count. Replace behavior-selecting boolean flags with intention-revealing operations, while permitting booleans that are genuine domain data. Rename a state model when it represents one legitimate lifecycle under an inaccurate name; decompose it when independent state axes must coexist.
 
 Prefer queries that return information without changing observable state and commands that change state without masquerading as queries. Permit explicit conventional combined operations such as `pop()`.
 
@@ -42,6 +46,8 @@ Prefer queries that return information without changing observable state and com
 
 - Group code that changes for the same reason and separate code that changes for different reasons.
 - Keep responsibilities cohesive; SRP does not mean one method per class.
+- Keep each configuration object cohesive: expose only values consumed by the behavior it configures. Relocate or split unrelated values when they have independent owners or reasons to change.
+- Give transient runtime state a focused owner when it has a distinct lifecycle or reason to change.
 - Extend stable policy around current, demonstrated variation. Do not prebuild strategies, factories, plugins, or interfaces for hypothetical variation.
 - Preserve substitutable contracts: implementations must not strengthen preconditions, weaken promised outcomes, introduce surprising failures, or force callers to branch on concrete type.
 - Split broad interfaces when real clients need disjoint capabilities or implementations would require meaningless operations. Do not create one-method interfaces by rote.
@@ -57,6 +63,8 @@ Inject external, expensive, nondeterministic, or volatile collaborators through 
 - Never test private or protected APIs directly.
 - Never expose pseudo-public production APIs solely for tests.
 - Keep tests simple, deterministic, and readable as examples of supported behavior.
+- For behavior-preserving refactors, retain focused coverage of every affected observable contract.
+- When a test fails after configuration changes, distinguish an implementation regression from a stale fixture that encodes superseded authored values before changing production code.
 - Mock collaborators at real dependency-injection seams when isolation is useful and no repository convention prefers a real collaborator, fake, or integration test.
 - Never mock the subject under test or its private internals.
 - Verify collaborator interactions only when the interaction itself is part of the subject's public responsibility. Avoid incidental call ordering and implementation transcripts.
