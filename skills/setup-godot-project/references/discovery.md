@@ -8,8 +8,8 @@ Inspect only setup-owned infrastructure:
 - `Justfile`, `justfile`, and other case variants; required recipes and their actual expansion through `just --list`, `just --summary`, or `just --dump`.
 - Tests, configured test frameworks, `addons/gut`, GUT `plugin.cfg`, and identifiable installed version.
 - Recognized legacy setup-godot-project policy documents and AGENTS blocks listed in reconciliation.
-- Availability of `$setup-matt-pocock-skills` when issue-tracking/domain setup is selected or legacy ownership must be transferred.
-- GitHub CLI and authentication only when GitHub work is selected.
+- Availability of `$setup-bb-skills` when tracker setup is selected or legacy ownership must be transferred.
+- Tracker tools, connectors, and authentication only when tracker work is selected.
 
 Do not infer that a missing search result proves incompatibility. For GUT selection, inspect the exact Godot line, live compatibility data, release/tag metadata, `plugin.cfg`, and complete published releases.
 
@@ -23,8 +23,8 @@ Because the repository validation interface depends on Just after standard setup
 
 If Godot is not on `PATH`, inspect common installation locations and report the executable found. Offer either an explicitly approved persistent `PATH` update or a repository-specific `GODOT` environment override/Justfile default. Never modify `PATH` silently.
 
-Treat Git remote configuration and GitHub CLI authentication as separate states. Invalid GitHub authentication blocks only approved external GitHub mutations, not local setup.
+Treat Git remote configuration and tracker authentication as separate states. Invalid tracker authentication blocks only approved external tracker mutations, not local setup.
 
-When `$setup-matt-pocock-skills` is required but unavailable, name the missing workflow and offer installation through the available skill-installation mechanism. Do not emit substitute tracker/domain guidance. Preserve existing owning-workflow artifacts and require explicit approval before continuing with only the independent Godot infrastructure steps.
+When `$setup-bb-skills` is required but unavailable, name the missing workflow and offer installation through the available skill-installation mechanism. Do not emit substitute tracker guidance. Preserve existing owning-workflow artifacts and require explicit approval before continuing with only the independent Godot infrastructure steps.
 
 Do not scan gameplay code for hygiene, architecture, quality debt, or baseline violations. For existing projects, inspect only enough source to measure whether proposed warning settings parse.

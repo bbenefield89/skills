@@ -54,7 +54,7 @@ Their corresponding legacy AGENTS keys are:
 
 Compare candidate files and blocks with [legacy-v1.md](legacy-v1.md). Normalize only line endings before comparison. When a legacy file or block has its recognized marker and otherwise matches the canonical version-1 content, propose deletion. Any other textual change is customization: preserve it and ask whether to keep it as user-owned guidance, consolidate selected content elsewhere, or remove it. Never silently delete customized policy.
 
-Earlier setup-godot-project versions also emitted `issue-tracking`, `triage-labels`, and `domain` AGENTS blocks plus `docs/agents/issue-tracker.md` and `docs/agents/domain.md`. These concerns now belong to `$setup-matt-pocock-skills`. Let that owning workflow reconcile equivalent content. If ownership or customization is ambiguous, ask rather than deleting it. Do not classify these owning-workflow documents by the obsolete Deliver-policy signatures.
+Earlier setup-godot-project versions also emitted `issue-tracking`, `triage-labels`, and `domain` AGENTS blocks plus `docs/agents/issue-tracker.md` and `docs/agents/domain.md`. Preserve them as possible user-owned or legacy workflow artifacts. When tracker setup is selected, let `$setup-bb-skills` reconcile relevant tracker content into `docs/agents/bb-skills.md`; it does not own domain documentation. If ownership or customization is ambiguous, ask rather than deleting anything. Do not classify these artifacts by the obsolete Deliver-policy signatures.
 
 Remove `docs/agents/` only when it becomes empty. Preserve all unrelated files and AGENTS content byte-for-byte.
 

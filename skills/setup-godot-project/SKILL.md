@@ -22,7 +22,7 @@ Inspect every owned setup step independently. Do not classify the whole reposito
 
 A single run may contain every classification.
 
-When issue-tracking/domain setup is selected, invoke `$setup-matt-pocock-skills` for its owned issue-tracking, triage-state, and domain-document conventions. Do not recreate those policies or substitute project-planning labels for canonical triage labels. If that skill is unavailable, stop only the owning-workflow step, offer precise installation/remediation, and preserve its existing artifacts. Continue core Godot infrastructure only through an explicitly approved reduced setup.
+When tracker setup is selected, invoke `$setup-bb-skills` for its owned tracker contract and external tracker configuration. Do not recreate those policies. If that skill is unavailable, stop only the owning workflow step, offer precise installation or remediation, and preserve its existing artifacts. Continue core Godot infrastructure only through an explicitly approved reduced setup.
 
 ## 2. Propose and approve
 
@@ -39,7 +39,7 @@ Include only actions that would change local or external state. Omit dependencie
 
 Wait for explicit approval before local writes. Obtain separate approval for persistent `PATH` changes, downloads, GitHub/tracker/remotes, or other external mutations. A newly discovered hard conflict pauses only the affected step until resolved.
 
-When GitHub is selected, read [references/github-planning-labels.md](references/github-planning-labels.md). Offer project-planning labels separately. Remote label creation or changes require separate approval.
+Tracker configuration is owned by `$setup-bb-skills` and uses its separate approval gate. Include that invocation in the proposal, but do not duplicate its tracker questions or proposed external mutations.
 
 ## 3. Reconcile
 
@@ -51,9 +51,8 @@ Reconcile these independent steps:
 4. GUT setup smoke test and runtime verification script.
 5. Applicable Godot warning settings.
 6. Universal version-control ignore rules.
-7. Optional issue-tracking/domain setup through `$setup-matt-pocock-skills`.
-8. Optional GitHub planning labels.
-9. Recognized legacy setup-godot-project policy documents and AGENTS blocks.
+7. Optional tracker setup through `$setup-bb-skills`.
+8. Recognized legacy setup-godot-project policy documents and AGENTS blocks.
 
 Use `assets/project-template/` as merge input, never as authority to replace customized files wholesale. Install GUT only through [references/gut-installation.md](references/gut-installation.md).
 

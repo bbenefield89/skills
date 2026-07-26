@@ -8,6 +8,8 @@ skills/
     SKILL.md
   clarify-with-docs/
     SKILL.md
+  create-ticket/
+    SKILL.md
   deliver/
     SKILL.md
   engineering-principles/
@@ -16,9 +18,15 @@ skills/
     SKILL.md
   goal-prompt/
     SKILL.md
+  setup-bb-skills/
+    SKILL.md
   setup-github-project/
     SKILL.md
   setup-godot-project/
+    SKILL.md
+  spec-to-tasks/
+    SKILL.md
+  ticket-to-spec/
     SKILL.md
   tldr/
     SKILL.md
