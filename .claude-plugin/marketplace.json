@@ -12,6 +12,8 @@
         "./skills/deliver",
         "./skills/engineering-principles",
         "./skills/goal-prompt",
+        "./skills/scoped-grill-me",
+        "./skills/scoped-grill-with-docs",
         "./skills/setup-bb-skills",
         "./skills/setup-github-project",
         "./skills/spec-to-tasks",
