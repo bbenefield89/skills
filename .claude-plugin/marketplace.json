@@ -8,8 +8,6 @@
       "source": "./",
       "skills": [
         "./skills/branch-change-explorer",
-        "./skills/branch-risk-audit",
-        "./skills/clarify-with-docs",
         "./skills/create-ticket",
         "./skills/deliver",
         "./skills/engineering-principles",
@@ -29,6 +27,14 @@
       "skills": [
         "./skills/gdscript-cleanup",
         "./skills/setup-godot-project"
+      ]
+    },
+    {
+      "name": "deprecated-skills",
+      "source": "./",
+      "skills": [
+        "./skills/branch-risk-audit",
+        "./skills/clarify-with-docs"
       ]
     }
   ]
