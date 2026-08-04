@@ -30,9 +30,25 @@ Update the ledger when the user's answers explicitly refine or change the goal o
 
 If the ledger cannot be created, read, or updated, stop before asking another question and report the failure.
 
+## Control conversational state
+
+Begin the session in **GRILLING**.
+
+Enter **DISCUSSION** when the user does not directly answer the pending question and instead asks for context, asks a follow-up, challenges a premise, expresses uncertainty, wants to reason through the decision, or otherwise starts a conversational detour. When uncertain whether the user answered, prefer DISCUSSION.
+
+While in DISCUSSION:
+
+- Respond normally without displaying `TL;DR`, `IN SCOPE`, `SCOPE EXCEPTION`, or `Question N`.
+- Do not generate, restate, or rephrase the pending question.
+- Do not generate a new grilling question or increment the question number.
+- Silently update the ledger only when the user explicitly changes or refines the goal or scope.
+- Remain in DISCUSSION across any number of turns. Do not infer that the user is ready to resume.
+
+Return to GRILLING only when the user explicitly says `resume grilling`, ignoring capitalization. Reread the ledger before continuing. If the discussion resolved the pending question, ask the next appropriate question using the next number. Otherwise, show the pending question again using its original number.
+
 ## Gate every question
 
-Immediately before asking each question:
+Only while in GRILLING, immediately before asking each question:
 
 1. Reread the ledger.
 2. Let `/grilling` determine the proposed question.
