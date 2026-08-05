@@ -7,6 +7,7 @@
       "name": "general-skills",
       "source": "./",
       "skills": [
+        "./skills/brainstorming",
         "./skills/branch-change-explorer",
         "./skills/create-ticket",
         "./skills/deliver",
