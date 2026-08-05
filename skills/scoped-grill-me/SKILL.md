@@ -39,12 +39,15 @@ Enter **DISCUSSION** when the user does not directly answer the pending question
 While in DISCUSSION:
 
 - Respond normally without displaying `TL;DR`, `IN SCOPE`, `SCOPE EXCEPTION`, or `Question N`.
-- Do not generate, restate, or rephrase the pending question.
-- Do not generate a new grilling question or increment the question number.
+- While the discussion remains unresolved, do not generate, restate, or rephrase the pending question.
+- While the discussion remains unresolved, do not generate a new grilling question or increment the question number.
 - Silently update the ledger only when the user explicitly changes or refines the goal or scope.
-- Remain in DISCUSSION across any number of turns. Do not infer that the user is ready to resume.
+- Remain in DISCUSSION across any number of turns when the user is still exploring, challenging, asking follow-ups, or expressing uncertainty.
+- Infer that DISCUSSION has ended when the user clearly and definitively resolves the pending question or clearly signals readiness to continue. Examples include agreement such as "yes, agreed," confirmation that the explanation answered the concern, or a request for the next question.
+- When inferring that DISCUSSION has ended, record the resolution, reread the ledger, return to GRILLING, and ask the next appropriate question with the next number in the same response. Do not require or suggest the phrase `resume grilling`.
+- When the user's intent is ambiguous, remain in DISCUSSION and do not advance.
 
-Return to GRILLING only when the user explicitly says `resume grilling`, ignoring capitalization. Reread the ledger before continuing. If the discussion resolved the pending question, ask the next appropriate question using the next number. Otherwise, show the pending question again using its original number.
+The user may always return to GRILLING explicitly by saying `resume grilling`, ignoring capitalization. Reread the ledger before continuing. If the discussion resolved the pending question, ask the next appropriate question using the next number. Otherwise, show the pending question again using its original number.
 
 ## Gate every question
 
