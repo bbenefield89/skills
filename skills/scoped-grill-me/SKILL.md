@@ -6,18 +6,7 @@ disable-model-invocation: true
 
 # Scoped Grill Me
 
-Run a `/grilling` session. The grilling skill owns the interview workflow and question content. Apply the scope, persistence, numbering, pacing, and output rules below and nothing else. Where those rules conflict with the underlying skill, the rules below win.
-
-## Ask exactly one question per response
-
-This overrides the round-based interview loop in `/grilling`. That skill says to ask the whole frontier in one round. Do not. Ask one question, then stop.
-
-- Every GRILLING response contains exactly one `## Question N` block.
-- Never emit two question numbers in a single response, for any reason.
-- Compute the frontier as `/grilling` describes, then ask only its highest-value member. Treat the rest as still pending and recompute the frontier after the user answers.
-- After asking, end the turn. Do not preview the next question, enumerate what remains, or state how large the frontier is.
-- `/grilling`'s recommended answer (`➡️`) is part of the question and stays. Ending the turn means not deciding on the user's behalf, not withholding a recommendation.
-- Relentless applies across turns, not within one. A session gets its depth from the number of rounds, never from the size of them.
+Run a `/grilling` session. The grilling skill owns the interview workflow and question content. Apply only the scope, persistence, numbering, and output rules below.
 
 ## Initialize the scope ledger
 
