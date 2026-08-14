@@ -21,7 +21,7 @@ Persistent on/off switch. When ON, the line-item summary **is** the response. Th
 - **Group by kind of thing**, under bold sub-headers. Headers emerge from what the content actually contains rather than from a fixed template. A docs-only change produces different groups than a debugging session.
 - Omit a group entirely when it is empty — *unless* its emptiness is itself the fact worth stating (`**Behavior change** — None. Documentation only.`).
 - **Front-load anything surprising or needing a decision** from the user. If one group is more important than the rest, it goes first.
-- No `## TL;DR` heading. The response is the summary; labelling it is redundant.
+- **Open every response with a `# TL;DR` heading**, on its own line, before anything else. It is the unambiguous marker that TL;DR mode produced this response and shows exactly where the summary begins. The one exception is a bare toggle confirmation ("TL;DR on." / "TL;DR off."), which needs no heading.
 - The goal is scannability, not brevity. A line-item response may run as long as the prose version would have and still read faster.
 
 ### Stable spine
@@ -52,6 +52,8 @@ This mode changes how the response is written, not how much the user is told. Co
 ## Example
 
 A delivery report that would otherwise run several hundred words of prose, changed-file walkthrough, and review output:
+
+# TL;DR
 
 **Behavior change**
 
