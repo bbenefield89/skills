@@ -1,0 +1,106 @@
+{
+  "Repository": {
+    "Exists": true,
+    "NameWithOwner": "octocat/game",
+    "Visibility": "PRIVATE"
+  },
+  "BbContract": {
+    "Exists": true,
+    "Compatible": true,
+    "Mappings": {
+      "Ticket": "ticket",
+      "Task": "task",
+      "AgentExecutor": "ready-for-agent",
+      "HumanExecutor": "ready-for-human",
+      "NeedsDetails": "needs-details"
+    },
+    "RequiredLabels": [
+      "ticket",
+      "task",
+      "ready-for-agent",
+      "ready-for-human",
+      "needs-details"
+    ],
+    "PointerCount": 1
+  },
+  "GitHubProjectContract": {
+    "Exists": true,
+    "PointerCount": 1
+  },
+  "Labels": [
+    { "Name": "ticket" },
+    { "Name": "task" },
+    { "Name": "ready-for-agent" },
+    { "Name": "ready-for-human" },
+    { "Name": "needs-details" }
+  ],
+  "Milestones": [
+    { "Number": 1, "Title": "Phase 1: Prototype", "State": "open" },
+    { "Number": 2, "Title": "Phase 2: Vertical Slice", "State": "open" },
+    { "Number": 3, "Title": "Phase 3: Alpha", "State": "open" },
+    { "Number": 4, "Title": "Phase 4: Beta", "State": "open" },
+    { "Number": 5, "Title": "Phase 5: Release", "State": "open" }
+  ],
+  "Issues": [
+    {
+      "Number": 11,
+      "Title": "Deliver prototype loop",
+      "State": "OPEN",
+      "Url": "https://github.com/octocat/game/issues/11",
+      "Labels": ["ticket"],
+      "Milestone": { "Title": "Phase 1: Prototype" }
+    },
+    {
+      "Number": 12,
+      "Title": "Implement prototype loop",
+      "State": "OPEN",
+      "Url": "https://github.com/octocat/game/issues/12",
+      "Labels": ["task", "ready-for-agent"],
+      "Milestone": null,
+      "Parent": { "Number": 11, "Labels": ["ticket"] }
+    },
+    {
+      "Number": 21,
+      "Title": "Deliver vertical slice",
+      "State": "CLOSED",
+      "Url": "https://github.com/octocat/game/issues/21",
+      "Labels": ["ticket"],
+      "Milestone": { "Title": "Phase 2: Vertical Slice" }
+    }
+  ],
+  "Project": {
+    "Exists": true,
+    "Title": "game",
+    "Visibility": "PRIVATE",
+    "LinkageVerifiable": true,
+    "LinkedRepositories": ["octocat/game"],
+    "ItemUrls": [
+      "https://github.com/octocat/game/issues/11",
+      "https://github.com/octocat/game/issues/21"
+    ],
+    "CustomFields": [],
+    "StatusOptions": ["Todo", "In Progress", "Done"],
+    "Views": [
+      {
+        "Name": "Tickets",
+        "PresentationVerifiable": true,
+        "Layout": "board",
+        "Filter": "label:\"ticket\"",
+        "ColumnBy": "Status",
+        "SliceBy": "Milestone",
+        "Swimlanes": "none",
+        "SortBy": "manual",
+        "FieldSum": "count",
+        "VisibleFields": ["Title", "Assignees", "Labels", "Sub-issues progress"]
+      }
+    ],
+    "Workflows": {
+      "Verifiable": true,
+      "AutoAddFilter": "label:\"ticket\"",
+      "AddedStatus": "Todo",
+      "ClosedStatus": "Done",
+      "ReopenedStatus": "Todo",
+      "AutoAddSubIssues": false
+    }
+  }
+}

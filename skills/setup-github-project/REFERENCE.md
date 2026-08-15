@@ -1,138 +1,103 @@
 # GitHub Project operating model
 
-## Artifact model
+## Desired state
 
-A **Phase** is a real issue representing a top-level development phase. It receives the repository label `phase`, belongs to the Project, and is the native parent of the Epics in that phase.
+A GitHub milestone represents a development phase. A **Ticket** is a GitHub issue classified by the BB contract, assigned to exactly one canonical milestone, and included in the Project. A **Task** is classified by the BB contract and attached as a native sub-issue of exactly one Ticket. Tasks omit milestones and Project membership; their native relationship supplies sub-issue progress on Ticket cards.
 
-An **Epic** is a real issue representing a major outcome. It receives the repository label `epic`, belongs to the Project, and must be attached as a native sub-issue of exactly one Phase. It does not receive a readiness label merely because it is an Epic.
+The only native issue hierarchy is `Ticket -> Task`. A lightweight Ticket is enriched in place by `ticket-to-spec`, retaining its identity, classification, milestone, state, relationships, and Project membership. Standalone specification issues are a legacy structure.
 
-A **Specification / PRD** is a separate issue containing detailed behavior, scope, requirements, and acceptance criteria. It receives `spec`, receives no readiness label, and is linked from the Epic's `Specification` section. It stays outside the Project and has no native parent or children. Implementation tickets are created from the specification but attach natively to the Epic, never to the specification.
+## Ownership
 
-An **Implementation ticket** is executable work. It belongs to the Project, must be attached as a native sub-issue of exactly one Epic, and must receive exactly one readiness label: `ready-for-agent` or `ready-for-human`.
+`docs/agents/bb-skills.md` is the source of truth for Ticket, Task, executor, needs-details, release, parent-child, and blocking mappings. Reuse it when complete and compatible. Coordinate `$setup-bb-skills` through its own approval gate when it is missing or incompatible.
 
-The repository's issues and their native parent/sub-issue relationships are the source of truth. Labels classify the issue type, but labels alone do not establish hierarchy.
+`docs/agents/github-project.md` is the source of truth for milestones, Project membership, views, Status behavior, and Project workflows. `setup-github-project` owns this contract and its repository-instruction pointer.
 
-## Preflight contract
+## Canonical milestones
 
-Run the bundled preflight before inventory or mutation. A failed check is a user-facing pause, not a reason to continue optimistically or let downstream commands fail repeatedly.
+Every configured repository has these exact milestones:
 
-- Report all missing prerequisites together.
-- Provide the exact corrective command when one is safe and deterministic.
-- Ask before installing software, changing authentication scopes, enabling repository features, or selecting a repository/planning source.
-- Rerun preflight after correction and proceed only when it reports `Ready: true`.
-- If no planning source identifies phases and epics, ask for one or ask whether setup should create only the Project structure and labels.
+1. `Phase 1: Prototype`
+2. `Phase 2: Vertical Slice`
+3. `Phase 3: Alpha`
+4. `Phase 4: Beta`
+5. `Phase 5: Release`
 
-## Labels and fields
+Process them strictly in that order. For each milestone: inspect, create or reuse, read back, and validate its repository, exact title, state, and identity. Proceed only after validation. Stop on the first failure. Never reconcile milestones concurrently.
 
-- Required repository labels: `phase`, `epic`, `spec`, `ready-for-agent`, `ready-for-human`.
-- Status: retain `Todo`, `In Progress`, `Done`.
+Reuse exact matches without changing their open or closed state. Create missing matches as open without invented descriptions or due dates. Treat unnumbered and alternate counterparts as ambiguous legacy configuration; pause before creating a duplicate and require an exact approved migration to rename, merge, close, reopen, or delete anything.
 
-Do not require or create manual hierarchy fields such as `Work Type`, `Phase`, `Epic`, or equivalent custom fields. Do not add ownership, worker, estimate, date, schedule, WIP, or concurrency fields unless explicitly requested.
+## Project
 
-## Current Work
+- Visibility: Private.
+- Title: repository name.
+- Repository linkage: exactly the approved repository.
+- Membership: every open and closed Ticket; no Tasks or unrelated issues.
+- Custom fields: none.
+- Status options: `Todo`, `In Progress`, `Done`.
 
-- Name: `Current Work`
-- Layout: Board
-- Columns: Status (`Todo`, `In Progress`, `Done`)
-- No swimlanes and no grouping by Epic or Parent issue
-- Filter: `label:"ready-for-agent","ready-for-human"`
-- Visible card fields: Title, Parent issue, Labels
-- Hide Assignees, Status, Linked pull requests, and Sub-issues progress unless requested
+Reuse a compatible Project. Create a private repository-linked Project only when none exists. Project-item removal changes only membership, never the issue itself, and requires exact approval.
 
-Verify visible results after applying the filter. A syntactically accepted filter is not proof that it matches correctly.
+## Tickets view
 
-Do not display Phase or Epic issues in this view.
+- Name: `Tickets`.
+- Layout: Board.
+- Filter: `label:"ticket"`.
+- Column by: Status.
+- Slice by: Milestone.
+- Swimlanes: none.
+- Sort: manual.
+- Field sum: count.
+- Card fields: Title, Assignees, Labels, and Sub-issues progress.
 
-## Epic Roadmap
-
-- Name: `Epic Roadmap`
-- Layout: Table
-- Filter: `label:"epic"`
-- Group by Parent issue
-- Show Title, Status, and Sub-issues progress
-
-This displays each Phase as the group heading and its Epics beneath it. Empty Phases will not appear until they have at least one Epic. This is an accepted GitHub limitation.
-
-Do not add `phase` to this filter. That duplicates Phase issues into the view and creates a `No Parent issue` group.
-
-Do not create a separate `Phase Overview` view by default. It is redundant with `Epic Roadmap`.
+Keep exactly one saved view. Prefer reconciling the default view rather than creating another. Report extra views and propose exact deletion only when supported and approved.
 
 ## Workflows
 
-1. Auto-add open issues matching any of the hierarchy labels. Example: `is:issue is:open label:"phase","epic","ready-for-agent","ready-for-human"`.
+1. Auto-add open issues matching `label:"ticket"`.
 2. Item added sets Status to `Todo`.
 3. Item closed sets Status to `Done`.
 4. Item reopened sets Status to `Todo`.
-5. Movement to `In Progress` is manual.
-6. Keep native `Auto-add sub-issues to project` enabled.
+5. Movement to `In Progress` remains manual.
+6. Disable native auto-add-sub-issues so Tasks stay outside the Project.
 
-Native workflows do not establish hierarchy. Apply the correct label, attach the issue to its native parent, and confirm that it was added to the Project. Exclude `spec` from auto-add.
+Workflows do not repair historical membership. Add every existing open and closed Ticket during reconciliation and verify each item.
 
-## Repository agent contract
+## Repository bootstrap
 
-Reconcile `docs/agents/github-project.md` from the bundled template and add one concise pointer in the root `AGENTS.md`. Preserve unrelated repository instructions.
+Reuse an accessible GitHub repository. When none exists, propose `<sole-active-account>/<local-repository-name>` as private. Ask the executor to select an owner when multiple authenticated accounts are detected. Present repository creation and remote configuration in the approval proposal. Do not commit or push.
 
-The repository document overrides generic skill defaults for this repository:
+## Legacy and conflicts
 
-- `to-spec` publishes a separate issue with `spec`, no readiness label, no native parent, and no Project membership; it links the issue from the Epic's `Specification` section.
-- `to-tickets` publishes implementation issues from the specification, references that specification, attaches each issue natively to the Epic, applies exactly one readiness label, and confirms Project membership.
-- Publishing tickets preserves the Epic's state and authored content except for narrowly adding necessary links.
+Detect and report:
+
+- labels `phase`, `epic`, `spec`, and `Feature Ticket`;
+- Phase, Epic, Feature Ticket, and standalone specification issue structures;
+- unnumbered or alternate milestone schemes;
+- custom Phase, Epic, Work Type, hierarchy, estimate, date, WIP, or concurrency fields;
+- additional Project views;
+- Task or unrelated Project membership; and
+- missing or contradictory repository contracts.
+
+Legacy detection is not migration authority. Preserve existing artifacts until the executor approves exact changes.
 
 ## Tool boundaries
 
-Apply this escalation ladder separately to every operation:
+Use a dedicated `gh` command, then documented GraphQL, then documented REST. Use authenticated browser control only for a setting without a public write operation. Announce the browser-only setting and API gap first. Read back every mutation.
 
-1. Direct `gh` command.
-2. `gh api graphql` using a documented public mutation.
-3. `gh api` using a documented REST endpoint.
-4. Authenticated browser control only for a setting with no documented public write interface.
+## Verification contract
 
-Use `gh project create|link|view|field-create|field-list|item-add|item-list|item-edit|edit`, `gh issue create|view|list|edit|close`, and `gh api` for supported operations. The lack of a dedicated CLI subcommand is not evidence that no API exists.
+Verification returns structured `Conforms`, `Errors`, `Warnings`, `LegacyConflicts`, `ProposedMutations`, and `ManualChecks` values. Desired-state errors produce a nonzero exit.
 
-### Browser-free coverage
+Confirm:
 
-- Create and link the Project with `gh project create` and `gh project link`.
-- Set title, description, README, and visibility with `gh project edit`.
-- Create fields with `gh project field-create`; use GraphQL `updateProjectV2Field` when the existing Status options must be reconciled.
-- Add issues with `gh project item-add` and set Status with `gh project item-edit`.
-- Create or change native hierarchy with `gh issue create --parent`, `gh issue edit` hierarchy flags, or the REST sub-issues endpoints supported by the installed CLI/API version.
-- Create saved views through `gh api` and the documented Project views REST endpoint. Supply `X-GitHub-Api-Version: 2026-03-10`. At creation, set the view name, layout, filter, and supported visible field IDs through the API.
-
-### Browser-only remainder
-
-Use browser control only for documented gaps such as:
-
-- configuring or enabling built-in workflows, including repository-specific auto-add;
-- view grouping, vertical grouping, sorting, slice-by, hierarchy display, board-card controls, or other presentation settings absent from the public view-creation request schema;
-- changing a saved view setting when the public API exposes creation/read but no corresponding update operation.
-
-Before browser use, state the exact remaining setting and the missing CLI/API operation. Do not repeat browser work for settings already completed through CLI or API.
-
-Creating a native sub-issue requires the child's numeric database ID:
-
-```powershell
-$childId = [int64](gh api "repos/OWNER/REPO/issues/CHILD" --jq '.id')
-gh api --method POST "repos/OWNER/REPO/issues/PARENT/sub_issues" -F sub_issue_id=$childId
-```
-
-When browser control remains necessary, save views explicitly and confirm that any unsaved indicator disappears.
-
-## Final verification checklist
-
-- Preflight passed after any prerequisite corrections.
-- Project is linked to the approved repository and owner.
-- Required labels `phase`, `epic`, `spec`, `ready-for-agent`, and `ready-for-human` exist exactly once.
-- Current Work has three status columns, no grouping by Epic or Parent issue, and no swimlanes.
-- Current Work contains only readiness-labelled tickets and zero epics.
-- Current Work excludes Phase issues.
-- Every ticket visibly has one parent Epic and one readiness label.
-- Every Epic visibly has label `epic` and one parent Phase issue.
-- Epic Roadmap contains only epics and groups by Parent issue.
-- Epic Roadmap does not include `phase` in the filter and therefore does not create duplicate Phase rows or a `No Parent issue` bucket from Phase issues.
-- Every specification has `spec`, has no readiness label or native parent, and is excluded from the Project.
-- Auto-add includes `phase`, `epic`, `ready-for-agent`, and `ready-for-human`.
-- Auto-add sub-issues to project is enabled.
-- Closed and reopened workflows use the intended statuses.
-- No duplicate or unexpected artifacts were created.
-- Closed-parent/open-child and ambiguous-parent cases are reported.
-- `docs/agents/github-project.md` exists and the root `AGENTS.md` points to it once.
+- the private repository and private linked Project match the approved owner and target;
+- the BB contract is complete and its confirmed labels exist;
+- all five exact canonical milestones exist;
+- every Ticket has exactly one canonical milestone and belongs to the Project;
+- no Task or unrelated issue belongs to the Project;
+- exactly one `Tickets` view has the required board, filter, Status column, Milestone slice, and presentation;
+- Status contains only `Todo`, `In Progress`, and `Done`;
+- workflows match the Ticket-only contract and auto-add-sub-issues is disabled;
+- forbidden custom fields are absent;
+- both contracts and instruction pointers exist exactly once; and
+- a second discovery run proposes no mutations.

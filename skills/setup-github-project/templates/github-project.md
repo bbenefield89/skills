@@ -1,29 +1,41 @@
 # GitHub Project workflow
 
-GitHub Issues is the publication target for phases, epics, specifications, and implementation tickets. The linked GitHub Project visualizes planning and executable work; it does not contain specification issues.
+This repository uses a private repository-linked GitHub Project for release-level Ticket tracking. Tracker classifications and Ticket-to-Task publishing mappings are defined separately in `docs/agents/bb-skills.md`.
 
-## Artifact contract
+## Release milestones
 
-- A Phase issue uses `phase` and is the native parent of its Epics.
-- An Epic uses `epic`, is the native child of exactly one Phase, and links its specification under `Specification`.
-- A specification is a separate issue using `spec`. It has no readiness label, native parent, native children, or Project membership.
-- An implementation ticket is created from a specification, references that specification, uses exactly one of `ready-for-agent` or `ready-for-human`, and is the native child of exactly one Epic.
+Tickets use exactly one of these GitHub milestones:
 
-Labels classify artifacts; they do not create hierarchy. An Epic or implementation ticket with the correct label but without the correct native parent is incomplete. Specifications are never parents of implementation tickets.
+1. `Phase 1: Prototype`
+2. `Phase 2: Vertical Slice`
+3. `Phase 3: Alpha`
+4. `Phase 4: Beta`
+5. `Phase 5: Release`
 
-## Publishing with agent skills
+Tasks omit milestones because their parent Ticket carries release grouping.
 
-For this repository, these rules override generic skill defaults:
+## Project membership
 
-- `to-spec` creates a `spec`-labelled GitHub issue, applies no readiness label, leaves it outside the Project and native hierarchy, and links it from the Epic's `Specification` section.
-- `to-tickets` creates implementation issues from the specification, references the specification in every ticket, attaches every ticket natively to the Epic, and applies exactly one readiness label.
-- After publishing an Epic or implementation ticket, confirm its native parent and Project membership. After publishing a specification, confirm that it is absent from the Project.
-- Publishing tickets must not close or rewrite the Epic.
+- Every open and closed Ticket belongs to the Project.
+- Tasks and unrelated issues stay outside the Project.
+- Native Ticket-to-Task sub-issues provide progress on Ticket cards.
+- Expanding a Ticket into a specification preserves the same issue, milestone, state, relationships, and Project membership.
 
-## Project views and automation
+## Tickets board
 
-`Current Work` is a flat Status board with Todo, In Progress, and Done. It contains only readiness-labelled implementation tickets and shows Parent issue and Labels.
+The Project has one saved view named `Tickets`:
 
-`Epic Roadmap` is a table filtered to `label:"epic"` and grouped by native Parent issue, so Phase issues appear as group headings. Empty Phases remain absent until they contain an Epic.
+- Board filtered to `label:"ticket"`.
+- Columns use Status: `Todo`, `In Progress`, and `Done`.
+- Slice by Milestone.
+- No swimlanes.
+- Manual sort and Count field sum.
+- Cards show Title, Assignees, Labels, and Sub-issues progress.
 
-Open issues using `phase`, `epic`, `ready-for-agent`, or `ready-for-human` are automatically added. The `spec` label is excluded from auto-add. Added items enter Todo, closed items move to Done, reopened items return to Todo, and movement to In Progress is manual.
+## Workflows
+
+- Open Tickets are automatically added and enter `Todo`.
+- Closed Tickets move to `Done`.
+- Reopened Tickets return to `Todo`.
+- Movement to `In Progress` is manual.
+- Auto-add-sub-issues is disabled so Tasks remain outside the Project.

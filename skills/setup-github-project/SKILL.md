@@ -1,86 +1,92 @@
 ---
 name: setup-github-project
-description: Creates or reconciles a lightweight GitHub Projects V2 planning system linked to a repository, using repository labels plus native parent/sub-issue relationships for phase, epic, specification, and implementation-ticket conventions. Use when the user asks to set up, configure, connect, or standardize a GitHub Project for a repository or planning document.
+description: Creates or reconciles a private GitHub repository and repository-linked GitHub Projects V2 Ticket board, including canonical milestones, Ticket-only membership, Status workflows, BB tracker-contract coordination, and repository guidance. Use when a repository needs its GitHub planning infrastructure created, connected, repaired, or standardized.
 ---
 
 # Set Up a GitHub Project
 
-Create a repository-linked GitHub Project using the operating model in [REFERENCE.md](REFERENCE.md).
+Create or reconcile the approved GitHub planning infrastructure using [REFERENCE.md](REFERENCE.md). Read the reference completely before discovery.
 
 ## Non-negotiable approval gate
 
-Before any local or GitHub write:
+Before every local or GitHub write:
 
-1. Read repository instructions, planning documents, issue-tracker conventions, and label documentation.
-2. Inspect the repository, authentication, labels, existing issues, and existing Projects read-only.
-3. Present every resolved default and exact write target to the user.
-4. Identify inferred, absent, or conflicting values, plus every setting expected to require browser control and the documented CLI/API gap responsible.
-5. Wait for explicit approval or requested changes.
+1. Read repository instructions, planning documents, and existing `docs/agents/` contracts.
+2. Run `scripts/preflight.ps1`, then inspect the repository and GitHub read-only.
+3. Present the exact repository, remote, BB coordination, labels, milestones, Project, membership, views, workflows, and local files to create, reuse, change, or leave unresolved.
+4. Identify every inferred, missing, conflicting, legacy, and browser-only value.
+5. Wait for explicit approval from the human executor.
 
-Approval applies only to the presented configuration. Repeat the gate if a material choice changes. Do not create a Project, link a repository, create issues, or write repository files before approval.
+Approval covers only the proposal shown. Repeat discovery and approval when a material target, setting, or recovery action changes. Never create a repository, remote, milestone, Project, Project item, workflow, or local file before approval.
 
-## Preflight
+## Preflight and repository bootstrap
 
-Run `scripts/preflight.ps1` before `inspect.ps1` or any GitHub write. Treat its JSON result as a gate:
+Run `scripts/preflight.ps1` before inspection or mutation. Treat a failed prerequisite as a gate, except that a missing GitHub remote or remote repository is a proposed bootstrap action:
 
-1. If `Ready` is `false`, report every entry in `Missing` with its matching corrective action from `Guidance`.
-2. Ask the user to resolve the prerequisite or explicitly authorize the proposed corrective action.
-3. Stop setup. Do not continue discovery commands that depend on the missing prerequisite.
-4. Rerun preflight after the user acts. Continue only when `Ready` is `true`.
+- Require a local Git worktree, GitHub CLI 2.94.0 or newer, and authenticated GitHub access.
+- Reuse an accessible GitHub repository resolved from the remote or explicit `OWNER/REPO`.
+- When no GitHub repository exists, propose a private repository named after the local repository under the sole active GitHub account.
+- When multiple authenticated accounts are detected, ask the executor to select the owner.
+- After approval, create and read back the private repository, then add the approved remote if missing.
+- Repository bootstrap does not authorize a commit or push.
 
-Preflight must confirm Git, a GitHub remote or explicitly supplied `OWNER/REPO`, GitHub CLI 2.94.0 or newer, authenticated repository access, Project API access, and that Issues and Projects are enabled. Handle a missing planning source separately during discovery: describe what could not be derived and ask the user for the source or an explicit scope decision rather than inventing phases or epics.
+If preflight reports any other missing prerequisite, report every entry in `Missing` with its matching `Guidance`, stop, and rerun preflight after correction.
+
+## BB contract gate
+
+Inspect `docs/agents/bb-skills.md` and its repository-instruction pointer. Reuse a complete compatible contract.
+
+When the contract is absent, incomplete, contradictory, or inconsistent with GitHub, coordinate `$setup-bb-skills` through its independent discovery and approval gate. Resume Project setup only after BB verification succeeds. The BB contract owns Ticket, Task, executor, needs-details, release grouping, Task release behavior, parent-child, and blocking mappings; never duplicate those mappings in the Project contract.
 
 ## Discovery
 
-Resolve, without inventing:
+Run `scripts/inspect.ps1 -Repository OWNER/REPO` only after preflight permits GitHub inspection. Inspect, without mutation:
 
-- Repository from the current workspace's Git remote.
-- Project owner from the repository owner; ask if ownership is ambiguous.
-- Project title from the repository name.
-- Phases and epics from the GDD, product plan, roadmap, or equivalent.
-- Existing labels `phase`, `epic`, `spec`, `ready-for-agent`, and `ready-for-human`, reusing them when present.
-- Existing specs, phase issues, epics, tickets, Projects, native parent/sub-issue relationships, and duplicates.
+- repository ownership, visibility, remotes, and linked Projects;
+- BB-owned labels and conflicting or legacy labels;
+- canonical and ambiguous milestones;
+- every Ticket, its milestone, state, and Project membership;
+- Task and unrelated Project membership;
+- Project visibility, repository linkage, fields, Status options, saved views, and workflows;
+- both repository contracts and their instruction pointers.
 
-Default to a private GitHub Projects V2 Project linked to one repository. Reuse an existing matching Project only after approval.
-
-Run `scripts/preflight.ps1 -Repository OWNER/REPO` first, then run `scripts/inspect.ps1 -Repository OWNER/REPO` only after preflight succeeds.
+Reuse an existing compatible private Project. Create one only when none exists. Never create Tickets or Tasks.
 
 ## Approved execution
 
-After approval:
+After exact approval, execute in this order:
 
-1. Create or reuse and link the Project.
-2. Keep Status options `Todo`, `In Progress`, and `Done`.
-3. Ensure repository labels `phase`, `epic`, `spec`, `ready-for-agent`, and `ready-for-human` exist exactly once.
-4. Create only source-supported Phase and Epic issues; search for duplicates first.
-5. Attach every Epic as a native sub-issue of exactly one Phase, and every implementation ticket as a native sub-issue of exactly one Epic.
-6. Add Phase issues, Epics, and implementation tickets to the Project. Keep specification issues outside the Project and native hierarchy.
-7. Set Status only; do not require custom hierarchy fields such as `Work Type`, `Phase`, `Epic`, or equivalents.
-8. Give each specification issue the `spec` label and no readiness label. Link it from its Epic's `Specification` section; never use a specification as a parent of implementation tickets.
-9. Configure the views and workflows in [REFERENCE.md](REFERENCE.md), including auto-add on `phase`, `epic`, and the two readiness labels plus native auto-add of sub-issues. Exclude `spec` from auto-add.
-10. Reconcile `docs/agents/github-project.md` from [templates/github-project.md](templates/github-project.md), preserving repository-specific details when they do not conflict with the contract.
-11. Add a concise pointer to `docs/agents/github-project.md` in the repository's root `AGENTS.md`. Preserve all unrelated instructions and avoid duplicate pointers.
-12. Verify the finished system and report inconsistencies.
+1. Create and validate the private GitHub repository and remote when missing.
+2. Run `scripts/reconcile-milestones.ps1 -Repository OWNER/REPO`; it must validate each canonical milestone before proceeding to the next.
+3. Create or reuse the private Project named after the repository and link it.
+4. Reconcile Status to `Todo`, `In Progress`, and `Done`.
+5. Reconcile the single `Tickets` board defined in [REFERENCE.md](REFERENCE.md).
+6. Add every open and closed Ticket to the Project and verify each membership.
+7. Remove approved non-Ticket Project memberships without changing the underlying issues.
+8. Configure Ticket-only workflows and keep auto-add-sub-issues disabled.
+9. Reconcile `docs/agents/github-project.md` from [templates/github-project.md](templates/github-project.md).
+10. Add its pointer to the repository instruction file exactly once.
+11. Run verification, then rerun discovery and require zero proposed mutations.
 
-Use the following tool order for every GitHub operation:
+Apply this operation ladder separately to each GitHub setting:
 
-1. Use a dedicated `gh` command when available.
-2. Otherwise use `gh api graphql` when the public GraphQL API supports the write.
-3. Otherwise use `gh api` against a documented REST endpoint. Create saved views through the Project views REST API with the explicit supported API-version header.
-4. Use authenticated browser control only after confirming that neither the CLI nor a documented public write API supports the exact setting. Before opening the browser, tell the user which setting remains and which API capability is absent.
+1. Dedicated `gh` command.
+2. Documented public GraphQL mutation.
+3. Documented public REST endpoint.
+4. Authenticated browser control only when the exact setting has no public write interface.
 
-Do not treat the absence of a dedicated `gh project` subcommand as proof that browser use is required. Announce necessary browser use and avoid the tab the user is actively operating.
+Before browser use, name the remaining setting and the absent CLI/API capability. Prefer converting the default Project view into `Tickets` instead of creating a second view.
 
-## Safety and reconciliation
+## Safety and recovery
 
+- Inspect immediately before every write.
+- Stop after the first failed mutation or read-back validation.
+- Report completed work, the failed operation, and the untouched remainder.
+- Preserve successful objects for an idempotent retry; never perform destructive rollback.
+- Require renewed approval when recovery changes the proposal.
+- Report legacy configuration without silently renaming, deleting, closing, reopening, reparenting, or reinterpreting it.
 - Never expose tokens or credentials.
-- Never invent phases, epics, dates, estimates, or parent relationships.
-- Never silently close, reopen, split, reparent, or rewrite issues for tidiness.
-- Prefer splitting cross-epic tickets; dominant-parent assignment requires user direction.
-- Report closed-parent/open-child inconsistencies without resolving them automatically.
-- Labels alone do not establish hierarchy. Always reconcile both the label and the native parent issue.
-- Make every operation idempotent by inspecting before creating or updating.
 
 ## Verification
 
-Run `scripts/verify.ps1 -Repository OWNER/REPO -Owner OWNER -ProjectNumber N` for a read-only structural report, then complete the UI checks in [REFERENCE.md](REFERENCE.md). Summarize created, reused, changed, skipped, and unresolved items.
+Run `scripts/verify.ps1 -Repository OWNER/REPO -Owner OWNER -ProjectNumber N`. A conforming result has `Conforms: true`, no `Errors`, and no `ProposedMutations`. Complete any reported `ManualChecks`, then run a second dry-run. Summarize created, reused, changed, skipped, legacy, and unresolved items.
