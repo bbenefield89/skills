@@ -28,6 +28,7 @@
       "name": "corrohealth-skills",
       "source": "./",
       "skills": [
+        "./skills/create-test-plan",
         "./skills/log-hours"
       ]
     },
