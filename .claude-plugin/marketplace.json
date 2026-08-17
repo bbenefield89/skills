@@ -25,6 +25,13 @@
       ]
     },
     {
+      "name": "corrohealth-skills",
+      "source": "./",
+      "skills": [
+        "./skills/log-hours"
+      ]
+    },
+    {
       "name": "godot-skills",
       "source": "./",
       "skills": [
