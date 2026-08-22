@@ -50,5 +50,7 @@ After approval:
 5. Apply release grouping according to the contract.
 6. Create configured blocking relationships and retain readable blocker references.
 7. Verify every task, classification, parent edge, and blocker edge.
+8. Prepend or refresh the parent ticket's task sequence table using the reference rules.
+9. Verify the table and confirm the previous parent body remains unchanged below it.
 
-Do not close or rewrite the parent ticket or close any task. Stop on partial failure and report exactly what was created and which relationships remain incomplete.
+Keep the parent ticket unchanged except for the generated task sequence table. Do not close the parent ticket or any task. Stop on partial failure and report exactly what was created, changed, and left incomplete.

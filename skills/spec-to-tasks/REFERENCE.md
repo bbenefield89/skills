@@ -50,8 +50,39 @@ Even when native relationships exist, keep a readable `Blocked by` section in ta
 - Every task has exactly one configured executor classification.
 - Release grouping follows the contract; never assume tasks duplicate the parent's release.
 - Published blockers match the approved graph.
-- The parent ticket's state and authored content remain unchanged.
+- The parent ticket's state and authored content below the generated task sequence table remain unchanged.
 - Equivalent existing tasks are reused only after the user confirms the match.
+
+## Parent task sequence
+
+After every child task and relationship is verified, prepend this generated section to the parent ticket body:
+
+```markdown
+# Tasks
+
+| Task | What it delivers | Ready for |
+|---|---|---|
+| [#<number> - <title>](<task URL>) | <Plain-English result.> | `<ready-for-* label>` |
+
+---
+```
+
+Write one row per child task in the approved work order, from first to last. The row order is the prescribed sequence even when the native blocker graph permits parallel work.
+
+For each row:
+
+- Link the task number and full title to the task issue.
+- Describe the delivered result in one short sentence of plain, non-technical English. Keep it to one or two rendered lines when practical.
+- Display the task's attached `ready-for-*` label exactly.
+
+Keep native blocker relationships in the task issues and omit them from this table. If the body already starts with the generated `# Tasks` section, replace that section through its thematic break. Otherwise, place the section before the existing body. Preserve the rest of the body byte-for-byte.
+
+Read back the parent body and verify that:
+
+- the generated section is the first content;
+- every child task appears exactly once in the approved order;
+- every task link, result, and `ready-for-*` label matches the published task; and
+- the previous parent body remains unchanged below the thematic break.
 
 ## Review format
 
