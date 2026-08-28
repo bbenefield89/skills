@@ -33,4 +33,4 @@ Every actionable Required finding returns to Implementation. This includes forma
 
 After fixes, rerun both complete passes because fixes may materially change either axis. Allow at most two unsuccessful correction cycles for the same finding or related cluster. Then stop and request conflict resolution instead of looping indefinitely.
 
-Preserve the final Standards and Spec outputs independently and unabridged for the completion report.
+Keep the final Standards and Spec outputs independently available in case the user asks for them. Do not include them in the completion report.
