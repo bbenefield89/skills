@@ -1,132 +1,83 @@
 ---
 name: brainstorming
-description: "You MUST use this before any creative work - creating features, building components, adding functionality, or modifying behavior. Explores user intent, requirements and design before implementation."
+description: Use before substantial creative or implementation work when material product, behavior, UX, architecture, or scope decisions remain unresolved. Do not use for straightforward capture, transcription, organization, execution of an approved design, or small unambiguous edits.
 ---
 
 # Brainstorming Ideas Into Designs
 
-Help turn ideas into fully formed designs and specs through natural collaborative dialogue.
+Resolve only the decisions that block safe, faithful implementation. Finish with a shared design and one meaningful approval to proceed.
 
-Start by understanding the current project context, then ask questions one at a time to refine the idea. Once you understand what you're building, present the design and get user approval.
+## Route the request
 
-<HARD-GATE>
-Do NOT invoke any implementation skill, write any code, scaffold any project, or take any implementation action until you have presented a design and the user has approved it. This applies to EVERY project regardless of perceived simplicity.
-</HARD-GATE>
+- **Use brainstorming** when different reasonable interpretations would produce materially different results.
+- **Proceed directly** when the user supplied the content or an approved design and the requested action is clear.
+- **Proceed directly** for capture, transcription, organization, formatting, and small unambiguous edits.
+- **Use grilling** when the user asks to stress-test an idea or explore every unresolved branch.
 
-## Anti-Pattern: "This Is Too Simple To Need A Design"
+Do not manufacture a design phase for work whose important decisions are already settled.
 
-Every project goes through this process. A todo list, a single-function utility, a config change — all of them. "Simple" projects are where unexamined assumptions cause the most wasted work. The design can be short (a few sentences for truly simple projects), but you MUST present it and get approval.
+## Approval contract
 
-## Checklist
+Use one conversational approval gate: present the cohesive design, then ask whether to proceed.
 
-You MUST create a task for each of these items and complete them in order:
+- Treat the user's approval as authorization for the requested implementation within the presented scope.
+- Treat an explicit instruction such as “apply it,” “write it,” or “implement it” as approval when the design is already clear in the conversation.
+- Preserve approval when translating the design into a plan, task list, or optional document.
+- Incorporate non-material refinements without restarting approval.
+- Request fresh approval only when new information materially changes scope, risk, user-visible behavior, cost, or external effects.
+- Keep separate authorization boundaries required for destructive, privileged, expensive, or out-of-scope actions.
+- Do not add a conversational confirmation solely because the execution environment will display its own permission prompt.
 
-1. **Explore project context** — check files, docs, recent commits
-2. **Ask clarifying questions** — one at a time, understand purpose/constraints/success criteria
-3. **Propose 2-3 approaches** — with trade-offs and your recommendation
-4. **Present design** — in sections scaled to their complexity, get user approval after each section
-5. **Write design doc** — save a uniquely named Markdown file to the operating system's temporary directory, never stage or commit it, and provide a clickable Markdown link in chat
-6. **Spec self-review** — quick inline check for placeholders, contradictions, ambiguity, scope (see below)
-7. **User reviews written spec** — ask user to review the linked temporary spec before proceeding
-8. **Transition to implementation** — invoke writing-plans skill to create implementation plan
+## Workflow
 
-## Process Flow
+1. **Inspect context** — read the relevant files, documentation, and current state.
+2. **Find the decision frontier** — distinguish facts the agent can discover from decisions only the user can make.
+3. **Ask material questions** — ask a compact round of independent questions; defer questions that depend on unresolved answers.
+4. **Compare meaningful approaches** — offer alternatives only when the choice changes the outcome; otherwise recommend the evident approach directly.
+5. **Present one cohesive design** — scale detail to the task and make behavior, boundaries, consequences, and validation explicit.
+6. **Obtain one approval** — revise the design if needed; after approval, proceed without another design-review gate.
+7. **Continue to the requested outcome** — implement, plan, document, or hand off according to the user's request.
 
-```dot
-digraph brainstorming {
-    "Explore project context" [shape=box];
-    "Ask clarifying questions" [shape=box];
-    "Propose 2-3 approaches" [shape=box];
-    "Present design sections" [shape=box];
-    "User approves design?" [shape=diamond];
-    "Write temporary design doc" [shape=box];
-    "Spec self-review\n(fix inline)" [shape=box];
-    "User reviews spec?" [shape=diamond];
-    "Invoke writing-plans skill" [shape=doublecircle];
+## Design quality
 
-    "Explore project context" -> "Ask clarifying questions";
-    "Ask clarifying questions" -> "Propose 2-3 approaches";
-    "Propose 2-3 approaches" -> "Present design sections";
-    "Present design sections" -> "User approves design?";
-    "User approves design?" -> "Present design sections" [label="no, revise"];
-    "User approves design?" -> "Write temporary design doc" [label="yes"];
-    "Write temporary design doc" -> "Spec self-review\n(fix inline)";
-    "Spec self-review\n(fix inline)" -> "User reviews spec?";
-    "User reviews spec?" -> "Write temporary design doc" [label="changes requested"];
-    "User reviews spec?" -> "Invoke writing-plans skill" [label="approved"];
-}
-```
+Cover only dimensions that matter to the task, such as:
 
-**The terminal state is invoking writing-plans.** Do NOT invoke frontend-design, mcp-builder, or any other implementation skill. The ONLY skill you invoke after brainstorming is writing-plans.
+- user-visible behavior and success criteria;
+- scope and non-goals;
+- components, ownership, and interfaces;
+- data or control flow;
+- failure handling and safety boundaries;
+- validation and testing.
 
-## The Process
+Prefer the smallest design that resolves the material uncertainty. Do not force architecture, error-handling, or testing sections onto content-authoring work where they add no information.
 
-**Understanding the idea:**
+For existing codebases, follow established patterns and include only targeted improvements needed by the requested change. Keep unrelated refactoring out of scope.
 
-- Check out the current project state first (files, docs, recent commits)
-- Before asking detailed questions, assess scope: if the request describes multiple independent subsystems (e.g., "build a platform with chat, file storage, billing, and analytics"), flag this immediately. Don't spend questions refining details of a project that needs to be decomposed first.
-- If the project is too large for a single spec, help the user decompose into sub-projects: what are the independent pieces, how do they relate, what order should they be built? Then brainstorm the first sub-project through the normal design flow. Each sub-project gets its own spec → plan → implementation cycle.
-- For appropriately-scoped projects, ask questions one at a time to refine the idea
-- Prefer multiple choice questions when possible, but open-ended is fine too
-- Only one question per message - if a topic needs more exploration, break it into multiple questions
-- Focus on understanding: purpose, constraints, success criteria
+## Questions and approaches
 
-**Exploring approaches:**
+Find environmental facts yourself. Ask the user only for choices, preferences, or authority that cannot be inferred safely.
 
-- Propose 2-3 different approaches with trade-offs
-- Present options conversationally with your recommendation and reasoning
-- Lead with your recommended option and explain why
-- YAGNI ruthlessly - remove unnecessary features from every approach and design
+Offer two or three approaches when genuine trade-offs exist. Do not invent alternatives to satisfy a quota. Lead with the recommendation and explain the consequence that makes it preferable.
 
-**Presenting the design:**
+## Optional design artifacts
 
-- Once you believe you understand what you're building, present the design
-- Scale each section to its complexity: a few sentences if straightforward, up to 200-300 words if nuanced
-- Ask after each section whether it looks right so far
-- Cover: architecture, components, data flow, error handling, testing
-- Be ready to go back and clarify if something doesn't make sense
+A separate design document is optional. Create one only when:
 
-**Design for isolation and clarity:**
+- the user requests it;
+- another agent or future session needs a durable handoff;
+- the design is too large or consequential to remain reliable only in chat; or
+- repository policy requires it.
 
-- Break the system into smaller units that each have one clear purpose, communicate through well-defined interfaces, and can be understood and tested independently
-- For each unit, you should be able to answer: what does it do, how do you use it, and what does it depend on?
-- Can someone understand what a unit does without reading its internals? Can you change the internals without breaking consumers? If not, the boundaries need work.
-- Smaller, well-bounded units are also easier for you to work with - you reason better about code you can hold in context at once, and your edits are more reliable when files are focused. When a file grows large, that's often a signal that it's doing too much.
+When a design document is useful:
 
-**Working in existing codebases:**
+- write it to the user-requested or repository-defined location;
+- otherwise use a uniquely named file in the operating system's temporary directory;
+- check it for placeholders, contradictions, ambiguity, and scope drift;
+- provide a clickable link;
+- do not request another approval when it faithfully records the already-approved design.
 
-- Explore the current structure before proposing changes. Follow existing patterns.
-- Where existing code has problems that affect the work (e.g., a file that's grown too large, unclear boundaries, tangled responsibilities), include targeted improvements as part of the design - the way a good developer improves code they're working in.
-- Don't propose unrelated refactoring. Stay focused on what serves the current goal.
+## Completion
 
-## After the Design
+Brainstorming is complete when the material decisions are settled and the user has approved the cohesive design or already issued a clear instruction to execute it.
 
-**Documentation:**
-
-- Resolve the operating system's temporary directory with a platform-native facility. Do not hardcode a platform-specific path or write the design into the repository.
-- Write the validated design to a uniquely named Markdown file in that temporary directory.
-- Never stage or commit the temporary design document.
-- Use elements-of-style:writing-clearly-and-concisely skill if available.
-- Provide a clickable Markdown link to the temporary design document in chat.
-
-**Spec Self-Review:**
-After writing the spec document, look at it with fresh eyes:
-
-1. **Placeholder scan:** Any "TBD", "TODO", incomplete sections, or vague requirements? Fix them.
-2. **Internal consistency:** Do any sections contradict each other? Does the architecture match the feature descriptions?
-3. **Scope check:** Is this focused enough for a single implementation plan, or does it need decomposition?
-4. **Ambiguity check:** Could any requirement be interpreted two different ways? If so, pick one and make it explicit.
-
-Fix any issues inline. No need to re-review — just fix and move on.
-
-**User Review Gate:**
-After the spec review loop passes, ask the user to review the temporary spec before proceeding:
-
-> "Spec written to the OS temporary directory: [Review the design](<absolute temporary file path>). Please review it and let me know if you want to make any changes before we start writing out the implementation plan."
-
-Wait for the user's response. If they request changes, make them and re-run the spec review loop. Only proceed once the user approves.
-
-**Implementation:**
-
-- Invoke the writing-plans skill to create a detailed implementation plan
-- Do NOT invoke any other skill. writing-plans is the next step.
+Continue directly into the implementation, planning, or documentation workflow that matches the user's request. Do not force an implementation plan when the user asked for the finished change.
