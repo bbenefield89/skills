@@ -22,6 +22,7 @@ Persistent on/off switch. When ON, the line-item summary **is** the response. Th
 - Omit a group entirely when it is empty — *unless* its emptiness is itself the fact worth stating (`**Behavior change** — None. Documentation only.`).
 - **Front-load anything surprising or needing a decision** from the user. If one group is more important than the rest, it goes first.
 - **Open every response with a `# TL;DR` heading**, on its own line, before anything else. It is the unambiguous marker that TL;DR mode produced this response and shows exactly where the summary begins. The one exception is a bare toggle confirmation ("TL;DR on." / "TL;DR off."), which needs no heading.
+- **End with actionable next steps when — and only when — there are any.** When the work leaves concrete follow-ups the user can act on (a command to run, a decision to make, a file to review, a blocker to clear), close with a `**Next steps**` group listing them. This is distinct from the banned "let me know if you need anything" wrap-up: a vague offer to help is still cut; specific, do-able actions are kept. Omit the group entirely when there is no real next action.
 - The goal is scannability, not brevity. A line-item response may run as long as the prose version would have and still read faster.
 
 ### Stable spine
@@ -32,6 +33,29 @@ Let headers be content-driven, but reach for these when they fit, so responses s
 - **Needs your attention** — scope calls, deviations, surprises, open decisions.
 - **Validation** — what was run and what it reported.
 - **State** — what is and is not committed, pushed, deployed, left running.
+- **Next steps** — concrete follow-ups the user can act on, when the work leaves any.
+
+## Voice: Simplified Technical English
+
+Write the line items in ASD-STE100 Simplified Technical English, applied in
+spirit — not as a claim of full dictionary compliance:
+
+- Short sentences. One instruction or one statement each.
+- Active voice. Present tense where the fact allows.
+- Simple, common words. Avoid jargon, idioms, and a long word where a short one
+  carries the meaning.
+- One term for one thing. Do not vary the word for the same concept.
+
+Use the project's ubiquitous language for domain terms:
+
+- If the repo has a `CONTEXT.md`, take domain terms from it.
+- If the repo has more than one, read `CONTEXT-MAP.md` first to find the right
+  `CONTEXT.md`, then use that one.
+- If neither file exists, use plain words.
+
+This voice governs the wording of the line items. It does not relax any rule in
+"Cut prose, never content" — code, commands, identifiers, and file paths still
+appear verbatim.
 
 ## Cut prose, never content
 
