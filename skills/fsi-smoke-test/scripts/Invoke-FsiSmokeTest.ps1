@@ -2,8 +2,8 @@
 .SYNOPSIS
     Agent-run smoke test for FSI Interface. Sources its request set from the local
     WireMock stubs (MockData/Stubs), submits each to the NON-MOCK /v1/patients
-    endpoint, polls /v1/orchestration/{jobId} until each finishes, then reports
-    which requests completed with real (non-empty) data and no errors.
+    endpoint, polls /v1/orchestration/{jobId} concurrently until each finishes, then
+    reports which requests completed with real (non-empty) data and no errors.
 
 .DESCRIPTION
     Answers one question: is the running stack retrieving patient data end to end?
@@ -20,10 +20,18 @@
       * Source    : request identifiers (MRN, CSN, DateOfService) are read from the
                     stub files' metadata.fsiiInput block — NOT hand-maintained here.
 
+    Polling is CONCURRENT: all requests are submitted first, then every outstanding
+    job is polled round-robin against a single wall-clock budget (PollTimeoutSeconds).
+    Full-chart orchestrations routinely take minutes and can exceed 12 minutes, so a
+    serial "drain one job before starting the next" loop would let one slow job stall
+    the rest and freeze false "timeout" verdicts. After the poll loop a final re-check
+    catches any job that finished right at the deadline. A job still running at the
+    budget is reported as `slow` (soft) — not a hard failure.
+
     A request "passes" only when: orchestration Status == Completed AND data is
-    non-empty AND the result message contains no failure text. Failures are
-    classified (stale-data / auth-401 / timeout / orchestration-error / empty-data /
-    submit-fail) so the agent can report WHY, not just THAT.
+    non-empty AND the result message contains no failure text. Failures are classified
+    (stale-data / auth-401 / slow / orchestration-error / empty-data / submit-fail) so
+    the agent can report WHY, not just THAT.
 
     Machine-readable results are written to a JSON file (default: OS temp dir) for the
     agent to read. The terminal shows only a clean table — never the raw JSON.
@@ -50,10 +58,11 @@
     Where to write the machine-readable results. Default {temp}\fsi-smoke-test-result.json.
 
 .PARAMETER PollIntervalSeconds
-    Seconds between status polls. Default 3.
+    Seconds between poll passes over all outstanding jobs. Default 3.
 
 .PARAMETER PollTimeoutSeconds
-    Max seconds to wait per request before giving up. Default 180.
+    Overall wall-clock budget for the whole poll phase (not per-job). Default 600.
+    Full-chart jobs can exceed 12 minutes; raise this if you see `slow` results.
 
 .PARAMETER PassThru
     Also return the result rows as objects (default: print table + write JSON only).
@@ -76,7 +85,7 @@ param(
     [switch] $All,
     [string] $ResultJsonPath      = (Join-Path ([IO.Path]::GetTempPath()) "fsi-smoke-test-result.json"),
     [int]    $PollIntervalSeconds = 3,
-    [int]    $PollTimeoutSeconds  = 180,
+    [int]    $PollTimeoutSeconds  = 600,
     [switch] $PassThru
 )
 
@@ -149,6 +158,27 @@ function Get-StubRequests {
     return $requests
 }
 
+# Classify a finished (or failed) request. $Terminal is false when the job never
+# reached a terminal status within the budget => `slow` (soft, non-pass).
+function Get-FailureKind {
+    param($Status, [bool]$Terminal, [int]$DataChars, [string]$Message, [string]$SubmitError, [int]$SubmitStatus)
+
+    if ($SubmitError) {
+        if ($SubmitStatus -eq 401 -or $SubmitError -match "not authorized|unauthorized|401") { return "auth-401" }
+        return "submit-fail"
+    }
+    if (-not $Terminal) { return "slow" }
+    if ($Status -in @("Failed", "Terminated")) { return "orchestration-error" }
+    if ($Status -ne "Completed") { return "slow" }
+
+    $hasError = $Message -match "fail|error|not authorized|not found|notfound|exception|more than one"
+    if ($DataChars -gt 0 -and -not $hasError) { return $null }   # pass
+
+    if ($Message -match "not ?found|no .*(found|match)|stale") { return "stale-data" }
+    if ($DataChars -eq 0) { return "empty-data" }
+    return "orchestration-error"
+}
+
 Write-Host "FSI smoke test -> $BaseUrl/v1/patients  (OID: $Oid)" -ForegroundColor Cyan
 
 # --- Preflight: is FSI Interface up? -----------------------------------------
@@ -197,7 +227,7 @@ Write-Host ("  sourced {0} encounter(s) from stubs; testing {1}" -f $allRequests
 
 $headers = @{ "X-MS-CLIENT-PRINCIPAL-ID" = $Oid; "Content-Type" = "application/json" }
 
-# --- Submit -------------------------------------------------------------------
+# --- Submit all first (so polling can run concurrently) ----------------------
 $jobs = @()
 foreach ($req in $work) {
     $body = @{
@@ -208,107 +238,117 @@ foreach ($req in $work) {
         organizationId            = $req.OrganizationId
         requestedPatientResources = @("FullChart")
     }
+    $submitTime = [DateTimeOffset]::UtcNow
     try {
         $resp = Invoke-RestMethod -Uri "$BaseUrl/v1/patients" -Method POST -Headers $headers -Body ($body | ConvertTo-Json -Compress) -TimeoutSec 30
-        $jobs += [pscustomobject]@{ Req = $req; JobId = $resp.jobId; SubmitError = $null; SubmitStatus = 202 }
+        $jobs += [pscustomobject]@{
+            Req = $req; JobId = $resp.jobId; SubmitError = $null; SubmitStatus = 202; SubmitTime = $submitTime
+            Status = "Pending"; Response = $null; Terminal = $false; CompletedAt = $null
+        }
         Write-Host ("  submitted {0,-28} jobId={1}" -f $req.Name, $resp.jobId)
     } catch {
         $status = try { [int]$_.Exception.Response.StatusCode } catch { 0 }
         $msg = Read-ErrorBody $_
-        $jobs += [pscustomobject]@{ Req = $req; JobId = $null; SubmitError = $msg; SubmitStatus = $status }
+        $jobs += [pscustomobject]@{
+            Req = $req; JobId = $null; SubmitError = $msg; SubmitStatus = $status; SubmitTime = $submitTime
+            Status = "SUBMIT_FAIL"; Response = $null; Terminal = $true; CompletedAt = $submitTime
+        }
         Write-Host ("  SUBMIT FAIL {0,-28} {1}" -f $req.Name, $msg) -ForegroundColor Red
     }
 }
 
-# --- Classify a finished (or failed) request ---------------------------------
-function Get-FailureKind {
-    param($Status, [int]$DataChars, [string]$Message, [string]$SubmitError, [int]$SubmitStatus)
-
-    if ($SubmitError) {
-        if ($SubmitStatus -eq 401 -or $SubmitError -match "not authorized|unauthorized|401") { return "auth-401" }
-        return "submit-fail"
+# --- Poll concurrently against one wall-clock budget -------------------------
+function Poll-Job($job) {
+    try {
+        $r = Invoke-RestMethod -Uri "$BaseUrl/v1/orchestration/$($job.JobId)" -Method GET -Headers $headers -TimeoutSec 30
+        $job.Response = $r
+        $job.Status = $r.status
+        if ($r.status -in @("Completed", "Failed", "Terminated")) {
+            $job.Terminal = $true
+            $job.CompletedAt = [DateTimeOffset]::UtcNow
+        }
+    } catch {
+        # 404 during the init window — leave as Pending and try again next pass.
     }
-    if ($Status -in @("Failed", "Terminated")) { return "orchestration-error" }
-    if ($Status -ne "Completed") { return "timeout" }
-
-    $hasError = $Message -match "fail|error|not authorized|not found|notfound|exception"
-    if ($DataChars -gt 0 -and -not $hasError) { return $null }   # pass
-
-    if ($Message -match "not ?found|no .*(found|match)|stale") { return "stale-data" }
-    if ($DataChars -eq 0) { return "empty-data" }
-    return "orchestration-error"
 }
 
-# --- Poll ---------------------------------------------------------------------
+$deadline = (Get-Date).AddSeconds($PollTimeoutSeconds)
+while ((Get-Date) -lt $deadline) {
+    $outstanding = @($jobs | Where-Object { $_.JobId -and -not $_.Terminal })
+    if ($outstanding.Count -eq 0) { break }
+    foreach ($job in $outstanding) { Poll-Job $job }
+    if (@($jobs | Where-Object { $_.JobId -and -not $_.Terminal }).Count -eq 0) { break }
+    Start-Sleep -Seconds $PollIntervalSeconds
+}
+
+# --- End-of-run re-check: one final GET for anything still outstanding --------
+# Catches jobs that finished between the last poll pass and the deadline.
+foreach ($job in @($jobs | Where-Object { $_.JobId -and -not $_.Terminal })) { Poll-Job $job }
+
+# --- Build result rows (camelCase) -------------------------------------------
 $rows = @()
 foreach ($job in $jobs) {
-    if (-not $job.JobId) {
-        $kind = Get-FailureKind -Status "SUBMIT_FAIL" -DataChars 0 -Message "" -SubmitError $job.SubmitError -SubmitStatus $job.SubmitStatus
-        $rows += [pscustomobject]@{
-            Request = $job.Req.Name; Emr = $job.Req.Emr; EmrId = $job.Req.EmrId
-            Mrn = $job.Req.MedicalRecordNumber; Csn = $job.Req.ContactSerialNumber; DateOfService = $job.Req.DateOfService
-            Status = "SUBMIT_FAIL"; DataChars = 0; JobId = "-"; Pass = $false; FailureKind = $kind; Message = $job.SubmitError
-        }
-        continue
-    }
-
-    $status = "Pending"; $elapsed = 0; $r = $null
-    while ($elapsed -lt $PollTimeoutSeconds -and $status -notin @("Completed", "Failed", "Terminated")) {
-        Start-Sleep -Seconds $PollIntervalSeconds
-        $elapsed += $PollIntervalSeconds
-        try {
-            $r = Invoke-RestMethod -Uri "$BaseUrl/v1/orchestration/$($job.JobId)" -Method GET -Headers $headers -TimeoutSec 30
-            $status = $r.status
-        } catch {
-            $status = "Pending"   # 404 during the init window — keep waiting
-        }
-    }
-
+    $r = $job.Response
     $dataChars = if ($r -and $r.data) { ($r.data | Out-String).Length } else { 0 }
-    $message   = if ($r) { ($r.message -split "`n")[0] } else { "no status response" }
-    $kind      = Get-FailureKind -Status $status -DataChars $dataChars -Message $message -SubmitError $null -SubmitStatus 202
-    $pass      = ($null -eq $kind)
+    $message = if ($job.SubmitError) { $job.SubmitError } elseif ($r) { ($r.message -split "`n")[0] } else { "no status response" }
+    $kind = Get-FailureKind -Status $job.Status -Terminal $job.Terminal -DataChars $dataChars -Message $message -SubmitError $job.SubmitError -SubmitStatus $job.SubmitStatus
+    $pass = ($null -eq $kind)
+
+    $endTime = if ($job.CompletedAt) { $job.CompletedAt } else { [DateTimeOffset]::UtcNow }
+    $elapsed = [int]([Math]::Round(($endTime - $job.SubmitTime).TotalSeconds))
 
     $rows += [pscustomobject]@{
-        Request = $job.Req.Name; Emr = $job.Req.Emr; EmrId = $job.Req.EmrId
-        Mrn = $job.Req.MedicalRecordNumber; Csn = $job.Req.ContactSerialNumber; DateOfService = $job.Req.DateOfService
-        Status = $status; DataChars = $dataChars; JobId = $job.JobId; Pass = $pass; FailureKind = $kind; Message = $message
+        request        = $job.Req.Name
+        emr            = $job.Req.Emr
+        emrId          = $job.Req.EmrId
+        mrn            = $job.Req.MedicalRecordNumber
+        csn            = $job.Req.ContactSerialNumber
+        dateOfService  = $job.Req.DateOfService
+        status         = $job.Status
+        dataChars      = $dataChars
+        elapsedSeconds = $elapsed
+        jobId          = if ($job.JobId) { $job.JobId } else { "-" }
+        pass           = $pass
+        failureKind    = $kind
+        message        = $message
     }
 }
 
 # --- Render clean box table (no raw JSON) ------------------------------------
 function Write-BoxTable($rows) {
-    $headers = @("Request", "Status", "Data", "jobId")
+    $cols = @("Request", "Status", "Data", "Elapsed", "jobId")
+    $n = $cols.Count
     $display = foreach ($row in $rows) {
-        $jid = if ($row.JobId.Length -gt 8) { $row.JobId.Substring(0, 8) + [char]0x2026 } else { $row.JobId }
+        $jid = if ($row.jobId.Length -gt 8) { $row.jobId.Substring(0, 8) + [char]0x2026 } else { $row.jobId }
         [pscustomobject]@{
             Cells = @(
-                $row.Request,
-                $(if ($row.Pass) { $row.Status } else { "$($row.Status)*" }),
-                ("{0:N0} chars" -f $row.DataChars),
+                $row.request,
+                $(if ($row.pass) { $row.status } else { "$($row.status)*" }),
+                ("{0:N0} chars" -f $row.dataChars),
+                ("{0}s" -f $row.elapsedSeconds),
                 $jid
             )
-            Pass = $row.Pass
+            Pass = $row.pass
         }
     }
-    $widths = @(0, 0, 0, 0)
-    for ($i = 0; $i -lt 4; $i++) {
-        $widths[$i] = $headers[$i].Length
+    $widths = @(0) * $n
+    for ($i = 0; $i -lt $n; $i++) {
+        $widths[$i] = $cols[$i].Length
         foreach ($d in $display) { if ($d.Cells[$i].Length -gt $widths[$i]) { $widths[$i] = $d.Cells[$i].Length } }
     }
     $H = [char]0x2500; $V = [char]0x2502
     function _border($l, $m, $r) {
         $s = "$l"
-        for ($i = 0; $i -lt 4; $i++) { $s += ([string]$H * ($widths[$i] + 2)); if ($i -lt 3) { $s += $m } }
+        for ($i = 0; $i -lt $n; $i++) { $s += ([string]$H * ($widths[$i] + 2)); if ($i -lt ($n - 1)) { $s += $m } }
         return $s + $r
     }
     function _dataRow($cells) {
         $s = "$V"
-        for ($i = 0; $i -lt 4; $i++) { $s += " " + ([string]$cells[$i]).PadRight($widths[$i]) + " $V" }
+        for ($i = 0; $i -lt $n; $i++) { $s += " " + ([string]$cells[$i]).PadRight($widths[$i]) + " $V" }
         return $s
     }
     Write-Host (_border ([char]0x250C) ([char]0x252C) ([char]0x2510))
-    Write-Host (_dataRow $headers)
+    Write-Host (_dataRow $cols)
     Write-Host (_border ([char]0x251C) ([char]0x253C) ([char]0x2524))
     foreach ($d in $display) {
         if ($d.Pass) { Write-Host (_dataRow $d.Cells) } else { Write-Host (_dataRow $d.Cells) -ForegroundColor Yellow }
@@ -319,28 +359,32 @@ function Write-BoxTable($rows) {
 Write-Host ""
 Write-BoxTable $rows
 
-$passed = ($rows | Where-Object Pass).Count
+$passed = ($rows | Where-Object pass).Count
 Write-Host ""
 Write-Host ("PASSED {0}/{1}  (Completed + non-empty data + no error)" -f $passed, $rows.Count) -ForegroundColor $(if ($passed -eq $rows.Count) { "Green" } else { "Yellow" })
 
-$fails = $rows | Where-Object { -not $_.Pass }
+$fails = $rows | Where-Object { -not $_.pass }
 if ($fails) {
     Write-Host "`nFailures (* in table):" -ForegroundColor Yellow
-    foreach ($f in $fails) { Write-Host ("  {0}: {1} ({2})" -f $f.Request, $f.FailureKind, $f.Message) }
+    foreach ($f in $fails) { Write-Host ("  {0}: {1} ({2})" -f $f.request, $f.failureKind, $f.message) }
+    if ($fails | Where-Object failureKind -eq "slow") {
+        Write-Host "  Note: 'slow' means still running at the ${PollTimeoutSeconds}s budget, not a failure — raise -PollTimeoutSeconds and re-run." -ForegroundColor DarkGray
+    }
 }
 
 # --- Write machine-readable results for the agent ----------------------------
 $result = [pscustomobject]@{
-    generatedAt = (Get-Date).ToUniversalTime().ToString("o")
-    baseUrl     = $BaseUrl
-    stubsPath   = $StubsPath
-    set         = $Set
-    summary     = [pscustomobject]@{
+    generatedAt        = (Get-Date).ToUniversalTime().ToString("o")
+    baseUrl            = $BaseUrl
+    stubsPath          = $StubsPath
+    set                = $Set
+    pollTimeoutSeconds = $PollTimeoutSeconds
+    summary            = [pscustomobject]@{
         passed    = $passed
         total     = $rows.Count
         allPassed = ($passed -eq $rows.Count)
     }
-    results     = $rows
+    results            = $rows
 }
 $result | ConvertTo-Json -Depth 6 | Set-Content -Path $ResultJsonPath -Encoding utf8
 Write-Host ""

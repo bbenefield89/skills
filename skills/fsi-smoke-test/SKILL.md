@@ -28,14 +28,14 @@ pwsh "<skill-dir>/scripts/Invoke-FsiSmokeTest.ps1" -All
 
 ## How the agent runs it (deterministic sequence)
 
-Real-EMR calls plus polling take ~1–3 minutes for a handful of requests. Follow these steps exactly:
+Real-EMR full-chart jobs are slow — a single request can take **12+ minutes**. The script submits all requests first, then polls them **concurrently** against one wall-clock budget (`-PollTimeoutSeconds`, default 600), and does a final re-check of stragglers at the end, so a slow job no longer stalls the rest or freezes a false failure. Follow these steps exactly:
 
-1. **Run** `scripts/Invoke-FsiSmokeTest.ps1` as a **background** command (add `-Set`/`-All`/`-StubsPath` as the user asked; otherwise defaults).
-2. **Wait** for it to finish. Do not poll it — let it complete.
-3. **Read the results JSON** — the script prints `Results JSON: <path>` on its last line (default `{temp}\fsi-smoke-test-result.json`). Parse that file; do **not** scrape the console table.
-4. **Report** from the JSON: state `summary.passed`/`summary.total`, and for any failed result name its `failureKind` and one-line `message`. Distinguish real regressions from `stale-data` (rotated sandbox identifiers, not a code break).
+1. **Run** `scripts/Invoke-FsiSmokeTest.ps1` as a **background** command (add `-Set`/`-All`/`-StubsPath`/`-PollTimeoutSeconds` as the user asked; otherwise defaults).
+2. **Wait** for it to finish. Do not poll it — let it complete. It may run for several minutes.
+3. **Read the results JSON** — the script prints `Results JSON: <path>` on its last line (default `{temp}\fsi-smoke-test-result.json`). Parse that file; do **not** scrape the console table. The JSON reflects the **post-re-check** verdict, which is the truth — never report a mid-run snapshot.
+4. **Report** from the JSON: state `summary.passed`/`summary.total`, and for any failed result name its `failureKind` and one-line `message`. Distinguish real regressions from `stale-data` (rotated sandbox identifiers) and from `slow` (still running at the budget — not a failure; suggest a higher `-PollTimeoutSeconds` and re-run).
 
-The terminal shows a clean table for the human; the JSON is the agent's source of truth.
+The terminal shows a clean table for the human (with an Elapsed column); the JSON is the agent's source of truth. Each result carries `elapsedSeconds` so "slow but healthy" is distinct from "hung."
 
 ## What passes
 
@@ -49,7 +49,7 @@ A request passes only when: orchestration `status == Completed` **AND** data is 
 | `stale-data` | Completed but the sandbox identifier no longer resolves (data rotated). Not a code regression. |
 | `empty-data` | Completed with no data and no clear "not found" reason. |
 | `orchestration-error` | Orchestration Failed/Terminated, or Completed with error text. |
-| `timeout` | Did not finish within the poll timeout. |
+| `slow` | Still running when the wall-clock budget expired — **not** a hard failure. Raise `-PollTimeoutSeconds` and re-run. |
 | `auth-401` | Submit rejected as unauthorized (check the OID / environment). |
 | `submit-fail` | Submit rejected for another reason. |
 
@@ -83,7 +83,8 @@ Stub identifiers can be stale against the **live** sandboxes (sandbox data rotat
 - `-Sample <n>` — encounters per EMR in a default run (default `3`); ignored with `-All`
 - `-All` — test every stub-sourced encounter for the selected set
 - `-StubsPath <path>` — MockData/Stubs location (default `C:\repos\Fsi\MockData\Stubs`)
-- `-BaseUrl`, `-Oid`, `-PollIntervalSeconds` (3), `-PollTimeoutSeconds` (180)
+- `-BaseUrl`, `-Oid`, `-PollIntervalSeconds` (3)
+- `-PollTimeoutSeconds` (600) — **overall wall-clock budget** for the concurrent poll phase, not per-job. Full-chart jobs can exceed 12 min; raise this if you see `slow` results.
 - `-ResultJsonPath <path>` — where to write the results JSON (default `{temp}\fsi-smoke-test-result.json`)
 - `-PassThru` — also return the row objects (default: table + JSON only)
 
