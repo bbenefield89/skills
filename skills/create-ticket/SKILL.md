@@ -39,6 +39,10 @@ If the user supplied a release grouping, use it without a separate selection que
 
 Do not create missing classifications or release groupings. Direct configuration problems to `$setup-bb-skills`.
 
+## Project position
+
+Inspect the existing tickets in the project's TODO column. If the user specified where the new ticket belongs, use that position. Otherwise infer when it should be worked relative to the other TODO tickets and choose the best position.
+
 ## Approval and creation
 
 Preview:
@@ -47,8 +51,9 @@ Preview:
 - title and complete body;
 - ticket classification;
 - needs-details state;
-- release grouping.
+- release grouping;
+- intended position in the project's TODO column.
 
-Wait for explicit approval before creating the ticket. Then create it using available tracker capabilities and verify every confirmed value.
+Wait for explicit approval before creating the ticket. Then create it using available tracker capabilities. After it is present in the project and its TODO column, move it to the approved position. Read back its neighboring TODO tickets and verify every confirmed value.
 
 Create no specification or child tasks. On a partial failure, do not delete the ticket; report what succeeded and what remains.
