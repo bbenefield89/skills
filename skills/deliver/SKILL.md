@@ -24,6 +24,8 @@ Do not depend on external implementation, cleanup, engineering-principles, or co
 
 Implementation and review must use the same core standard, selected profiles, repository guidance, specification, and acceptance criteria.
 
+After you load the contract, use the ASD-STE100 style rules in the report schema for all user-facing prose during the delivery.
+
 ## Establish authority
 
 Accept a ticket, specification, agreed conversation plan, or direct implementation request. If none exists, ask for a plan. Never invent requirements, acceptance criteria, scope, or conflict resolution.
