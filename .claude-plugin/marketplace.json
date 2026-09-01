@@ -29,6 +29,7 @@
       "source": "./",
       "skills": [
         "./skills/create-test-plan",
+        "./skills/fsi-parallel-stack",
         "./skills/fsi-smoke-test",
         "./skills/log-hours"
       ]
