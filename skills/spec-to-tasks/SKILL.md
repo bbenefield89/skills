@@ -8,6 +8,8 @@ disable-model-invocation: true
 
 Turn one specified ticket into executable child tasks. Read [REFERENCE.md](REFERENCE.md) completely before drafting.
 
+Use the ASD-STE100 style rules in the reference for all prose that you draft during this workflow.
+
 ## Gather context
 
 Read `docs/agents/bb-skills.md`. If it is missing or inconsistent, stop and direct the user to `$setup-bb-skills`.

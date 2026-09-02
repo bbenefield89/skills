@@ -2,6 +2,17 @@
 
 These decomposition and publication rules are inherited from the source `to-tickets` skill and adapted for child tasks.
 
+## Writing style
+
+Write all drafted prose in ASD-STE100 Simplified Technical English style. This requirement applies to progress updates, questions, review text, task titles and bodies, and the parent task sequence table.
+
+- Use short sentences. Put one instruction or main idea in each sentence.
+- Use active voice for instructions. Tell the reader who does the action when this information is necessary.
+- Put a condition before the action that depends on it.
+- Use one consistent term for each concept. Use common, precise words. Avoid idioms, unnecessary synonyms, vague pronouns, and long groups of nouns.
+- Preserve exact commands, code identifiers, paths, filenames, UI labels, quotations, and required repository or tracker terms. Write the surrounding explanation in ASD-STE100 style.
+- Claim ASD-STE100 compliance only after you check the output against the complete current standard and its controlled dictionary.
+
 ## Tracer-bullet rules
 
 - Each task cuts a narrow but COMPLETE path through every relevant layer: schema, API, UI, and tests where applicable.
