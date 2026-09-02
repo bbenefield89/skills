@@ -81,7 +81,17 @@ $overridePath = Join-Path $WorktreeRoot $overrideName
 # The real info/exclude lives in the main repo's git dir, not in the worktree's .git file.
 $gitCommonDir = & git -C $WorktreeRoot rev-parse --git-common-dir 2>$null
 if ($LASTEXITCODE -ne 0) { throw "'$WorktreeRoot' is not inside a git repository." }
-$excludePath = Join-Path ((Resolve-Path -LiteralPath (Join-Path $WorktreeRoot $gitCommonDir)).Path) 'info/exclude'
+
+# git returns this relative to the worktree root in some versions ('.git') and already
+# rooted in others ('C:/repos/Fsi/.git', seen on 2.54.0.windows.1). Join only when it is
+# relative — joining two rooted paths produces 'C:\wt\C:\repos\Fsi\.git', which cannot resolve.
+$commonDir = if ([System.IO.Path]::IsPathRooted($gitCommonDir)) {
+    $gitCommonDir
+}
+else {
+    Join-Path $WorktreeRoot $gitCommonDir
+}
+$excludePath = Join-Path (Resolve-Path -LiteralPath $commonDir).Path 'info/exclude'
 
 if ($Remove) {
     if (Test-Path -LiteralPath $overridePath) {
