@@ -4,10 +4,6 @@ This repository packages custom skills in the expected multi-skill layout:
 
 ```text
 skills/
-  branch-risk-audit/
-    SKILL.md
-  clarify-with-docs/
-    SKILL.md
   create-ticket/
     SKILL.md
   deliver/
