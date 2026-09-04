@@ -1,11 +1,11 @@
 ---
 name: tldr
-description: Persistent response mode that replaces the normal prose response with a scannable line-item summary. Use when the user runs /tldr or asks for "tldr mode", "tldr", "tldr list", or "just give me the tldr". Stays on until the user explicitly turns it off ("stop tldr", "tldr off", "normal mode", "full response").
+description: Persistent response mode that gives a short summary and a useful next step. Use when the user runs /tldr or asks for "tldr mode", "tldr", "tldr list", or "just give me the tldr". Stays on until the user explicitly turns it off ("stop tldr", "tldr off", "normal mode", "full response").
 ---
 
 # TL;DR Mode
 
-Persistent on/off switch. When ON, the line-item summary **is** the response. There is no prose version before it.
+Persistent on/off switch. When ON, give the short summary as the response.
 
 ## Toggle behavior
 
@@ -14,30 +14,21 @@ Persistent on/off switch. When ON, the line-item summary **is** the response. Th
 - **Never self-disable.** TL;DR does not turn itself off for any topic, warning, or action type. It persists until the user says otherwise.
 - Toggling on/off is the one exception where you may briefly confirm (e.g. "TL;DR on." / "TL;DR off."). Otherwise no self-referential announcements.
 
-## Format
+## Summary
 
-- **No prose.** No narrative, no connective tissue, no lead-in, no wrap-up, no closing offer to help.
-- **One fact per line.** Each line must stand alone: readable without having read the lines above it, and safe to stop after.
-- **Group by kind of thing**, under bold sub-headers. Headers emerge from what the content actually contains rather than from a fixed template. A docs-only change produces different groups than a debugging session.
-- Omit a group entirely when it is empty — *unless* its emptiness is itself the fact worth stating (`**Behavior change** — None. Documentation only.`).
-- **Front-load anything surprising or needing a decision** from the user. If one group is more important than the rest, it goes first.
-- **Open every response with a `# TL;DR` heading**, on its own line, before anything else. It is the unambiguous marker that TL;DR mode produced this response and shows exactly where the summary begins. The one exception is a bare toggle confirmation ("TL;DR on." / "TL;DR off."), which needs no heading.
-- **End with actionable next steps when — and only when — there are any.** When the work leaves concrete follow-ups the user can act on (a command to run, a decision to make, a file to review, a blocker to clear), close with a `**Next steps**` group. Number the steps (`1.`, `2.`, `3.`, …) so they read as an ordered checklist. This is distinct from the banned "let me know if you need anything" wrap-up: a vague offer to help is still cut; specific, do-able actions are kept. Omit the group entirely when there is no real next action.
-- The goal is scannability, not brevity. A line-item response may run as long as the prose version would have and still read faster.
-
-### Stable spine
-
-Let headers be content-driven, but reach for these when they fit, so responses stay recognizable from one to the next:
-
-- **Behavior change** — what is different now, from the user's point of view.
-- **Needs your attention** — scope calls, deviations, surprises, open decisions.
-- **Validation** — what was run and what it reported.
-- **State** — what is and is not committed, pushed, deployed, left running.
-- **Next steps** — concrete follow-ups the user can act on, when the work leaves any.
+- When the user requests only exact output or a copy-ready artifact, return only that output. Omit the `# TL;DR` heading, summary wrapper, and `**Next step**` section.
+- Summarize instead of reproducing the full answer.
+- Open each substantive response with `# TL;DR` on its own line. A bare toggle confirmation (`TL;DR on.` or `TL;DR off.`) needs no heading.
+- Use either a natural short paragraph of no more than 100 words or no more than five bullets. Choose the form that best fits the answer.
+- Include only the core answer and any material warning.
+- Omit background, examples, diagrams, comparisons, implementation details, and references unless they are essential to the core answer.
+- Put a material warning, required decision, blocker, or surprising result before less important information.
+- When the user explicitly requests code, commands, a table, a diff, file contents, or another artifact, provide that artifact in full. The summary limit does not shorten the requested artifact.
+- When the user asks to "explain fully," "expand," "give me the details," or makes an equivalent request, suspend the summary limit for that response only. Resume TL;DR mode on the next response.
 
 ## Voice: Simplified Technical English
 
-Write the line items in ASD-STE100 Simplified Technical English, applied in
+Write the summary and next step in ASD-STE100 Simplified Technical English, applied in
 spirit — not as a claim of full dictionary compliance:
 
 - Short sentences. One instruction or one statement each.
@@ -53,54 +44,15 @@ Use the project's ubiquitous language for domain terms:
   `CONTEXT.md`, then use that one.
 - If neither file exists, use plain words.
 
-This voice governs the wording of the line items. It does not relax any rule in
-"Cut prose, never content" — code, commands, identifiers, and file paths still
-appear verbatim.
+This voice does not change exact code, commands, identifiers, file paths, or required domain terms.
 
-## Cut prose, never content
+## Next step
 
-This mode changes how the response is written, not how much the user is told. Compressing the answer itself is a failure of the mode, not the point of it.
+After the summary, add a separate `**Next step**` section. This section does not count toward the summary's bullet or word limit.
 
-- **Answer the question that was asked, completely.** If the user asked a direct question, the answer appears in full. If they asked for an explanation, they get the explanation — as line items rather than paragraphs.
-- **Render code, commands, diffs, file contents, and tables in full**, in their normal blocks. These cannot be line-itemed and must not be summarized away or replaced with a description of themselves.
-- **Preserve** technical accuracy, exact terminology, numbers, names, file paths, and identifiers verbatim.
-- **Preserve** critical safety warnings for destructive or irreversible actions, and place them first.
-- **Never** state something the work does not support, or omit a detail whose absence would make a line misleading.
-
-### Reasoning: what to cut and what to keep
-
-- **Cut** reasoning that defends the work. The user gets the conclusion; they will ask if they want the justification.
-- **Cut** reassurance, hedging, and restatements of what the user asked for.
-- **Keep** reasoning behind a call made on the user's behalf — a scope stretch, a deviation from spec, a surprising discovery that changed the approach. That is not self-justification; it is what the user needs in order to disagree.
-
-## Example
-
-A delivery report that would otherwise run several hundred words of prose, changed-file walkthrough, and review output:
-
-# TL;DR
-
-**Behavior change**
-
-- A 401, 404, or 400 from the Config API now reaches the caller as an error.
-- Those were previously answered from a cache that could be up to 24 hours stale.
-- A 503, 429, 408, transport failure, or client-side timeout still serves the last-good value, unchanged.
-
-**Needs your attention**
-
-- I widened the two new tests from facts to theories because 429 and 408 had no coverage anywhere in the repo.
-- `dotnet test Fsi.sln` exits non-zero for a pre-existing reason: `Fsi.Testing` and `Fsi.Testing.Assertions` reference xunit without the test SDK. Unrelated to this change.
-
-**Changed files**
-
-- [ConfigApiRetryHandler.cs](Fsi.Domain/Services/ConfigApi/ConfigApiRetryHandler.cs:57) — `IsTransient` is now `internal static`, the single definition. Status list unchanged.
-- [ConfigApiRegistryCache.cs](Fsi.Domain/Services/ConfigApi/ConfigApiRegistryCache.cs:44) — dropped its own status list, defers to that definition. Four log messages stopped claiming "Config API unreachable".
-
-**Validation**
-
-- Build: 0 errors.
-- Tests: 1,519 passing, 0 failing, across all six projects — up 6.
-
-**State**
-
-- Nothing committed, nothing pushed.
-- All ten acceptance criteria met.
+- Move the user from the current request toward the likely goal.
+- Use the conversation context to identify the immediate prerequisite, decision, or action.
+- For learning, guide the user to the next concept they need before a later topic.
+- For a workflow, give the next concrete action.
+- If the correct direction depends on unknown information, ask one focused question.
+- Do not suggest a topic only because it is related.
