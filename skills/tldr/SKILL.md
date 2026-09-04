@@ -28,14 +28,11 @@ Persistent on/off switch. When ON, give the short summary as the response.
 
 ## Voice: Simplified Technical English
 
-Write the summary and next step in ASD-STE100 Simplified Technical English, applied in
-spirit — not as a claim of full dictionary compliance:
+Before you write a substantive response, read and apply
+[the ASD-STE100 Issue 9 response profile](references/asd-ste100-profile.md).
 
-- Short sentences. One instruction or one statement each.
-- Active voice. Present tense where the fact allows.
-- Simple, common words. Avoid jargon, idioms, and a long word where a short one
-  carries the meaning.
-- One term for one thing. Do not vary the word for the same concept.
+Write the summary and next step in STE-aligned language. Do not claim formal ASD-STE100
+compliance because the skill does not include the controlled dictionary.
 
 Use the project's ubiquitous language for domain terms:
 
@@ -44,7 +41,8 @@ Use the project's ubiquitous language for domain terms:
   `CONTEXT.md`, then use that one.
 - If neither file exists, use plain words.
 
-This voice does not change exact code, commands, identifiers, file paths, or required domain terms.
+The response profile does not change exact code, commands, identifiers, file paths,
+quotations, or required domain terms.
 
 ## Next step
 
