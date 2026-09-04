@@ -17,7 +17,9 @@
 
 .PARAMETER Tag
     Suffix for container names, image tag, log directory, and the override filename.
-    Defaults to a slug of the current git branch (FACS-824 -> 824).
+    Defaults to <branch-slug>-<interface port>, so FACS-824 at slot 3 gives
+    facs-824-8376. Hyphens only — a colon is illegal in a container name, changes
+    the meaning of an image reference, and is illegal in a Windows path.
 
 .PARAMETER WorktreeRoot
     Worktree root. Defaults to the current directory.
@@ -52,7 +54,7 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-function Get-BranchTag {
+function Get-BranchSlug {
     param([string] $Root)
 
     $branch = & git -C $Root rev-parse --abbrev-ref HEAD 2>$null
@@ -60,11 +62,10 @@ function Get-BranchTag {
         throw "Cannot read the git branch in '$Root'. Pass -Tag explicitly."
     }
 
-    $branch = $branch.Trim()
-
-    # FACS-824 -> 824. Otherwise slugify the whole branch name.
-    if ($branch -match '-(\d+)$') { return $Matches[1] }
-    return ($branch -replace '[^A-Za-z0-9]', '-').Trim('-').ToLowerInvariant()
+    # FACS-824 -> facs-824. Keep the prefix: two branches that share a trailing
+    # number must not produce the same tag, because container names are global
+    # to the Docker daemon and ignore the slot.
+    return ($branch.Trim() -replace '[^A-Za-z0-9]', '-').Trim('-').ToLowerInvariant()
 }
 
 if (-not (Test-Path -LiteralPath $WorktreeRoot)) {
@@ -72,10 +73,18 @@ if (-not (Test-Path -LiteralPath $WorktreeRoot)) {
 }
 $WorktreeRoot = (Resolve-Path -LiteralPath $WorktreeRoot).Path
 
-if (-not $Tag) { $Tag = Get-BranchTag -Root $WorktreeRoot }
+$offset = $Slot * 100
 
-$offset       = $Slot * 100
-$overrideName = "docker-compose.ports$Tag.yml"
+# The FSI Interface front door. Standard 8076, so slot 3 gives 8376.
+$interfacePort = 8076 + $offset
+
+# Naming convention: <branch-slug>-<interface port>, e.g. facs-824-8376. A hyphen,
+# never a colon — Docker container names allow only [a-zA-Z0-9][a-zA-Z0-9_.-]*, a
+# colon in an image reference separates name from tag, and a colon is illegal in a
+# Windows path. An explicit -Tag is used verbatim.
+if (-not $Tag) { $Tag = "$(Get-BranchSlug -Root $WorktreeRoot)-$interfacePort" }
+
+$overrideName = "docker-compose.ports-$Tag.yml"
 $overridePath = Join-Path $WorktreeRoot $overrideName
 
 # The real info/exclude lives in the main repo's git dir, not in the worktree's .git file.
@@ -172,6 +181,12 @@ foreach ($p in $portMap) { $p['Shifted'] = $p['Standard'] + $offset }
 function Get-Shifted {
     param([string] $Service, [int] $Target)
     ($portMap | Where-Object { $_['Service'] -eq $Service -and $_['Target'] -eq $Target })['Shifted']
+}
+
+# The default tag embeds the interface port, computed before this table exists.
+# Fail loudly if the two ever disagree rather than shipping a misleading name.
+if ((Get-Shifted 'fsi.interface' 7071) -ne $interfacePort) {
+    throw "Interface port mismatch: the tag says $interfacePort, the port table says $(Get-Shifted 'fsi.interface' 7071)."
 }
 
 # --- Port collision probe ----------------------------------------------------

@@ -9,6 +9,31 @@ Two FSI stacks cannot run at once out of the box. This skill generates a throwaw
 
 **Slot convention:** slot *N* offsets every host port by *N* × 100. Slot 0 is the standard layout — never generate an override for slot 0.
 
+## Naming convention
+
+The tag is `<branch-slug>-<interface port>`. Branch `FACS-824` at slot 3 gives **`facs-824-8376`**.
+
+The tag names four things:
+
+| Thing | Value for `facs-824-8376` |
+|---|---|
+| The seven container names | `redis-facs-824-8376`, `azurite-facs-824-8376`, and so on |
+| The image | `fsiapi-facs-824-8376` |
+| The log directory | `C:/logs/facs-824-8376` |
+| The override file | `docker-compose.ports-facs-824-8376.yml` |
+
+**Use a hyphen. Never a colon.** `facs-824:8376` breaks in three separate ways:
+
+- Docker container names allow only `[a-zA-Z0-9][a-zA-Z0-9_.-]*`. A colon is rejected outright.
+- In an image reference a colon separates the name from the tag, so `fsiapi-facs-824:8376` silently means image `fsiapi-facs-824`, tag `8376`. Two stacks would then share one image repository — the exact problem the tag exists to prevent.
+- A colon is the drive separator on Windows, so `C:/logs/facs-824:8376` is not a legal path.
+
+`-Tag` validates against Docker's character set, so a colon fails at parameter binding before anything is written.
+
+The branch prefix stays in the slug on purpose. `FACS-824` and `FOO-824` must not produce the same tag, because container names are global to the Docker daemon and ignore the slot.
+
+Pass `-Tag` to override the whole thing. An explicit tag is used verbatim, with no port appended.
+
 ## Quick start
 
 Run from the worktree root.
@@ -19,7 +44,7 @@ pwsh "<skill-dir>/scripts/New-FsiStackOverride.ps1" -Slot 1
 
 `<skill-dir>` is this skill's directory (where this `SKILL.md` lives). The script:
 
-1. Writes `docker-compose.ports<tag>.yml` at the worktree root. `<tag>` defaults to a slug of the current branch, so `FACS-824` gives `824`.
+1. Writes `docker-compose.ports-<tag>.yml` at the worktree root. See **Naming convention** for `<tag>`.
 2. Adds that filename to the repo's untracked exclude file, so it can never be committed.
 3. Probes every shifted host port and warns on any port that already listens.
 4. Prints the port table and the exact `up` and `down` commands.
@@ -106,7 +131,7 @@ ls "$LOCALAPPDATA/AzureFunctionsTools/Releases"
 The generated file is throwaway. `.gitignore` is tracked, so a change to it is itself a commit-worthy change. Use the untracked per-repo exclude:
 
 ```bash
-echo 'docker-compose.ports824.yml' >> "$(git rev-parse --git-common-dir)/info/exclude"
+echo 'docker-compose.ports-facs-824-8376.yml' >> "$(git rev-parse --git-common-dir)/info/exclude"
 ```
 
 `--git-common-dir` matters. In a worktree, `.git` is a file, and the real `info/exclude` is in the main repo's git directory. The script does this step for you. Verify with `git status --porcelain` (empty) and `git check-ignore -v <file>`.
@@ -133,11 +158,11 @@ Slot *N* adds *N* × 100 to every host port. Slot 1 is shown.
 The script prints both commands with the real filename in place.
 
 ```bash
-docker compose --env-file C:/repos/Fsi/.env -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.headless.yml -f docker-compose.ports824.yml up -d
+docker compose --env-file C:/repos/Fsi/.env -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.headless.yml -f docker-compose.ports-facs-824-8376.yml up -d
 ```
 
 ```bash
-docker compose --env-file C:/repos/Fsi/.env -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.headless.yml -f docker-compose.ports824.yml down --remove-orphans
+docker compose --env-file C:/repos/Fsi/.env -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.headless.yml -f docker-compose.ports-facs-824-8376.yml down --remove-orphans
 ```
 
 Compose takes the project name from the worktree directory (`facs-824`), which is already distinct per branch. Pin `COMPOSE_PROJECT_NAME` if you want to be safe against a directory rename.
@@ -157,7 +182,7 @@ Request recipe for a shifted stack. Slot 1 is shown.
 - Body fields: `contactSerialNumber`, `dateOfService`, `emrId`, `medicalRecordNumber`, `organizationId`, `outputDocumentFormatTypeCode`, `requestedPatientResources`.
 - Poll `GET /api/v1/orchestration/{jobId}` with the same OID header.
 - Add header `X-Capture-Fhir-Raw: true` to capture raw traffic. Captures land in Azurite container `fhir-raw-captures` as `{jobId}.json`. Read them against the shifted blob port. **Treat those blobs as sensitive.** They contain bearer tokens.
-- Flush the cache first to force a fresh Epic token: `docker exec redis-824 redis-cli FLUSHALL`.
+- Flush the cache first to force a fresh Epic token: `docker exec redis-facs-824-8376 redis-cli FLUSHALL`.
 - Known-good Epic sandbox patient: MRN 202427, CSN 9961, DoS 2006-10-02, emrId 0, org 0.
 
 ## Scripts that hardcode the standard ports
@@ -177,6 +202,8 @@ Remove the override file and its exclude line:
 pwsh "<skill-dir>/scripts/New-FsiStackOverride.ps1" -Slot 1 -Remove
 ```
 
+**Pass the same `-Slot` you generated with.** The tag carries the interface port, so the slot decides the filename. A different slot computes a different tag and removes nothing. The script says `No override file at <path>` when that happens — read that message as "wrong slot", not "already clean".
+
 `down` keeps named volumes and the built image. Remove the Docker leftovers too. Project name and tag come from your slot.
 
 ```bash
@@ -184,7 +211,7 @@ docker volume rm facs-824_azurite_data facs-824_redis_data facs-824_seq_data fac
 ```
 
 ```bash
-docker image rm fsiapi-824:latest
+docker image rm fsiapi-facs-824-8376:latest
 ```
 
 ## Do not touch the other stack
