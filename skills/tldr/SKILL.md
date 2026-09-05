@@ -33,6 +33,10 @@ the [asd-ste100 skill](../asd-ste100/SKILL.md) and its writing profile.
 Apply its language rules to the summary and next step. Keep this skill's summary
 limits, toggle behavior, and next-step requirements.
 
+If the shared skill or profile is unavailable, state that limit in the response.
+This notice is the only exception to the exact-output rule.
+Then apply ASD-STE100 as closely as possible from the available context.
+
 ## Next step
 
 After the summary, add a separate `**Next step**` section. This section does not count toward the summary's bullet or word limit.

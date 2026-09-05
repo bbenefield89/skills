@@ -5,6 +5,15 @@ description: Configures a repository and its issue tracker for the BB ticket pub
 
 # Set Up BB Skills
 
+## Shared writing standard
+
+Before you write user-facing prose or artifact prose, read and apply
+[the shared ASD-STE100 skill](../asd-ste100/SKILL.md). Preserve this skill's required output contract.
+
+If the shared skill or profile is unavailable, state that limit in the response.
+This notice is the only exception to an exact-output rule.
+Then apply ASD-STE100 as closely as possible from the available context.
+
 Configure the repository for the BB publishing skills. Read [REFERENCE.md](REFERENCE.md) completely before discovery.
 
 ## Non-negotiable approval gate

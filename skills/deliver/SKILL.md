@@ -5,6 +5,15 @@ description: Delivers an implementation end to end through preflight, test-drive
 
 # Deliver
 
+## Shared writing standard
+
+Before you write user-facing prose or artifact prose, read and apply
+[the shared ASD-STE100 skill](../asd-ste100/SKILL.md). Preserve this skill's required output contract.
+
+If the shared skill or profile is unavailable, state that limit in the response.
+This notice is the only exception to an exact-output rule.
+Then apply ASD-STE100 as closely as possible from the available context.
+
 Conduct one self-contained delivery pipeline:
 
 ```text
@@ -23,8 +32,6 @@ Do not depend on external implementation, cleanup, engineering-principles, or co
 4. Read [references/implementation.md](references/implementation.md), [references/review.md](references/review.md), [references/validation.md](references/validation.md), and [references/report-schema.md](references/report-schema.md).
 
 Implementation and review must use the same core standard, selected profiles, repository guidance, specification, and acceptance criteria.
-
-After you load the contract, use the ASD-STE100 style rules in the report schema for all user-facing prose during the delivery.
 
 ## Establish authority
 

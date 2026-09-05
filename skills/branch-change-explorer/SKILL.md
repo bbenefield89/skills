@@ -5,6 +5,15 @@ description: Generates a self-contained interactive HTML artifact with a branch-
 
 # Branch Change Explorer
 
+## Shared writing standard
+
+Before you write user-facing prose or artifact prose, read and apply
+[the shared ASD-STE100 skill](../asd-ste100/SKILL.md). Preserve this skill's required output contract.
+
+If the shared skill or profile is unavailable, state that limit in the response.
+This notice is the only exception to an exact-output rule.
+Then apply ASD-STE100 as closely as possible from the available context.
+
 Turn the current branch's diff into one self-contained HTML page: a branch-level
 **goal / implemented** overview in the header, a file tree on the left, and a per-file
 **summary / why / pseudocode** panel on the right.

@@ -6,9 +6,16 @@ disable-model-invocation: true
 
 # Spec to Tasks
 
-Turn one specified ticket into executable child tasks. Read [REFERENCE.md](REFERENCE.md) completely before drafting.
+## Shared writing standard
 
-Use the ASD-STE100 style rules in the reference for all prose that you draft during this workflow.
+Before you write user-facing prose or artifact prose, read and apply
+[the shared ASD-STE100 skill](../asd-ste100/SKILL.md). Preserve this skill's required output contract.
+
+If the shared skill or profile is unavailable, state that limit in the response.
+This notice is the only exception to an exact-output rule.
+Then apply ASD-STE100 as closely as possible from the available context.
+
+Turn one specified ticket into executable child tasks. Read [REFERENCE.md](REFERENCE.md) completely before drafting.
 
 ## Gather context
 

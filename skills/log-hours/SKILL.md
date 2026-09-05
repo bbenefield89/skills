@@ -5,6 +5,15 @@ description: Log a day's working hours to Tempo by deducing per-ticket time from
 
 # Log hours to Tempo
 
+## Shared writing standard
+
+Before you write user-facing prose or artifact prose, read and apply
+[the shared ASD-STE100 skill](../asd-ste100/SKILL.md). Preserve this skill's required output contract.
+
+If the shared skill or profile is unavailable, state that limit in the response.
+This notice is the only exception to an exact-output rule.
+Then apply ASD-STE100 as closely as possible from the available context.
+
 Deduce how a day was spent, show the user a table, and — only after explicit approval — post the time as Jira worklogs (which Tempo syncs from). **By default, fill the day to a full `workday_hours` (8h)** — reconstruct enough real work to reach 8h, distributing any unaccounted-for time across active tickets weighted by signal. The daily total (already-logged + newly-posted) must **never exceed 8 hours**; 8h is both the default **target** and a hard **ceiling**. Log less than 8h only when the user explicitly asks, or on the rare day the sources genuinely can't justify 8h — in which case report best-effort **rather than fabricate**.
 
 Invocation: `/log-hours [date] [freeform time hints]`

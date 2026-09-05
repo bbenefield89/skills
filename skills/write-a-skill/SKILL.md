@@ -5,6 +5,15 @@ description: Create new agent skills with proper structure, progressive disclosu
 
 # Writing Skills
 
+## Shared writing standard
+
+Before you write user-facing prose or artifact prose, read and apply
+[the shared ASD-STE100 skill](../asd-ste100/SKILL.md). Preserve this skill's required output contract.
+
+If the shared skill or profile is unavailable, state that limit in the response.
+This notice is the only exception to an exact-output rule.
+Then apply ASD-STE100 as closely as possible from the available context.
+
 ## Process
 
 1. **Gather requirements** - ask user about:

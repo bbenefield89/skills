@@ -5,6 +5,15 @@ description: Agent-run smoke test of FSI Interface patient retrieval. Sources it
 
 # FSI Smoke Test
 
+## Shared writing standard
+
+Before you write user-facing prose or artifact prose, read and apply
+[the shared ASD-STE100 skill](../asd-ste100/SKILL.md). Preserve this skill's required output contract.
+
+If the shared skill or profile is unavailable, state that limit in the response.
+This notice is the only exception to an exact-output rule.
+Then apply ASD-STE100 as closely as possible from the available context.
+
 Confirms the running FSI stack retrieves patient data end to end. Answers one question: **which requests completed and returned real data with no errors?**
 
 This is the refined successor to `fsi-manual-test`: an agent runs it and reports the result. It sources *what to test* from the local WireMock stubs, tests the **real** retrieval path, emits machine-readable JSON for the agent plus a clean human table, and classifies every failure by reason.

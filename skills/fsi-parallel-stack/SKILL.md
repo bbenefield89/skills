@@ -5,6 +5,15 @@ description: Run a second (or third) FSI Docker stack from a git worktree at the
 
 # Parallel FSI stacks (worktree port override)
 
+## Shared writing standard
+
+Before you write user-facing prose or artifact prose, read and apply
+[the shared ASD-STE100 skill](../asd-ste100/SKILL.md). Preserve this skill's required output contract.
+
+If the shared skill or profile is unavailable, state that limit in the response.
+This notice is the only exception to an exact-output rule.
+Then apply ASD-STE100 as closely as possible from the available context.
+
 Two FSI stacks cannot run at once out of the box. This skill generates a throwaway Compose override that shifts one stack onto its own ports, container names, image tag, and log directory — so a worktree branch runs beside the standard `fsi` stack.
 
 **Slot convention:** slot *N* offsets every host port by *N* × 100. Slot 0 is the standard layout — never generate an override for slot 0.

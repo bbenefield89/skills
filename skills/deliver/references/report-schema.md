@@ -1,14 +1,3 @@
-# User-facing output
-
-Write all user-facing prose in ASD-STE100 Simplified Technical English style. This requirement applies to progress updates, questions, requested findings, the completion report, and the manual test plan.
-
-- Use short sentences. Put one instruction or main idea in each sentence.
-- Use active voice for instructions. Tell the reader who does the action when this information is necessary.
-- Put a condition before the action that depends on it.
-- Use one consistent term for each concept. Use common, precise words. Avoid idioms, unnecessary synonyms, vague pronouns, and long groups of nouns.
-- Preserve exact commands, code identifiers, paths, filenames, UI labels, quotations, and required repository terms. Write the surrounding explanation in ASD-STE100 style.
-- Claim ASD-STE100 compliance only after you check the output against the complete current standard and its controlled dictionary.
-
 # Completion report
 
 Report the delivery as a single line:
