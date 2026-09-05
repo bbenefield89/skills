@@ -4,6 +4,8 @@ This repository packages custom skills in the expected multi-skill layout:
 
 ```text
 skills/
+  asd-ste100/
+    SKILL.md
   create-ticket/
     SKILL.md
   deliver/

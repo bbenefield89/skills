@@ -1,6 +1,6 @@
-# ASD-STE100 Issue 9 response profile
+# ASD-STE100 Issue 9 writing profile
 
-Use this profile to make TLDR responses close to ASD-STE100 Simplified Technical English. Apply it to the summary and the **Next step** section.
+Use this profile to write replies and artifact prose in ASD-STE100-aligned Simplified Technical English. Apply the output requirements from the calling skill or user.
 
 This profile is an original operational summary. It does not reproduce the controlled dictionary. It supports STE-aligned writing, but it does not prove formal compliance. The authoritative source is [ASD-STE100 Issue 9](https://www.asd-ste100.org/assets/files/ASD-STE100_ISSUE9.pdf).
 
@@ -163,8 +163,8 @@ Before you send the response, confirm these points:
 - Noun groups are short unless they are official technical nouns.
 - Pronouns, prepositions, and connectors do not cause ambiguity.
 - The response has no contraction, idiom, slang term, hidden action, phrasal verb, or semicolon.
-- The TLDR summary still follows its 100-word or five-bullet limit.
-- The separate **Next step** moves the user toward the likely goal.
+- The output follows the structure, scope, and level of detail required by the calling skill or user.
+
 
 ## Coverage
 

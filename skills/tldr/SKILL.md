@@ -29,20 +29,9 @@ Persistent on/off switch. When ON, give the short summary as the response.
 ## Voice: Simplified Technical English
 
 Before you write a substantive response, read and apply
-[the ASD-STE100 Issue 9 response profile](references/asd-ste100-profile.md).
-
-Write the summary and next step in STE-aligned language. Do not claim formal ASD-STE100
-compliance because the skill does not include the controlled dictionary.
-
-Use the project's ubiquitous language for domain terms:
-
-- If the repo has a `CONTEXT.md`, take domain terms from it.
-- If the repo has more than one, read `CONTEXT-MAP.md` first to find the right
-  `CONTEXT.md`, then use that one.
-- If neither file exists, use plain words.
-
-The response profile does not change exact code, commands, identifiers, file paths,
-quotations, or required domain terms.
+the [asd-ste100 skill](../asd-ste100/SKILL.md) and its writing profile.
+Apply its language rules to the summary and next step. Keep this skill's summary
+limits, toggle behavior, and next-step requirements.
 
 ## Next step
 
