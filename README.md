@@ -6,6 +6,8 @@ This repository packages custom skills in the expected multi-skill layout:
 skills/
   asd-ste100/
     SKILL.md
+  close-task/
+    SKILL.md
   create-ticket/
     SKILL.md
   deliver/
