@@ -11,6 +11,7 @@
         "./skills/brainstorming",
         "./skills/branch-change-explorer",
         "./skills/close-task",
+        "./skills/create-and-merge-pr",
         "./skills/create-ticket",
         "./skills/deliver",
         "./skills/engineering-principles",

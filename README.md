@@ -8,6 +8,8 @@ skills/
     SKILL.md
   close-task/
     SKILL.md
+  create-and-merge-pr/
+    SKILL.md
   create-ticket/
     SKILL.md
   deliver/
