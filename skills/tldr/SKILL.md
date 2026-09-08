@@ -38,6 +38,20 @@ TLDR is a fallback presentation layer. It does not control another skill's workf
 - When the user or active task skill requires code, commands, a table, a diff, file contents, or another artifact, provide that artifact in full. The summary limit does not shorten the artifact.
 - When the user asks to "explain fully," "expand," "give me the details," or makes an equivalent request, suspend the summary limit for that response only. Resume TL;DR mode on the next response.
 
+## Code references
+
+Link every technical token that has a real target. Do not stop at backticks.
+
+- A technical token is a symbol, type, member, file, ticket ID, or similar item.
+- Write the token as a Markdown link. Keep the token text as the visible link text.
+- Point a code token to the file and the exact line. Use an absolute path. Example: `[PeriodConverter](C:/repos/Fsi/src/PeriodConverter.cs:42)`.
+- If the path has a space, wrap the target in angle brackets. Example: `[Period](<C:/repos/My Repo/Period.cs:15>)`.
+- Point a ticket ID to its tracker page. Example: `[FACS-916](https://.../browse/FACS-916)`.
+- Search the code first to find the real location. Do this before you write the response.
+- If you cannot find a real target, keep the plain backtick token. Do not write a fabricated path or line number.
+- A command or an external attribute with no code location stays a plain backtick token.
+- You cannot put a link inside a fenced code block. Link the token where you name it in the prose instead.
+
 ## Voice: Simplified Technical English
 
 Before you write a substantive response, read and apply
