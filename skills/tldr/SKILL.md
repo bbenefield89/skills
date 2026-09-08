@@ -5,25 +5,37 @@ description: Persistent response mode that gives a short summary and a useful ne
 
 # TL;DR Mode
 
-Persistent on/off switch. When ON, give the short summary as the response.
+Persistent on/off switch. When ON, use the short summary for output that does not
+have a stronger user or task-skill contract.
 
 ## Toggle behavior
 
-- **Turn ON**: user runs `/tldr` or says "tldr mode", "tldr on", "tldr list", "just the tldr", etc. Once on, every substantive response uses this format.
+- **Turn ON**: user runs `/tldr` or says "tldr mode", "tldr on", "tldr list", "just the tldr", etc. Once on, TLDR remains active for every response. Apply its format only to output that is not controlled by a stronger contract.
 - **Turn OFF**: only when the user explicitly asks — "stop tldr", "tldr off", "normal mode", "full response", or similar.
-- **Never self-disable.** TL;DR does not turn itself off for any topic, warning, or action type. It persists until the user says otherwise.
+- **Never self-disable.** TLDR does not turn itself off for any topic, warning, action type, or other skill. Yielding to a stronger contract does not turn TLDR off.
 - Toggling on/off is the one exception where you may briefly confirm (e.g. "TL;DR on." / "TL;DR off."). Otherwise no self-referential announcements.
+
+## Interaction with other skills
+
+TLDR is a fallback presentation layer. It does not control another skill's workflow.
+
+- The user's explicit output requirements and the active task skill's required workflow and output contract take priority over TLDR.
+- A stronger contract includes required structure, detail, artifacts, questions, approval gates, progress updates, and report schemas.
+- When a stronger contract conflicts with TLDR, follow that contract for the affected output. Do not add the TLDR heading, apply the summary limit, omit required detail, reorder required content, or add a separate Next step.
+- Apply TLDR only to incidental prose that the stronger contract does not control.
+- Treat a required question or action from the active task skill as the user's next step. Do not duplicate it.
+- Keep TLDR active. Apply it automatically to the next output that does not have a stronger contract. Do not use a per-skill exception list or require the user to toggle TLDR.
 
 ## Summary
 
-- When the user requests only exact output or a copy-ready artifact, return only that output. Omit the `# TL;DR` heading, summary wrapper, and `**Next step**` section.
+- When the user or active task skill requires only exact output or a copy-ready artifact, return only that output. Omit the `# TL;DR` heading, summary wrapper, and `**Next step**` section.
 - Summarize instead of reproducing the full answer.
-- Open each substantive response with `# TL;DR` on its own line. A bare toggle confirmation (`TL;DR on.` or `TL;DR off.`) needs no heading.
+- Open each substantive response governed by TLDR with `# TL;DR` on its own line. A bare toggle confirmation (`TL;DR on.` or `TL;DR off.`) needs no heading.
 - Use either a natural short paragraph of no more than 100 words or no more than five bullets. Choose the form that best fits the answer.
 - Include only the core answer and any material warning.
 - Omit background, examples, diagrams, comparisons, implementation details, and references unless they are essential to the core answer.
 - Put a material warning, required decision, blocker, or surprising result before less important information.
-- When the user explicitly requests code, commands, a table, a diff, file contents, or another artifact, provide that artifact in full. The summary limit does not shorten the requested artifact.
+- When the user or active task skill requires code, commands, a table, a diff, file contents, or another artifact, provide that artifact in full. The summary limit does not shorten the artifact.
 - When the user asks to "explain fully," "expand," "give me the details," or makes an equivalent request, suspend the summary limit for that response only. Resume TL;DR mode on the next response.
 
 ## Voice: Simplified Technical English
@@ -39,7 +51,7 @@ Then apply ASD-STE100 as closely as possible from the available context.
 
 ## Next step
 
-After the summary, add a separate `**Next step**` section. This section does not count toward the summary's bullet or word limit.
+After a summary governed by TLDR, add a separate `**Next step**` section unless a stronger contract controls the continuation. This section does not count toward the summary's bullet or word limit.
 
 - Move the user from the current request toward the likely goal.
 - Use the conversation context to identify the immediate prerequisite, decision, or action.
