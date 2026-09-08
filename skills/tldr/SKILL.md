@@ -40,17 +40,19 @@ TLDR is a fallback presentation layer. It does not control another skill's workf
 
 ## Code references
 
-Link every technical token that has a real target. Do not stop at backticks.
+Make each code reference clickable in the host you run in.
 
-- A technical token is a symbol, type, member, file, ticket ID, or similar item.
-- Write the token as a Markdown link. Keep the token text as the visible link text.
-- Point a code token to the file and the exact line. Use an absolute path. Example: `[PeriodConverter](C:/repos/Fsi/src/PeriodConverter.cs:42)`.
-- If the path has a space, wrap the target in angle brackets. Example: `[Period](<C:/repos/My Repo/Period.cs:15>)`.
-- Point a ticket ID to its tracker page. Example: `[FACS-916](https://.../browse/FACS-916)`.
-- Search the code first to find the real location. Do this before you write the response.
-- If you cannot find a real target, keep the plain backtick token. Do not write a fabricated path or line number.
+- Use a path relative to the working directory. Do not use an absolute path or a drive letter. The terminal cannot resolve a `C:/...` target.
+- Add the exact line as a `:line` suffix.
+- In Claude Code (terminal), write a bare `path:line` token as plain text. Do not wrap it in a Markdown link. Do not put it in backticks. The terminal makes the plain token clickable. It cannot resolve a Markdown link to a local file. Example: Orchestration/Orchestrators/Conductor.cs:118
+- In the desktop or web Code app, write a Markdown link with the same relative path and `:line` suffix. Example: `[Conductor.cs:118](Orchestration/Orchestrators/Conductor.cs:118)`.
+- If you do not know the host, write the bare `path:line` token. It is readable everywhere and clickable in the terminal.
+- Reference only a file that exists in the current checkout. If the file is on another branch, name the branch. State that the path will not open until the user switches to that branch.
+- Point a ticket ID to its tracker page. A web URL is a valid link target. Example: `[FACS-916](https://.../browse/FACS-916)`.
+- Search the code first. Do this before you write the response.
+- If you cannot find a real location, keep the plain backtick token. Do not write a fabricated path or line.
 - A command or an external attribute with no code location stays a plain backtick token.
-- You cannot put a link inside a fenced code block. Link the token where you name it in the prose instead.
+- You cannot put a link inside a fenced code block. Put the reference in the prose instead.
 
 ## Voice: Simplified Technical English
 
