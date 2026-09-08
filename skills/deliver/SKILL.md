@@ -62,4 +62,4 @@ Classify the result:
 - **Failed:** review or validation remains failing after the allowed correction attempts.
 - **Blocked:** unresolved scope, authority, overlap, or conflict prevents implementation.
 
-Use the report schema: one line, plus at most one more line when something is unresolved, breaking, assumed, or skipped. Follow it with a plain-English manual test plan. Do not print review output unless asked.
+Use the report schema: one line, plus at most one more line when something is unresolved, breaking, assumed, or skipped. Follow it with a plain-English manual test plan when the report schema permits one. Do not print review output unless asked.
