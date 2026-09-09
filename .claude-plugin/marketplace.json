@@ -23,6 +23,7 @@
         "./skills/spec-to-tasks",
         "./skills/ticket-to-spec",
         "./skills/tldr",
+        "./skills/understand-code",
         "./skills/write-a-skill",
         "./skills/ynab-budget-review",
         "./skills/zoom-out"

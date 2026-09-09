@@ -32,6 +32,8 @@ skills/
     SKILL.md
   tldr/
     SKILL.md
+  understand-code/
+    SKILL.md
   write-a-skill/
     SKILL.md
   ynab-budget-review/
