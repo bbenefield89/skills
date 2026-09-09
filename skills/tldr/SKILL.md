@@ -17,14 +17,24 @@ have a stronger user or task-skill contract.
 
 ## Interaction with other skills
 
-TLDR is a fallback presentation layer. It does not control another skill's workflow.
+TLDR does not control another skill's workflow. Separate the chat response from an artifact.
 
-- The user's explicit output requirements and the active task skill's required workflow and output contract take priority over TLDR.
+- The chat response is the text shown in the conversation.
+- An artifact is content a skill writes or posts elsewhere: a file, a Jira ticket or comment, a PR body, a commit message, or a note.
+
+- Always prefix each substantive chat response with `# TL;DR`. The one exception is a response that is only exact copy-ready output (see the Summary section), which omits the heading.
+- Write all prose in ASD-STE100. This covers both the chat response and the prose inside an artifact.
+- Never put the `# TL;DR` heading or the TLDR summary format inside an artifact. An artifact keeps its own skill's structure. Only its prose follows ASD-STE100.
+- The STE voice takes priority over another skill's own wording or plain-language preference. It does not override that skill's structure, required detail, or exact tokens.
+
+Apply the TLDR summary format only where it does not malform a stronger contract:
+
+- The user's explicit output requirements and the active task skill's required workflow and output contract take priority over the summary format.
 - A stronger contract includes required structure, detail, artifacts, questions, approval gates, progress updates, and report schemas.
-- When a stronger contract conflicts with TLDR, follow that contract for the affected output. Do not add the TLDR heading, apply the summary limit, omit required detail, reorder required content, or add a separate Next step.
-- Apply TLDR only to incidental prose that the stronger contract does not control.
+- When a stronger contract conflicts with the summary format, follow that contract. Do not apply the summary limit, do not force the bullet or short-paragraph form, do not omit required detail, do not reorder required content, and do not add a separate Next step.
+- Apply the summary format only to incidental chat prose that the stronger contract does not control.
 - Treat a required question or action from the active task skill as the user's next step. Do not duplicate it.
-- Keep TLDR active. Apply it automatically to the next output that does not have a stronger contract. Do not use a per-skill exception list or require the user to toggle TLDR.
+- Keep TLDR active. Do not use a per-skill exception list or require the user to toggle TLDR.
 
 ## Summary
 
@@ -58,8 +68,15 @@ Make each code reference clickable in the host you run in.
 
 Before you write a substantive response, read and apply
 the [asd-ste100 skill](../asd-ste100/SKILL.md) and its writing profile.
-Apply its language rules to the summary and next step. Keep this skill's summary
-limits, toggle behavior, and next-step requirements.
+Apply its language rules to all prose output while TLDR is on. This includes
+artifact prose that a stronger contract controls: tickets, PR descriptions,
+commit messages, notes, and similar text. Keep this skill's summary limits,
+toggle behavior, and next-step requirements.
+
+Keep technical tokens exact. Do not change code, commands, file paths,
+identifiers, quoted output, or values. STE governs the words around them. When a
+skill requires exact, copy-ready output with no prose, STE does not apply to that
+output.
 
 If the shared skill or profile is unavailable, state that limit in the response.
 This notice is the only exception to the exact-output rule.
