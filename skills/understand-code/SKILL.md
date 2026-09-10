@@ -43,6 +43,7 @@ If the source changes during the session, refresh affected explanations and chec
 
 ## Prepare the teaching path
 
+Read [architecture coherence](references/architecture-coherence.md) and apply its four checks within the selected scope and relevant surrounding code.
 Select the smallest useful path through these topics. Combine simple topics and deepen consequential ones:
 
 - The system's purpose and current behavior; for a change, its before-and-after behavior and the problem it addresses.
