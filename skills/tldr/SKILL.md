@@ -5,12 +5,12 @@ description: Persistent response mode that gives a short summary and a useful ne
 
 # TL;DR Mode
 
-Persistent on/off switch. When ON, use the short summary for output that does not
-have a stronger user or task-skill contract.
+Persistent on/off switch. When ON, prefix every substantive chat response with
+`# TL;DR`. Use the short summary where a stronger contract permits it.
 
 ## Toggle behavior
 
-- **Turn ON**: user runs `/tldr` or says "tldr mode", "tldr on", "tldr list", "just the tldr", etc. Once on, TLDR remains active for every response. Apply its format only to output that is not controlled by a stronger contract.
+- **Turn ON**: user runs `/tldr` or says "tldr mode", "tldr on", "tldr list", "just the tldr", etc. Once on, TLDR remains active for every response. Prefix each substantive chat response with the TLDR heading. Apply the summary format only where a stronger contract permits it.
 - **Turn OFF**: only when the user explicitly asks — "stop tldr", "tldr off", "normal mode", "full response", or similar.
 - **Never self-disable.** TLDR does not turn itself off for any topic, warning, action type, or other skill. Yielding to a stronger contract does not turn TLDR off.
 - Toggling on/off is the one exception where you may briefly confirm (e.g. "TL;DR on." / "TL;DR off."). Otherwise no self-referential announcements.
@@ -22,7 +22,11 @@ TLDR does not control another skill's workflow. Separate the chat response from 
 - The chat response is the text shown in the conversation.
 - An artifact is content a skill writes or posts elsewhere: a file, a Jira ticket or comment, a PR body, a commit message, or a note.
 
-- Always prefix each substantive chat response with `# TL;DR`. The one exception is a response that is only exact copy-ready output (see the Summary section), which omits the heading.
+- Always prefix each substantive chat response with `# TL;DR`. This heading is the chat-response envelope, not part of the summary format.
+- A stronger contract can override the summary format. It cannot remove the chat heading.
+- Omit the chat heading only in these cases:
+  - The response is a bare toggle confirmation.
+  - The response contains only exact copy-ready output (see the Summary section).
 - Write all prose in ASD-STE100. This covers both the chat response and the prose inside an artifact.
 - Never put the `# TL;DR` heading or the TLDR summary format inside an artifact. An artifact keeps its own skill's structure. Only its prose follows ASD-STE100.
 - The STE voice takes priority over another skill's own wording or plain-language preference. It does not override that skill's structure, required detail, or exact tokens.
@@ -31,7 +35,13 @@ Apply the TLDR summary format only where it does not malform a stronger contract
 
 - The user's explicit output requirements and the active task skill's required workflow and output contract take priority over the summary format.
 - A stronger contract includes required structure, detail, artifacts, questions, approval gates, progress updates, and report schemas.
-- When a stronger contract conflicts with the summary format, follow that contract. Do not apply the summary limit, do not force the bullet or short-paragraph form, do not omit required detail, do not reorder required content, and do not add a separate Next step.
+- When a stronger contract conflicts with the summary format, keep `# TL;DR` as the first line. Follow the stronger contract after the heading.
+  - Do not apply the summary limit.
+  - Do not force the bullet or short-paragraph form.
+  - Do not omit required detail.
+  - Do not reorder required content.
+  - Do not add a separate Next step.
+- If a stronger contract requires a response with no additional text, treat the response as exact copy-ready output and omit the heading.
 - Apply the summary format only to incidental chat prose that the stronger contract does not control.
 - Treat a required question or action from the active task skill as the user's next step. Do not duplicate it.
 - Keep TLDR active. Do not use a per-skill exception list or require the user to toggle TLDR.
@@ -40,7 +50,6 @@ Apply the TLDR summary format only where it does not malform a stronger contract
 
 - When the user or active task skill requires only exact output or a copy-ready artifact, return only that output. Omit the `# TL;DR` heading, summary wrapper, and `**Next step**` section.
 - Summarize instead of reproducing the full answer.
-- Open each substantive response governed by TLDR with `# TL;DR` on its own line. A bare toggle confirmation (`TL;DR on.` or `TL;DR off.`) needs no heading.
 - Use either a natural short paragraph of no more than 100 words or no more than five bullets. Choose the form that best fits the answer.
 - Include only the core answer and any material warning.
 - Omit background, examples, diagrams, comparisons, implementation details, and references unless they are essential to the core answer.
