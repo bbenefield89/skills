@@ -27,7 +27,7 @@ Then apply ASD-STE100 as closely as possible from the available context.
 
 ## Establish the subject
 
-1. Read repository guidance and identify whether the user targets existing code or a change. State the scope briefly.
+1. Read repository guidance and identify the subject. For keyword requests, read [keyword scopes](references/keywords.md). State the scope briefly.
 2. For existing code, locate the named system, feature, file, or function. Trace entry points, ownership, callers, state, and dependencies.
 3. For a change, identify the comparison base and relevant committed, staged, unstaged, and untracked content. Read the actual diff.
 4. Ask a focused scope question only when different plausible interpretations would change the walkthrough materially.
