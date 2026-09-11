@@ -17,7 +17,8 @@ The calling skill or user controls the output structure, scope, and level of det
    - If no terminology file exists, use plain words and established terms from the supplied material or current context.
 3. Preserve exact code, commands, identifiers, file paths, quotations, and required domain terms.
 4. Apply the profile to natural-language text, including progress updates, questions, reports, instructions, and artifact prose.
-5. Complete the profile's final STE review before you send or save the output.
+5. Apply the profile's precision checks. Name the responsible actor, its action, and the affected item when these details clarify meaning.
+6. Complete the profile's final STE review before you send or save the output.
 
 This skill does not activate a persistent response mode or impose a summary length, heading, or next-step section.
 Keep the structure and completeness required by the calling skill or user.

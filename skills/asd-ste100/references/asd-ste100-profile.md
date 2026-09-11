@@ -141,6 +141,24 @@ Use a controlled verb when it gives the same meaning. Use the project glossary w
 - Treat a number, measurement, abbreviation, identifier, exact quotation, title, label, formula, or proper name as one fixed element for sentence-length checks.
 - Treat a correctly hyphenated term as one word.
 
+## Precision in explanations and questions
+
+These checks supplement the STE rules with this skill's requirements for clear explanations:
+
+- Name the person, component, or system responsible for an action when responsibility matters to the explanation or question.
+- State the action with a direct verb. Identify the affected item, value, or state when the reader needs that detail.
+- Replace vague descriptions with the specific objects or properties they refer to. Keep established domain terms and explain them when necessary.
+- Make conditions specific. State who reports, checks, or changes what before asking the reader to reason about the result.
+- Prefer enough words to make the meaning explicit. Brevity must preserve responsibility, conditions, and the relevant effect.
+- Add specific details only when the source or conversation supports them. State an unknown detail instead of guessing.
+
+Example:
+
+- Vague: "If contact is detected correctly, which component would you inspect next?"
+- Precise: "If `RecoveryBoundary` reports contact correctly, which component would you inspect next?"
+
+The precise version names the component responsible for the report without giving the answer to the question.
+
 ## Additional clarity checks
 
 - Use `that` when it clearly separates a main clause from a dependent clause.
@@ -156,6 +174,7 @@ Use a controlled verb when it gives the same meaning. Use the project glossary w
 Before you send the response, confirm these points:
 
 - The response preserves the exact meaning and all material warnings.
+- Relevant actions name their responsible actor and affected item. Specific details have support in the source or conversation.
 - Each sentence has one main idea and stays within its applicable length.
 - Instructions use commands. Conditions come before dependent actions.
 - Descriptions use active voice unless the agent is unknown.
