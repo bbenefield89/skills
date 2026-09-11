@@ -52,21 +52,24 @@ Select the smallest useful path through these topics. Combine simple topics and 
 - Realistic failure modes and an ordered debugging path from symptom to likely source.
 - Relevant tests, the behavior they exercise, their limits, and important missing coverage.
 
-Select roughly 1–5 high-value code areas across the session. Link to verified files and specific functions or lines.
-Explain what the user should look for in each area. Favor boundaries, state transitions, and consequential business logic over boilerplate.
+Select roughly 1–5 high-value code areas across the session. Read and follow [source excerpt presentation](references/source-excerpts.md).
+Bring relevant excerpts and explanations into the conversation. Favor boundaries, state transitions, and consequential business logic over boilerplate.
 Scale depth to risk inferred from the code. Persistence, security, concurrency, and irreversible effects warrant closer examination.
-Treat the file count as a guide. Explain when additional inspection is necessary to understand a consequential path.
+Treat the file count as a guide. Inspect additional code yourself when necessary to explain a consequential path.
 Distinguish reading tests from observing passing results. Report existing validation evidence accurately, including uncertainty about its scope or freshness.
 
 ## Run one step at a time
 
+Assume the user may know the feature's intent but has not read the agent-written implementation line by line. Respect their programming experience.
+
 1. Begin with a compact system map and the first meaningful concept.
-2. Explain that concept using the actual implementation. Include one relevant code area when it aids understanding.
-3. Ask one focused question that requires explanation, prediction, or a debugging choice.
+2. Explain the relevant code, terminology, and execution path before relying on them. A code link alone is not an explanation.
+3. Ask one focused application question using explained material or demonstrated knowledge. Supply any new scenario facts needed to reason from it.
 4. End the turn and wait for the user's answer. Keep later lessons for later turns.
 5. Apply the clarification loop before introducing a concept that depends on this one.
 
-Use open questions suited to the current subject. Avoid supplying the answer inside the question.
+Use open questions to check understanding built by the explanation, not prior code familiarity or recall of unexplained details.
+Supply needed context without giving away the answer in the question.
 Let the user consult code and ask questions. Understanding does not require memorization, exact terminology, or syntax mastery.
 Adapt the path to what the user already demonstrates. Avoid a fixed quiz or a complete report before the conversation.
 
@@ -77,6 +80,7 @@ Adapt the path to what the user already demonstrates. Avoid a fixed quiz or a co
 - **Ambiguous:** Ask what the user means before treating their answer as a misconception.
 - **Uncertain or unanswered:** Explain as needed, but retain unchecked status. Agreement, silence, and “I get it” do not demonstrate understanding.
 
+First check whether the lesson omitted knowledge needed to answer. Teach missing context before treating the response as a misconception.
 For a gap, change the explanation method: trace concrete values, show a small code section, or use a failure scenario.
 Then ask one new application question about the same concept and wait. Do not merely repeat the explanation or request agreement.
 Continue when the answer demonstrates the relevant causal relationship, ownership, or failure consequence without a material misconception.
