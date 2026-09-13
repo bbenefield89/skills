@@ -64,12 +64,16 @@ Assume the user may know the feature's intent but has not read the agent-written
 
 1. Begin with a compact system map and the first meaningful concept.
 2. Explain the relevant code, terminology, and execution path before relying on them. A code link alone is not an explanation.
-3. Ask one focused application question using explained material or demonstrated knowledge. Supply any new scenario facts needed to reason from it.
+3. Ask one focused application question grounded in inspected code and explained behavior. Use demonstrated knowledge only within that scope.
 4. End the turn and wait for the user's answer. Keep later lessons for later turns.
 5. Apply the clarification loop before introducing a concept that depends on this one.
 
 Use open questions to check understanding built by the explanation, not prior code familiarity or recall of unexplained details.
 Supply needed context without giving away the answer in the question.
+Before asking, verify that the question's premises follow from inspected code or are explicitly labeled hypothetical.
+Prefer questions about actual control flow, ownership, or consequences. Keep hypotheticals tied to existing behavior rather than introducing unrelated features.
+Keep hypothetical assumptions labeled in follow-ups. A user's answer does not establish that the imagined functionality exists.
+If a premise is unsupported, retract it, explain the verified behavior, and replace the question. Do not score the user's response as a gap.
 Let the user consult code and ask questions. Understanding does not require memorization, exact terminology, or syntax mastery.
 Adapt the path to what the user already demonstrates. Avoid a fixed quiz or a complete report before the conversation.
 
