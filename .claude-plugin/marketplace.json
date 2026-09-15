@@ -36,7 +36,9 @@
         "./skills/create-test-plan",
         "./skills/fsi-parallel-stack",
         "./skills/fsi-smoke-test",
-        "./skills/log-hours"
+        "./skills/log-hours",
+        "./skills/worktree-enter",
+        "./skills/worktree-exit"
       ]
     },
     {
