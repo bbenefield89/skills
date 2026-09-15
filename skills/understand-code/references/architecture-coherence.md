@@ -10,7 +10,7 @@ Apply these checks to existing code and changes. For changes, distinguish introd
 | Responsibility placement | Whether behavior belongs to its current owner, or introduces an unrelated responsibility or competing owner. |
 | Dependency direction | Whether calls and imports respect meaningful boundaries, or create cycles, bypasses, or dependencies on another module's internals. |
 | Duplication and competing abstractions | Whether existing services, helpers, state owners, or transformations already serve the same responsibility. |
-| File and folder organization | Whether placement follows project conventions and helps someone predict where behavior and tests belong. |
+| File and folder organization | Whether application code placement follows project conventions and helps someone predict where behavior belongs. |
 
 Compare the selected code with relevant callers, nearby implementations, documented decisions, and existing abstractions before identifying a concern.
 Search for existing owners of the behavior. Similar names alone do not establish duplication.
