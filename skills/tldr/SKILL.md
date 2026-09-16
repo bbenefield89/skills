@@ -57,6 +57,39 @@ Apply the TLDR summary format only where it does not malform a stronger contract
 - When the user or active task skill requires code, commands, a table, a diff, file contents, or another artifact, provide that artifact in full. The summary limit does not shorten the artifact.
 - When the user asks to "explain fully," "expand," "give me the details," or makes an equivalent request, suspend the summary limit for that response only. Resume TL;DR mode on the next response.
 
+## Chat response audit
+
+Append one compact audit line as the final content of each substantive chat
+response. The audit is outside the summary word and bullet limits.
+
+Use exactly one applicable form:
+
+- Paragraph summary: `**Response audit:** Format: paragraph · Words: <count>/100 · STE review: <status> · Exceptions: <exceptions>`
+- Bullet summary: `**Response audit:** Format: bullets · Bullets: <count>/5 · STE review: <status> · Exceptions: <exceptions>`
+- Stronger contract: `**Response audit:** Summary limit: not applied · Reason: <reason> · STE review: <status> · Exceptions: <exceptions>`
+- User expansion: `**Response audit:** Summary limit: suspended · Reason: user requested expansion · STE review: <status> · Exceptions: <exceptions>`
+
+Use these status values:
+
+- Use `PASS` only after the mandatory second pass completes with no unresolved failures.
+- Use `PASS WITH EXCEPTIONS` when required content prevents full profile alignment. Name each exception.
+- Use `UNAVAILABLE` when the review cannot load or complete. State why.
+- Do not report a percentage of ASD-STE100 conformance. The local profile cannot support that precision.
+
+Apply these counting boundaries:
+
+- Count words or bullets only in the TLDR summary body.
+- Exclude the `# TL;DR` heading, code blocks, artifacts, the Next step, required sections, and the audit line.
+- Count bullets only when the summary uses the bullet format.
+- Apply the STE review status to all natural-language chat prose above the audit line.
+- Do not include artifact content in the audit counts or STE review status.
+
+The audit applies only to chat output. Never put it in a file, ticket, PR body,
+commit message, note, code block, or other artifact. If a response contains chat
+prose and an artifact, audit only the chat prose. If the response contains only
+exact copy-ready output, omit the audit. The response is incomplete until the
+applicable audit line is last, unless this exact-output exception applies.
+
 ## Code references
 
 Make each code reference clickable in the host you run in.
@@ -81,6 +114,12 @@ Apply its language rules to all prose output while TLDR is on. This includes
 artifact prose that a stronger contract controls: tickets, PR descriptions,
 commit messages, notes, and similar text. Keep this skill's summary limits,
 toggle behavior, and next-step requirements.
+
+After you draft the complete prose, return to the ASD-STE100
+[Final STE review](../asd-ste100/references/asd-ste100-profile.md#final-ste-review).
+Run its mandatory second pass against every sentence and list item. Rewrite each
+failure, and repeat the review. Do not send or save the output until the gate
+passes.
 
 Keep technical tokens exact. Do not change code, commands, file paths,
 identifiers, quoted output, or values. STE governs the words around them. When a

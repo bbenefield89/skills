@@ -18,7 +18,15 @@ The calling skill or user controls the output structure, scope, and level of det
 3. Preserve exact code, commands, identifiers, file paths, quotations, and required domain terms.
 4. Apply the profile to natural-language text, including progress updates, questions, reports, instructions, and artifact prose.
 5. Apply the profile's precision checks. Name the responsible actor, its action, and the affected item when these details clarify meaning.
-6. Complete the profile's final STE review before you send or save the output.
+6. Run the profile's mandatory output gate after you draft the complete prose.
+
+## Mandatory output gate
+
+After you draft the response or artifact, reopen the profile's
+[Final STE review](references/asd-ste100-profile.md#final-ste-review). Complete
+its second pass against the finished prose. Rewrite each failed sentence or list
+item, and then repeat the review. The output is incomplete until every check
+passes. Do not send or save a draft that did not complete this gate.
 
 This skill does not activate a persistent response mode or impose a summary length, heading, or next-step section.
 Keep the structure and completeness required by the calling skill or user.

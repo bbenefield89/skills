@@ -171,7 +171,18 @@ The precise version names the component responsible for the report without givin
 
 ## Final STE review
 
-Before you send the response, confirm these points:
+This review is a mandatory output gate, not optional guidance.
+
+1. Draft the complete response or artifact prose.
+2. Reopen this section after the draft is complete. Do not perform this review from memory.
+3. Check every prose sentence and list item against every point below.
+4. Rewrite each sentence or list item that fails a check.
+5. Repeat the review after the revisions.
+
+The output is incomplete until every applicable check passes. Do not send or
+save prose that did not complete this second pass.
+
+Confirm these points:
 
 - The response preserves the exact meaning and all material warnings.
 - Relevant actions name their responsible actor and affected item. Specific details have support in the source or conversation.
