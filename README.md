@@ -4,6 +4,8 @@ This repository packages custom skills in the expected multi-skill layout:
 
 ```text
 skills/
+  architecture-grill/
+    SKILL.md
   asd-ste100/
     SKILL.md
   close-task/
