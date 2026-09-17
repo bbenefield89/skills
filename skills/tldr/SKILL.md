@@ -59,15 +59,55 @@ Apply the TLDR summary format only where it does not malform a stronger contract
 
 ## Chat response audit
 
-Append one compact audit line as the final content of each substantive chat
-response. The audit is outside the summary word and bullet limits.
+Append one compact audit block as the final content of each substantive chat
+response. Put each audit field on its own line. The audit is outside the summary
+word and bullet limits.
 
 Use exactly one applicable form:
 
-- Paragraph summary: `**Response audit:** Format: paragraph · Words: <count>/100 · STE review: <status> · Exceptions: <exceptions>`
-- Bullet summary: `**Response audit:** Format: bullets · Bullets: <count>/5 · STE review: <status> · Exceptions: <exceptions>`
-- Stronger contract: `**Response audit:** Summary limit: not applied · Reason: <reason> · STE review: <status> · Exceptions: <exceptions>`
-- User expansion: `**Response audit:** Summary limit: suspended · Reason: user requested expansion · STE review: <status> · Exceptions: <exceptions>`
+Paragraph summary:
+
+```markdown
+**Response audit**
+
+- **Format:** Paragraph
+- **Words:** <count>/100
+- **STE review:** <status>
+- **Exceptions:** <exceptions>
+```
+
+Bullet summary:
+
+```markdown
+**Response audit**
+
+- **Format:** Bullets
+- **Bullets:** <count>/5
+- **STE review:** <status>
+- **Exceptions:** <exceptions>
+```
+
+Stronger contract:
+
+```markdown
+**Response audit**
+
+- **Summary limit:** Not applied
+- **Reason:** <reason>
+- **STE review:** <status>
+- **Exceptions:** <exceptions>
+```
+
+User expansion:
+
+```markdown
+**Response audit**
+
+- **Summary limit:** Suspended
+- **Reason:** User requested expansion
+- **STE review:** <status>
+- **Exceptions:** <exceptions>
+```
 
 Use these status values:
 
@@ -79,16 +119,16 @@ Use these status values:
 Apply these counting boundaries:
 
 - Count words or bullets only in the TLDR summary body.
-- Exclude the `# TL;DR` heading, code blocks, artifacts, the Next step, required sections, and the audit line.
+- Exclude the `# TL;DR` heading, code blocks, artifacts, the Next step, required sections, and the audit block.
 - Count bullets only when the summary uses the bullet format.
-- Apply the STE review status to all natural-language chat prose above the audit line.
+- Apply the STE review status to all natural-language chat prose above the audit block.
 - Do not include artifact content in the audit counts or STE review status.
 
 The audit applies only to chat output. Never put it in a file, ticket, PR body,
 commit message, note, code block, or other artifact. If a response contains chat
 prose and an artifact, audit only the chat prose. If the response contains only
 exact copy-ready output, omit the audit. The response is incomplete until the
-applicable audit line is last, unless this exact-output exception applies.
+applicable audit block is last, unless this exact-output exception applies.
 
 ## Code references
 
