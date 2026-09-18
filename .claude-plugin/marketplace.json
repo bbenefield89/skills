@@ -37,8 +37,8 @@
         "./skills/create-test-plan",
         "./skills/fsi-parallel-stack",
         "./skills/fsi-smoke-test",
+        "./skills/feedback-triage",
         "./skills/log-hours",
-        "./skills/review-triage",
         "./skills/worktree-enter",
         "./skills/worktree-exit"
       ]
