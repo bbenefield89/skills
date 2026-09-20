@@ -7,6 +7,7 @@ Inspect only setup-owned infrastructure:
 - Git state, remotes, `.gitignore`, `AGENTS.md`, `CLAUDE.md`, and setup-owned managed markers.
 - `Justfile`, `justfile`, and other case variants; required recipes and their actual expansion through `just --list`, `just --summary`, or `just --dump`.
 - Tests, configured test frameworks, `addons/gut`, GUT `plugin.cfg`, and identifiable installed version.
+- The architecture document and AGENTS pointer defined in [architecture-document.md](architecture-document.md).
 - Recognized legacy setup-godot-project policy documents and AGENTS blocks listed in reconciliation.
 - Availability of `$setup-bb-skills` when tracker setup is selected or legacy ownership must be transferred.
 - Tracker tools, connectors, and authentication only when tracker work is selected.

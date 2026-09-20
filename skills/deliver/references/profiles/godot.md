@@ -4,6 +4,14 @@ Load this profile when the repository contains `project.godot`, GDScript, Godot 
 
 Apply these rules to changed project-owned Godot code and directly affected interfaces. Exclude vendored dependencies such as GUT.
 
+## Repository architecture
+
+Read the repository architecture document identified during preflight. Use its vertical-slice placement rules and deep-module contracts during implementation and review. Keep each feature's scenes, scripts, resources, assets, and UI together as the document requires. Use feature-local tests and root-level integration or regression tests as the document requires. Keep discovery aligned with both locations and preserve the configured test framework and public validation commands.
+
+Review changes for clear ownership and simple public methods, signals, and data contracts. Folder moves alone do not establish deep modules. Keep a behavior-preserving migration limited to files and references unless the request separately authorizes changes to state ownership or public contracts.
+
+Update project-specific architecture documentation when an approved change alters a documented contract. Treat the generated universal standard as policy: change it only when the user explicitly authorizes a policy change. Do not rewrite it to match legacy structure or introduce a new convention for one implementation.
+
 ## Typed GDScript
 
 - Prefer concrete project types, explicit local and return types, typed enums, typed exported node references, typed getters, and direct method calls.

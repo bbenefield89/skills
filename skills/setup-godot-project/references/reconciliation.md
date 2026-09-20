@@ -17,16 +17,19 @@ Do not include **Current** steps as proposed setup actions. A detected Just exec
 
 | Step | Current version | Owned artifacts |
 | --- | ---: | --- |
+| Architecture document | 2 | `docs/agents/godot-architecture.md` and the `godot-architecture` AGENTS block |
 | Ignore rules | 2 | Managed block in `.gitignore` |
-| Just validation | 2 | Managed variables and recipes in one detected Justfile |
+| Just validation | 3 | Managed variables and recipes in one detected Justfile |
 | GUT smoke | 2 | `tests/test_gut_setup.gd` |
 | Runtime verification | 2 | `tests/verify_runtime.gd` |
 | GUT dependency | selected release | `addons/gut` plus enabled `gut` editor plugin |
 | Godot warnings | detected-engine contract | Applicable `project.godot` warning settings |
 
+The current architecture document is separate from the obsolete version-1 `docs/agents/architecture.md`. Apply [architecture-document.md](architecture-document.md) when publishing it. Its scope is the agreed vertical-slice standard; legacy Deliver-policy migration remains unchanged.
+
 Each generated text artifact carries a stable marker containing its template name and version. Markers identify prior generated intent; they never authorize overwriting user changes.
 
-When a Justfile already exists, merge the required recipes into its established conventions. Detect names case-insensitively. If multiple distinct Justfiles are present, treat ownership as a hard conflict. Preserve unrelated recipes and variables.
+When a Justfile already exists, merge the required recipes into its established conventions. Version 3 adds recursive discovery under `tests/` and conditionally under `features/`; preserve existing custom checks. An unchanged version-2 recipe requires this narrow update, not replacement of the whole Justfile. The version-2 setup smoke and runtime scripts remain current. Detect names case-insensitively. If multiple distinct Justfiles are present, treat ownership as a hard conflict. Preserve unrelated recipes and variables.
 
 Add only universal generated/editor output to `.gitignore`. Preserve existing rules. Never ignore assets, imported source files, `.uid` files, tests, vendored GUT, or other project content that belongs in version control.
 
