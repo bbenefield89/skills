@@ -14,7 +14,7 @@ Organize primarily by feature or domain. Keep each feature's related implementat
 | `app/autoload/` | True application-wide services registered as Godot autoloads. |
 | `app/config/` | Application configuration and input registration. |
 | `core/<responsibility>/` | Genuinely reusable primitives, types, and interfaces without a gameplay owner. |
-| `entities/<kind>/` | Reusable authored entity scenes, such as NPCs and props. Their gameplay behavior belongs to features. |
+| `entities/<kind>/` | Physical world objects, such as players, NPCs, fish, and props. Keep their scenes, entity-specific scripts, and exclusive resources together. |
 | `levels/<location>/` | Playable locations and their authored composition. |
 | `ui/<responsibility>/` | Game-wide HUD, menus, common presentation, and themes. |
 | `data/<domain>/` | Authored domain content, such as item catalogs, dialogue pools, and balance data. |
@@ -35,11 +35,13 @@ Keep a scene's primary attached script beside the scene and use the same base fi
 
 A feature owns a cohesive gameplay capability. Group its internals by responsibility, keeping related scenes, scripts, and resources together. Small features can remain flat.
 
+Distinguish objects from activities. Entities represent things that occupy the game world. Features implement systems such as fishing, collecting, and dialogue. A player's controller belongs with the player; the fishing rules belong to Fishing, even when only the player fishes. Physical objects used by a system, such as its bobber, remain entities. Temporary interface feedback, such as a placement preview, stays with the feature that presents it.
+
 Feature-specific presentation belongs in `features/<feature>/ui/`. The root `ui/` owns game-wide presentation. Presentation requests gameplay operations through feature contracts; gameplay rules remain in features.
 
 Keep feature-specific assets and resources with their feature. Use root `assets/` for shared passive content and root `data/` for authored domain datasets. Resource definition scripts belong to the feature that defines their meaning. A resource consumed by multiple features still has a domain owner.
 
-Keep a scene that implements one feature inside that feature. Use `entities/` for reusable world-object compositions and `levels/` for playable locations. These scenes can reference feature scripts without duplicating the behavior.
+Keep non-entity scenes that implement a feature inside that feature. Use `entities/` for world objects and `levels/` for playable locations. Keep each location's attached script beside its scene. Entity scripts can call feature contracts without duplicating system rules.
 
 Only genuinely reusable primitives belong in `core/`. Several consumers do not automatically make a domain type a core primitive. A feature owns its concepts even when other features use them.
 
