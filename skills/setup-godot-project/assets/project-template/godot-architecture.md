@@ -17,7 +17,7 @@ Organize primarily by feature or domain. Keep each feature's related implementat
 | `entities/<kind>/` | Physical world objects, such as players, NPCs, fish, and props. Keep their scenes, entity-specific scripts, and exclusive resources together. |
 | `levels/<location>/` | Playable locations and their authored composition. |
 | `ui/<responsibility>/` | Game-wide HUD, menus, common presentation, and themes. |
-| `data/<domain>/` | Authored domain content, such as item catalogs, dialogue pools, and balance data. |
+| `data/<domain>/` | Shared authored datasets, such as item catalogs and game-wide balance data. Feature-owned resource definitions and instances stay together in their feature. |
 | `persistence/<responsibility>/` | Save/load boundaries, serializers, migrations, and stored-data models. |
 | `assets/<kind>/` | Passive art, audio, fonts, materials, shaders, and animation content shared across features. |
 | `tests/` | Integration tests, regression tests, fixtures, and setup validation infrastructure. |
@@ -39,7 +39,7 @@ Distinguish objects from activities. Entities represent things that occupy the g
 
 Feature-specific presentation belongs in `features/<feature>/ui/`. The root `ui/` owns game-wide presentation. Presentation requests gameplay operations through feature contracts; gameplay rules remain in features.
 
-Keep feature-specific assets and resources with their feature. Use root `assets/` for shared passive content and root `data/` for authored domain datasets. Resource definition scripts belong to the feature that defines their meaning. A resource consumed by multiple features still has a domain owner.
+Keep feature-specific assets and resources with their feature. Place a resource definition script beside its authored `.tres` instances, for example under `features/dialogue/resources/`. Use root `assets/` for shared passive content and root `data/` for shared authored datasets. A resource consumed by multiple features still has a domain owner; sharing alone does not require separating its definition from its instances.
 
 Keep non-entity scenes that implement a feature inside that feature. Use `entities/` for world objects and `levels/` for playable locations. Keep each location's attached script beside its scene. Entity scripts can call feature contracts without duplicating system rules.
 
