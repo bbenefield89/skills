@@ -39,6 +39,7 @@
         "./skills/fsi-smoke-test",
         "./skills/feedback-triage",
         "./skills/log-hours",
+        "./skills/pr-response-review",
         "./skills/worktree-enter",
         "./skills/worktree-exit"
       ]
