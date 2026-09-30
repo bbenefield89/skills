@@ -32,6 +32,8 @@ skills/
     SKILL.md
   ticket-to-spec/
     SKILL.md
+  ticket-to-tasks/
+    SKILL.md
   tldr/
     SKILL.md
   understand-code/
@@ -45,6 +47,9 @@ skills/
 ```
 
 Each installable skill lives in its own directory under `skills/` and must contain a `SKILL.md`.
+
+Use `ticket-to-tasks` to post a clarified ticket's specification behind the scenes and review only the task drafts.
+It publishes child tasks after approval. Install it with `ticket-to-spec`, `spec-to-tasks`, and `asd-ste100` for its shared references.
 
 Example install shape:
 
