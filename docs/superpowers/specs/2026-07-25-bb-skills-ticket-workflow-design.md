@@ -3,6 +3,9 @@
 **Date:** 2026-07-25
 **Status:** Approved in brainstorming
 
+**Workflow update (2026-09-30):** `ticket-to-tasks` replaces the two publication skills described in this original design.
+It posts the specification behind the scenes and presents task drafts for approval before publishing child tasks.
+
 ## Purpose
 
 Create a reusable, tracker-configurable planning workflow built around small outcome tickets and executable child tasks. The workflow replaces the Phase/Epic model and removes the need to repeatedly override generic `to-spec` and `to-tickets` behavior.

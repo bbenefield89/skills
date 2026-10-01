@@ -1,6 +1,6 @@
 ---
 name: setup-bb-skills
-description: Configures a repository and its issue tracker for the BB ticket publishing skills by reconciling tracker concepts and writing a local contract. Use when a repository needs setup for create-ticket, ticket-to-spec, or spec-to-tasks, or when its tracker conventions change.
+description: Configures a repository and its issue tracker for the BB ticket publishing skills by reconciling tracker concepts and writing a local contract. Use when a repository needs setup for create-ticket or ticket-to-tasks, or when its tracker conventions change.
 ---
 
 # Set Up BB Skills

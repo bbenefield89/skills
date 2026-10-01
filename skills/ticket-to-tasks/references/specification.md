@@ -1,4 +1,4 @@
-# Ticket to Spec Reference
+# Specification reference
 
 This template and its synthesis rules are inherited from the source `to-spec` skill.
 

@@ -4,7 +4,7 @@
 
 A GitHub milestone represents a development phase. A **Ticket** is a GitHub issue classified by the BB contract, assigned to exactly one canonical milestone, and included in the Project. A **Task** is classified by the BB contract and attached as a native sub-issue of exactly one Ticket. Tasks omit milestones and Project membership; their native relationship supplies sub-issue progress on Ticket cards.
 
-The only native issue hierarchy is `Ticket -> Task`. A lightweight Ticket is enriched in place by `ticket-to-spec`, retaining its identity, classification, milestone, state, relationships, and Project membership. Standalone specification issues are a legacy structure.
+The only native issue hierarchy is `Ticket -> Task`. A lightweight Ticket is enriched in place by `ticket-to-tasks`, retaining its identity, classification, milestone, state, relationships, and Project membership. Standalone specification issues are a legacy structure.
 
 ## Ownership
 

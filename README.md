@@ -28,10 +28,6 @@ skills/
     SKILL.md
   setup-godot-project/
     SKILL.md
-  spec-to-tasks/
-    SKILL.md
-  ticket-to-spec/
-    SKILL.md
   ticket-to-tasks/
     SKILL.md
   tldr/
@@ -49,7 +45,8 @@ skills/
 Each installable skill lives in its own directory under `skills/` and must contain a `SKILL.md`.
 
 Use `ticket-to-tasks` to post a clarified ticket's specification behind the scenes and review only the task drafts.
-It publishes child tasks after approval. Install it with `ticket-to-spec`, `spec-to-tasks`, and `asd-ste100` for its shared references.
+It publishes child tasks after approval. Its specification and task references are included.
+Install it with `asd-ste100` for its shared writing guidance.
 
 Example install shape:
 

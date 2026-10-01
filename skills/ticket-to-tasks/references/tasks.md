@@ -1,4 +1,4 @@
-# Spec to Tasks Reference
+# Task reference
 
 These decomposition and publication rules are inherited from the source `to-tickets` skill and adapted for child tasks.
 

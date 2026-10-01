@@ -18,11 +18,10 @@ Keep this skill's output contract. If the writing guidance is unavailable, state
 
 Read both references completely before drafting:
 
-- [Specification template and synthesis rules](../ticket-to-spec/REFERENCE.md).
-- [Task decomposition, content, relationships, and publication rules](../spec-to-tasks/REFERENCE.md).
+- [Specification template and synthesis rules](references/specification.md).
+- [Task decomposition, content, relationships, and publication rules](references/tasks.md).
 
 These references supply the artifact rules. This skill controls the combined sequence and approval boundary.
-Read the references directly. Run this workflow without separate invocations of the two standalone skills.
 If a reference is missing, report the missing dependency before publishing.
 
 ## Gather context
