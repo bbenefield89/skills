@@ -10,6 +10,8 @@ skills/
     SKILL.md
   close-task/
     SKILL.md
+  code-brief/
+    SKILL.md
   create-and-merge-pr/
     SKILL.md
   create-ticket/
@@ -31,8 +33,6 @@ skills/
   ticket-to-tasks/
     SKILL.md
   tldr/
-    SKILL.md
-  understand-code/
     SKILL.md
   write-a-skill/
     SKILL.md
