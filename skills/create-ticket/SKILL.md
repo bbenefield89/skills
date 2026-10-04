@@ -1,6 +1,6 @@
 ---
 name: create-ticket
-description: Creates a lightweight tracker ticket with a plain-language title, a short TL;DR, configured classifications and release grouping, project position, and ticket dependencies. Use when an idea needs an initial ticket before grilling or specification.
+description: Creates a lightweight tracker ticket with a plain-language title, a short TL;DR, configured classifications, relevant labels, release grouping, project position, and ticket dependencies. Use when an idea needs an initial ticket before grilling or specification.
 disable-model-invocation: true
 ---
 
@@ -46,11 +46,18 @@ Search for an existing equivalent ticket before proposing a new one. Ask whether
 
 Apply the configured ticket classification and needs-details state.
 
+Inspect available labels and their descriptions in the target repository.
+Select existing labels that match the ticket's purpose and affected area.
+Examples include `bug`, `enhancement`, `documentation`, and component labels when those labels exist and fit.
+Use exact repository label names and meanings, including relevant user-requested labels.
+Retain required classification and needs-details labels. If no additional label fits, use only the required labels.
+Report any unavailable user-requested labels in the preview.
+
 For GitHub Issues, release grouping means the milestone that represents the development phase.
 
 If the user supplied a release grouping, use it without a separate selection question. Otherwise inspect available release groupings, infer the best fit from context, and ask the user to confirm it. If no fit is defensible, ask the user to choose. Omit release grouping only when the contract says it is not used.
 
-Do not create missing classifications or release groupings. Direct configuration problems to `$setup-bb-skills`.
+Do not create missing classifications, labels, or release groupings. Direct configuration problems to `$setup-bb-skills`.
 
 ## Ticket dependencies
 
@@ -83,6 +90,7 @@ Preview:
 - title and complete body;
 - ticket classification;
 - needs-details state;
+- complete label set and the reason for each additional label;
 - release grouping;
 - intended position in the project's TODO column;
 - every proposed blocker addition, removal, or replacement, with affected ticket identifiers, dependency direction, and a reason.
@@ -90,11 +98,11 @@ Preview:
 Wait for explicit approval of the ticket and all proposed dependency changes in the same preview.
 Then:
 
-1. Create the ticket with the approved classifications and release grouping.
+1. Create the ticket with the approved classifications, labels, and release grouping.
 2. Ensure the ticket belongs to the configured project and its TODO column.
 3. Move the ticket to the approved position.
 4. Apply the approved blocker additions, removals, and replacements.
 5. Read back each affected ticket's native relationships and remaining unfinished blockers, plus the new ticket's neighboring TODO tickets.
-6. Verify every confirmed value and report each ticket's resulting blocking state.
+6. Read back the ticket's labels and verify every confirmed value. Report each ticket's resulting blocking state.
 
 Create no specification or child tasks. On a partial failure, do not delete the ticket; report what succeeded and what remains.
