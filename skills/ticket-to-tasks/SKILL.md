@@ -72,8 +72,7 @@ Make each draft understandable without the originating conversation or a separat
 Expose all material scope, behavior, and testing choices through the task drafts.
 
 Assign exactly one configured executor to each task.
-Use the agent executor for work possible with available tools and access.
-Use the human executor for human-only judgment, access, physical action, or manual validation.
+Apply the verification and executor rules in the task reference.
 Declare only genuine blocking edges.
 
 Present the drafts as a numbered list in the proposed work order. Include these fields for each task:
@@ -84,7 +83,7 @@ Present the drafts as a numbered list in the proposed work order. Include these 
 - **What it delivers:** The observable result and bounded work.
 - **Context:** The decisions, starting state, and later work needed to execute this task independently.
 - **Acceptance criteria:** The observable conditions that prove completion.
-- **Validation:** The behavioral seam and checks, including any required manual validation.
+- **Validation:** The behavioral seam and checks performed as part of this task.
 
 Identify equivalent existing tasks and propose reuse in the numbered review.
 Reuse a task only after the user confirms that match.

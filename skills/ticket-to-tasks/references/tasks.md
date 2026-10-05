@@ -11,6 +11,19 @@ These decomposition and publication rules are inherited from the source `to-tick
 - Declare only genuine blocking edges.
 - Preserve enough ticket context, prior decisions, expected starting state, and downstream purpose for a replacement worker.
 
+## Verification and executors
+
+The user verifies the work as each implementation task proceeds.
+Keep automated tests and manual checks in the acceptance criteria and validation of the owning implementation task.
+Do not create tasks whose only outcome is human verification, including QA, playtesting, or acceptance sign-off.
+Apply this rule throughout the breakdown, including its final task.
+Before presenting drafts, fold any task devoted only to human verification into the relevant implementation tasks.
+Keep ongoing user verification outside the task dependency graph.
+
+Use the configured agent executor for work possible with available tools and access.
+Use the human executor only for implementation work that requires human-only judgment, access, or physical action.
+If an agent cannot perform a manual check, state the check and limitation in the owning task's validation.
+
 ## Wide refactors
 
 A wide refactor is one mechanical change whose blast radius fans across the codebase so one edit breaks many callers and no vertical task can land green. Do not force it into a tracer bullet. Use expand-contract:
