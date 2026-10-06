@@ -22,6 +22,7 @@
         "./skills/scoped-grill-with-docs",
         "./skills/setup-bb-skills",
         "./skills/setup-github-project",
+        "./skills/suggest-model",
         "./skills/ticket-to-tasks",
         "./skills/tldr",
         "./skills/write-a-skill",

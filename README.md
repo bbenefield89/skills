@@ -34,6 +34,8 @@ skills/
     SKILL.md
   setup-godot-project/
     SKILL.md
+  suggest-model/
+    SKILL.md
   ticket-to-tasks/
     SKILL.md
   tldr/
