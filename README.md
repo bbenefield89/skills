@@ -12,6 +12,8 @@ skills/
     SKILL.md
   code-brief/
     SKILL.md
+  code-review/
+    SKILL.md
   create-and-merge-pr/
     SKILL.md
   create-ticket/
@@ -47,6 +49,12 @@ Each installable skill lives in its own directory under `skills/` and must conta
 Use `ticket-to-tasks` to post a clarified ticket's specification behind the scenes and review only the task drafts.
 It publishes child tasks after approval. Its specification and task references are included.
 Install it with `asd-ste100` for its shared writing guidance.
+
+Use `code-review` for general, language/framework, and repository review tables ranked High, Med, and Low.
+Its bundled Godot and C#/.NET profiles combine when both apply.
+General review includes SOLID, Clean Code, Clean Architecture, and STE checks for comments and documentation where applicable.
+This repository maintains the replacement for the previous installed `code-review` skill.
+Install it with `asd-ste100` and `engineering-principles` for shared writing and design guidance.
 
 Example install shape:
 

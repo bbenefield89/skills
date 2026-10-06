@@ -11,6 +11,7 @@
         "./skills/asd-ste100",
         "./skills/brainstorming",
         "./skills/close-task",
+        "./skills/code-review",
         "./skills/create-and-merge-pr",
         "./skills/create-ticket",
         "./skills/deliver",
