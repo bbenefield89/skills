@@ -1,6 +1,7 @@
 ---
 name: ticket-to-tasks
-description: Turn a clarified ticket into task drafts for approval. Create and post its specification behind the scenes, then publish child tasks after approval.
+description: Turn a clarified ticket into task drafts for approval. Create and post its specification behind the scenes, then publish child tasks after approval. With `jira`, post the approved tasks as one comment on the Jira ticket of the current branch.
+argument-hint: "Optional: jira [ticket-key], or instructions that replace the tracker contract"
 ---
 
 # Ticket to Tasks
@@ -24,10 +25,18 @@ Read both references completely before drafting:
 These references supply the artifact rules. This skill controls the combined sequence and approval boundary.
 If a reference is missing, report the missing dependency before publishing.
 
+## Invocation instructions
+
+Instructions that the user gives with the invocation replace the matching parts of the tracker contract and of this workflow.
+Follow them without a tracker contract. Use the contract only for the parts that the instructions leave open.
+
+If the invocation includes `jira`, read and follow [the Jira comment mode](references/jira.md).
+That mode replaces the tracker contract, specification publication, and task publication.
+
 ## Gather context
 
 Read `docs/agents/bb-skills.md` to resolve the tracker, target, classifications, release behavior, and relationships.
-If the contract is missing or inconsistent, direct the user to `$setup-bb-skills` before publishing.
+If the contract is missing or inconsistent for a part that the invocation instructions leave open, direct the user to `$setup-bb-skills` before publishing.
 
 Resolve the existing ticket from the user's reference or current conversation.
 Read its full body, comments, and existing child tasks.
@@ -73,12 +82,14 @@ Expose all material scope, behavior, and testing choices through the task drafts
 
 Assign exactly one configured executor to each task.
 Apply the verification and executor rules in the task reference.
+Suggest a model for each task with the model suggestion rules in the task reference.
 Declare only genuine blocking edges.
 
 Present the drafts as a numbered list in the proposed work order. Include these fields for each task:
 
 - **Title:** The task title.
 - **Executor:** The configured agent or human classification.
+- **Suggested model:** The model suggestion line, or `—`.
 - **Blocked by:** Draft task numbers and titles, or `None`.
 - **What it delivers:** The observable result and bounded work.
 - **Context:** The decisions, starting state, and later work needed to execute this task independently.

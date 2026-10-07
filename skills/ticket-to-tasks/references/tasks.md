@@ -24,6 +24,22 @@ Use the configured agent executor for work possible with available tools and acc
 Use the human executor only for implementation work that requires human-only judgment, access, or physical action.
 If an agent cannot perform a manual check, state the check and limitation in the owning task's validation.
 
+## Model suggestions
+
+Suggest a model for each task that has the agent executor.
+Read and apply [the shared suggest-model skill](../../suggest-model/SKILL.md) one time for each of these tasks.
+Match the task type to the work of that task, not to the parent ticket. Select the nearest task type instead of asking the user.
+
+Keep that skill's picks and winner. Replace its reply format with this one line:
+
+```markdown
+Claude Code: <model>, <effort> · Codex: <model>, <effort> · Winner: <Claude Code, Codex, or Tie>
+```
+
+Use `—` as the suggestion for a task that has the human executor.
+If the suggest-model skill is unavailable, state that limit one time in the review and use `—` for every task.
+If that skill requires a note about the age of its picks, state the note one time in the review.
+
 ## Wide refactors
 
 A wide refactor is one mechanical change whose blast radius fans across the codebase so one edit breaks many callers and no vertical task can land green. Do not force it into a tracer bullet. Use expand-contract:
@@ -73,9 +89,9 @@ After every child task and relationship is verified, prepend this generated sect
 ```markdown
 # Tasks
 
-| Task | What it delivers | Ready for |
-|---|---|---|
-| [#<number> - <title>](<task URL>) | <Plain-English result.> | `<ready-for-* label>` |
+| Task | What it delivers | Ready for | Suggested model |
+|---|---|---|---|
+| [#<number> - <title>](<task URL>) | <Plain-English result.> | `<ready-for-* label>` | <Approved model suggestion, or `—`.> |
 
 ---
 ```
@@ -87,6 +103,7 @@ For each row:
 - Link the task number and full title to the task issue.
 - Describe the delivered result in one short sentence of plain, non-technical English. Keep it to one or two rendered lines when practical.
 - Display the task's attached `ready-for-*` label exactly.
+- Display the model suggestion from the approved draft exactly.
 
 Keep native blocker relationships in the task issues and omit them from this table. If the body already starts with the generated `# Tasks` section, replace that section through its thematic break. Otherwise, place the section before the existing body. Preserve the rest of the body byte-for-byte.
 
@@ -94,7 +111,8 @@ Read back the parent body and verify that:
 
 - the generated section is the first content;
 - every child task appears exactly once in the approved order;
-- every task link, result, and `ready-for-*` label matches the published task; and
+- every task link, result, and `ready-for-*` label matches the published task;
+- every model suggestion matches the approved draft; and
 - the previous parent body remains unchanged below the thematic break.
 
 ## Review format
@@ -105,6 +123,7 @@ Before publishing, present:
 2. **Executor:** configured agent or human classification
 3. **Blocked by:** task numbers/titles or none
 4. **What it delivers:** the observable behavior or enabling result
+5. **Suggested model:** the model suggestion line, or `—`
 
 Ask:
 
