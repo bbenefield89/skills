@@ -48,10 +48,13 @@ Done when every non-test file in scope has been checked against each category.
 
 ### 3. Write the purpose
 
-Write one to three full sentences describing what this change does, from the point of
-view of someone using the product. Write one sentence per distinct change, for a
-non-technical person who knows the product but not the code. For `file` and `system`,
-describe what the code does for users today.
+Write full sentences describing what this change does, from the point of view of someone
+using the product. Write one sentence per distinct change a user would notice, most
+significant first, for a non-technical person who knows the product but not the code.
+Edits that serve the same user-visible outcome share one sentence. For `file` and
+`system`, describe what the code does for users today.
+
+Done when every user-visible change in scope has its sentence.
 
 Each sentence must:
 
@@ -92,8 +95,9 @@ A rendered widget loses its layout when copied into chat. Write the same infogra
 one self-contained HTML file in the OS temp directory (`$env:TEMP` on Windows, `$TMPDIR`
 or `/tmp` elsewhere). Name it `code-brief-<scope-label>-<short-sha>.html`, using the branch
 name, keyword, or path slug for the label. The host's CSS variables are not available
-outside the widget, so define the same role variables in `:root`, with a
-`prefers-color-scheme: dark` block. Inline the icon SVGs. Use no external requests.
+outside the widget, so define the same role variables in `:root` with their dark-mode
+values and set `color-scheme: dark`. The copy opens dark on every machine, whatever the
+OS theme. Inline the icon SVGs. Use no external requests.
 
 ## Layout
 
@@ -141,7 +145,8 @@ sentence. Empty state: "Nothing new here." (For `file` and `system`: "Nothing he
 - At most 6 entries per card. Show overflow as a muted "+N more <things>", naming the
   things: "+3 more constructors".
 - With more than 10 config knobs, group them by prefix or subsystem under small sub-labels.
-- Fit everything without scrolling inside the widget. Shrink content to fit.
+- Fit everything without scrolling inside the widget. Shrink the cards to fit, and keep
+  every purpose sentence.
 
 ### Style
 
