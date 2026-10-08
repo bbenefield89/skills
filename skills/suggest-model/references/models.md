@@ -4,14 +4,13 @@
 
 ## Picks table
 
-The task types are in order from the lightest to the heaviest.
-
 | Task type | Examples | Claude Code | Codex | Winner | Reason |
 |---|---|---|---|---|---|
 | Mechanical edit | Rename, reformat, boilerplate, a one-line fix | Sonnet 5.5, low | GPT-6.1 Sol, low | Tie | The two picks do this work correctly and quickly. |
 | Bulk scan | Search many files, extract data, classify items | Sonnet 5.5, low | GPT-6 Luna, high | Tie | No measurement separates the two picks for this work. |
 | Scoped change | A feature or a bug fix in a few files, clear requirements | Opus 5.5, medium | GPT-6.1 Sol, medium | Tie | No measurement compares the two picks at these efforts. |
 | Front-end work | Layout, components, visual polish | Sonnet 5.5, high | GPT-6.1 Sol, medium | Tie | No benchmark compares the tools for this work. |
+| 3D modeling | Build or edit models, scenes, or assets with a 3D tool or with scripts | Opus 5.5, medium | GPT-6.1 Sol, medium | Tie | No benchmark compares the tools for this work. |
 | Code review | Review a diff, a branch, or a module | Opus 5.5, high | GPT-6.1 Sol, xhigh | Tie | No benchmark compares the tools for this work. |
 | Design decision | Architecture, a plan, unclear requirements | Opus 5.5, high | GPT-6.1 Sol, xhigh | Tie | No benchmark compares the tools for this work. |
 | Code investigation | Explain a codebase, trace behavior, answer questions about a repository | Opus 5.5, xhigh | GPT-6.1 Sol, xhigh | Claude Code | Claude Code scores approximately 5 points higher on repository questions. One source. |
@@ -36,7 +35,7 @@ The task types are in order from the lightest to the heaviest.
 
 ## Evidence
 
-All scores come from benchmarks that run the models in Claude Code and in Codex.
+The scores in this table come from benchmarks that run the models in Claude Code and in Codex.
 
 | Measurement | Claude Code | Codex | Source |
 |---|---|---|---|
@@ -47,10 +46,20 @@ All scores come from benchmarks that run the models in Claude Code and in Codex.
 | Sonnet 5.5 by effort | low 42, medium 46, high 55, xhigh 63, max 68 | Not applicable | Artificial Analysis |
 | GPT-6.1 Sol by effort | Not applicable | low 57, medium 61, high 60, xhigh 63, max 60 | Artificial Analysis |
 
+The scores for 3D modeling come from older models in research harnesses that use Blender. They show a direction only.
+
+| Measurement | Result | Source |
+|---|---|---|
+| Scene tasks through Blender tools | Opus 4.6 high: 48.9. GPT 5.4 medium: 48.7. GPT 5.4 high: 48.7. Sonnet 5 high: 39.5 | SceneActBench |
+| Effort for the strongest models | More reasoning changes the score by fewer than 5 points | 3DCodeBench |
+| Scripts that run without an error | One attempt: 70%. Attempts with error feedback: 97% | 3DCodeBench |
+| Human preference for generated objects | GPT-5.5: 1163. Opus 4.7: 1006 | 3DCodeBench |
+
 Limits of the evidence:
 
 - Opus 5.5 has measured scores only at max effort. The Opus picks below max effort follow the guidance from Anthropic.
 - No benchmark compares the tools for front-end work, code review, or design decisions.
+- No benchmark measures the current models for 3D modeling. The picks follow the scores of the older models.
 
 ## Refresh
 
@@ -64,3 +73,5 @@ Sources:
 - Codex models and effort: https://learn.chatgpt.com/docs/models.md and https://learn.chatgpt.com/docs/model-selection.md
 - Artificial Analysis Coding Agent Index: https://artificialanalysis.ai/agents/coding
 - Terminal-Bench leaderboard: https://www.tbench.ai/
+- SceneActBench: https://arxiv.org/abs/2607.22393
+- 3DCodeBench: https://arxiv.org/abs/2606.01057

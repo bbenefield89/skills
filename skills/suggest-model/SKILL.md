@@ -12,10 +12,11 @@ This skill only suggests. The user changes the model.
 
 1. Read [the model picks](references/models.md).
 2. Find the task. Use the user's description and the current conversation.
-   If the description fits no task type, ask the user one question.
-   If another skill called this skill, select the nearest task type and state the assumption.
+   If the task is not clear, ask the user one question.
+   If another skill called this skill, do not ask. Select the nearest task type and state the assumption.
 3. Match the task to one task type in the picks table.
-   If two task types fit, use the task type that is lower in the table.
+   If two task types fit, use the task type that describes the work more exactly.
+   If no task type fits, use the nearest task type and state the assumption.
 4. Copy the Claude Code pick, the Codex pick, and the winner from that row.
 5. Reply in the output format below.
 
