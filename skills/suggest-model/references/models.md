@@ -16,6 +16,9 @@
 | Code investigation | Explain a codebase, trace behavior, answer questions about a repository | Sonnet 5.5, xhigh | GPT-6.1 Sol, xhigh | Tie | The two picks score within approximately 1 point on repository questions. |
 | Hard debugging | Root cause search, build failures, environment or terminal problems | Opus 5.5, xhigh | GPT-6.1 Sol, xhigh | Claude Code | Claude Code scores 6 to 9 points higher on terminal tasks in two independent sources. |
 | Long repository change | A refactor, a migration, or a feature in many files, with little supervision | Sonnet 5.5, xhigh | GPT-6.1 Sol, xhigh | Codex | The scores tie, and Codex completes each task in less time and at approximately a third of the cost. |
+| Research | Read documents or web sources, compare options, write a report with sources | Sonnet 5.5, high | GPT-6.1 Sol, medium | Tie | No benchmark compares the tools for this work. |
+| Writing | Documentation, tickets, messages, notes, a prompt for another agent | Sonnet 5.5, high | GPT-6.1 Sol, medium | Tie | No benchmark compares the tools for this work. |
+| Tool workflow | A known procedure through tools or connectors, such as Jira, Outlook, or a CLI | Sonnet 5.5, high | GPT-6.1 Sol, medium | Tie | No benchmark compares the tools for this work. |
 
 ## Commands
 
@@ -70,6 +73,7 @@ Limits of the evidence:
 - The Claude scores on AA include some attempts that an older model completed after a refusal.
 - No benchmark compares the tools for front-end work, code review, or design decisions.
 - No benchmark measures the current models for 3D modeling. The picks follow the scores of the older models.
+- No benchmark measures research, writing, or tool workflows. These picks follow the guidance from Anthropic and the rule that Sonnet 5.5 loses much quality below high effort.
 
 ## Refresh
 

@@ -1,6 +1,6 @@
 ---
 name: suggest-model
-description: Suggests the model and reasoning effort for a coding task in Claude Code and in Codex, and names the better tool. Use when the user asks which model or effort to use for a task, or when another skill needs a model suggestion.
+description: Suggests the model and reasoning effort for a coding, research, writing, or tool workflow task in Claude Code and in Codex, and names the better tool. Use when the user asks which model or effort to use for a task, or when another skill needs a model suggestion.
 ---
 
 # Suggest Model
