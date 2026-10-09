@@ -55,7 +55,16 @@ Report any unavailable user-requested labels in the preview.
 
 For GitHub Issues, release grouping means the milestone that represents the development phase.
 
-If the user supplied a release grouping, use it without a separate selection question. Otherwise inspect available release groupings, infer the best fit from context, and ask the user to confirm it. If no fit is defensible, ask the user to choose. Omit release grouping only when the contract says it is not used.
+If the user supplied a release grouping, use it without a separate selection question. Omit release grouping only when the contract says it is not used.
+
+Otherwise infer the release grouping from two facts: what the grouping represents and what the ticket does.
+
+- Read the name and description of each available release grouping. If a grouping has no written meaning, assume one and state it in the preview.
+- Select the grouping whose meaning matches the ticket's work. Example: a ticket for a final production asset belongs in a late phase, even while the project is in a prototype phase.
+- Base the selection on that match only. The active grouping and the groupings of earlier tickets are not evidence.
+- When you create more than one ticket, select a grouping for each ticket separately.
+
+Ask the user to confirm the selection. If no fit is defensible, ask the user to choose.
 
 Do not create missing classifications, labels, or release groupings. Direct configuration problems to `$setup-bb-skills`.
 
@@ -91,7 +100,7 @@ Preview:
 - ticket classification;
 - needs-details state;
 - complete label set and the reason for each additional label;
-- release grouping;
+- release grouping, the reason for it, and each assumed grouping meaning;
 - intended position in the project's TODO column;
 - every proposed blocker addition, removal, or replacement, with affected ticket identifiers, dependency direction, and a reason.
 
