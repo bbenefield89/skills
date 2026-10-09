@@ -42,6 +42,8 @@ skills/
     SKILL.md
   write-a-skill/
     SKILL.md
+  write-prompt/
+    SKILL.md
   ynab-budget-review/
     SKILL.md
   zoom-out/

@@ -26,6 +26,7 @@
         "./skills/ticket-to-tasks",
         "./skills/tldr",
         "./skills/write-a-skill",
+        "./skills/write-prompt",
         "./skills/ynab-budget-review",
         "./skills/zoom-out"
       ]
