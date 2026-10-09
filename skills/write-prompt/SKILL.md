@@ -14,15 +14,34 @@ Agents read the output, not humans. Do not apply ASD-STE100 to the output.
 ## Steps
 
 1. Find the task. Use the arguments, the user's request, the conversation, and the referenced material.
-2. If the objective or the done condition is not clear, ask the user one question at a time.
-   Do not invent a requirement, a path, or a command.
-3. Collect the context that the executing agent needs. Read the referenced files, issues, and documents.
+2. Collect the context that the executing agent needs. Read the referenced files, issues, and documents.
    Record the exact paths, commands, names, and decisions. The executing agent does not see this conversation.
-4. Read [the prompting reference](references/prompting.md).
-5. Read [the dispatch rules](references/dispatch.md). Select the mode, the agent type, and foreground or background.
+3. Read [the prompting reference](references/prompting.md) and [the dispatch rules](references/dispatch.md).
+4. Ask the clarifying questions. Do this before you write any part of the output.
+5. Select the mode, the agent type, and foreground or background with the dispatch rules.
 6. If the mode is Subagent or Parallel subagents, get the model and effort as the dispatch rules state.
 7. Write the output in the format below.
 8. Check each task prompt against the checklist in the prompting reference. Correct each failure.
+
+## Clarifying questions
+
+List each gap that the material does not answer and that would change the prompt:
+
+- The objective, or the done condition.
+- The scope: what is in scope, what is out of scope, and where to stop.
+- A constraint, such as a file, behavior, or system that must not change.
+- A required input, such as a path, a command, an identifier, or a source.
+- The output format that the user wants back.
+- A dispatch choice that depends on the user, such as whether the task needs the user while it runs.
+
+Ask about each gap. Ask independent questions together, and give a recommended answer for each question.
+If the `AskUserQuestion` tool is available, use it. It accepts up to four questions in each call.
+If an answer opens a new gap, ask again.
+
+Do not invent a requirement, a path, or a command to fill a gap.
+If the user tells you to continue without an answer, use your recommended answer and state it in the `**Assumed:**` line.
+This step is complete when each gap has an answer from the user or an assumption that the user accepted.
+If the material has no gap, continue to the next step without a question.
 
 ## Output format
 
