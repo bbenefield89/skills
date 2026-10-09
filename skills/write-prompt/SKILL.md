@@ -1,6 +1,6 @@
 ---
 name: write-prompt
-description: Writes an agent-ready prompt for any task from current Anthropic prompting guidance. Adds a dispatch block that tells the receiving agent to do the task inline or in subagents, with the agent type, model, and effort from suggest-model. Use when the user asks to write, create, or generate a prompt for an agent, or wants a task packaged for a subagent or another session. Outputs the prompt only and does not run it.
+description: Writes an agent-ready prompt for any task from current Anthropic prompting guidance. Adds a dispatch block that tells the receiving agent to do the task inline or to run a plan of steps with subagents, each part on the cheapest model and effort from suggest-model that still does it well. Use when the user asks to write, create, or generate a prompt for an agent, or wants a task packaged for a subagent or another session. Outputs the prompt only and does not run it.
 argument-hint: "Optional: the task, or emphasis for the prompt"
 ---
 
@@ -18,9 +18,9 @@ Agents read the output, not humans. Do not apply ASD-STE100 to the output.
    Record the exact paths, commands, names, and decisions. The executing agent does not see this conversation.
 3. Read [the prompting reference](references/prompting.md) and [the dispatch rules](references/dispatch.md).
 4. Ask the clarifying questions. Do this before you write any part of the output.
-5. Select the mode, the agent type, and foreground or background with the dispatch rules.
-6. Get the model and effort as the dispatch rules state. Do this in every mode.
-7. Write the output in the format below. [The example](references/example.md) shows a complete Subagent run.
+5. Break the task into parts, and get the model and effort for each part as the dispatch rules state. Do this in every mode.
+6. Select the mode with the dispatch rules. For the Plan mode, plan the steps, the agent types, and foreground or background.
+7. Write the output in the format below. [The examples](references/example.md) show a plan with one step and a plan with three steps.
 8. Check each task prompt against the checklist in the prompting reference. Correct each failure.
 
 ## Clarifying questions
@@ -61,38 +61,13 @@ Reason: <one sentence from the dispatch rules>
 </task_prompt>
 ````
 
-For the Subagent mode:
-
-````text
-<dispatch>
-Spawn one subagent with the Agent tool. Give it the complete text inside <task_prompt> as its prompt.
-Do not do the task in this session. Use these settings exactly:
-- subagent_type: <agent type>
-- model: <opus | sonnet | haiku>
-- effort: <low | medium | high | xhigh | max>
-- run_in_background: <true | false>
-Reason: <one sentence from the dispatch rules>
-Task type: <task type from suggest-model>
-When the subagent returns: <what the parent does with the report>
-</dispatch>
-
-<task_prompt>
-<the task prompt>
-</task_prompt>
-````
-
-For the Parallel subagents mode, use the Subagent format with these changes:
-
-- Start the dispatch with "Spawn <N> subagents with the Agent tool in one message."
-- Give one settings list for each subagent. Start each list with `task_prompt id="<n>"`.
-- Write one `<task_prompt id="<n>">` block for each subagent.
-- In "When the subagents return", tell the parent how to combine the reports.
+For the Plan mode, use [the Plan format](references/plan.md). It covers one agent, parallel agents, parent steps, gated steps, and continued subagents.
 
 For the conditional Inline mode, use the Inline format with these changes. The dispatch rules state when to use it:
 
 - Replace the first dispatch line with: "If you run on <Claude Code model name>, do the task in <task_prompt> in this session. Do not spawn a subagent. Otherwise, spawn one subagent with the Agent tool. Give it the complete text inside <task_prompt> as its prompt. Do not do the task in this session. Use these settings exactly:"
-- Add the settings list of the Subagent format after it. Use `subagent_type`, `model`, `effort`, and `run_in_background: false`.
-- Keep the Reason line. Add the "Task type" and "When the subagent returns" lines of the Subagent format.
+- Add a settings list after it: `- subagent_type: <agent type>`, `- model: <opus | sonnet | haiku>`, `- effort: <low | medium | high | xhigh | max>`, and `- run_in_background: false`.
+- Keep the Reason line. Add a `Task type: <task type from suggest-model>` line and a `When the subagent returns: <what the parent does with the report>` line.
 
 If you assumed a fact, add one line after the code block: `**Assumed:** <assumption>`.
 
