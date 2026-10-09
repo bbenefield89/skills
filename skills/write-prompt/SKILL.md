@@ -88,13 +88,12 @@ For the Parallel subagents mode, use the Subagent format with these changes:
 - Write one `<task_prompt id="<n>">` block for each subagent.
 - In "When the subagents return", tell the parent how to combine the reports.
 
+For the conditional Inline mode, use the Inline format with these changes. The dispatch rules state when to use it:
+
+- Replace the first dispatch line with: "If you run on <Claude Code model name>, do the task in <task_prompt> in this session. Do not spawn a subagent. Otherwise, spawn one subagent with the Agent tool. Give it the complete text inside <task_prompt> as its prompt. Do not do the task in this session. Use these settings exactly:"
+- Add the settings list of the Subagent format after it. Use `subagent_type`, `model`, `effort`, and `run_in_background: false`.
+- Keep the Reason line. Add the "Task type" and "When the subagent returns" lines of the Subagent format.
+
 If you assumed a fact, add one line after the code block: `**Assumed:** <assumption>`.
 
-For the Inline mode, end the response with the run section. Put it after the `**Assumed:**` line. The user reads it to set the session.
-
-```markdown
-**Run with**
-- Claude Code: <model>, <effort> — `/model <alias>`, then `/effort <effort>`
-- Codex: <model>, <effort label> — `/model`, then select <model> and <effort label>
-- Better fit: <Claude Code, Codex, or Either>
-```
+For each Inline output, end the response with the run section. Use [the template in the dispatch rules](references/dispatch.md#run-section). Put it after the `**Assumed:**` line. The user reads it to set the session.

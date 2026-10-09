@@ -46,11 +46,30 @@ Do not select a subagent only to verify or review the work of the parent.
 2. For the Subagent and Parallel subagents modes, use only the Claude Code model and effort. Ignore the Codex suggestion and the better fit. A subagent always runs in Claude Code.
 3. Convert the model: Opus 5.5 is `opus`, Sonnet 5.5 is `sonnet`, and Haiku 5.5 is `haiku`.
 4. Use the effort without a change.
-5. For the Inline mode, keep the Claude Code pick, the Codex pick, and the better fit for the run section. Get the set commands from the catalog of `suggest-model`.
+5. For the Inline mode, keep the Claude Code pick, the Codex pick, and the better fit for the run section. Get the set commands from the catalog of `suggest-model`. For the conditional Inline dispatch, also use the Claude Code model name and the alias as the rules in "Make Inline conditional" state.
 
 For parallel subagents, invoke `suggest-model` one time for each different task type.
 If the `suggest-model` skill is not available in the Subagent or Parallel subagents mode, omit the model and effort. Then the subagent uses the session model.
-If the `suggest-model` skill is not available in the Inline mode, omit the run section. Add an `**Assumed:**` line that states this.
+If the `suggest-model` skill is not available in the Inline mode, omit the run section and use the plain Inline dispatch. Add an `**Assumed:**` line that states this.
+
+## Make Inline conditional
+
+A model change in a session discards the prompt cache, because the cache is per model. The new model reads the whole conversation at the uncached price. A subagent starts with a small, clean context.
+So an Inline dispatch depends on the model of the agent that runs the prompt. That agent can be a different session from the one that wrote the prompt.
+
+When the mode is Inline, write the conditional dispatch from [the output format](../SKILL.md#output-format):
+
+- Name the Claude Code pick with its model name, such as "Opus 5.5". The receiving agent compares it with the model name in its system prompt.
+- If the receiving agent runs on that model, it does the task in its own session.
+- If it runs on another model, it spawns one subagent with the Claude Code pick. Select the agent type with the rules above. Use `run_in_background: false`.
+- A different effort with the same model does not start a subagent. An effort change keeps the cache.
+
+Use the plain Inline dispatch, without the condition, in these cases:
+
+- The task needs questions and answers with the user while it runs. A subagent cannot ask the user a question partway through.
+- The better fit from `suggest-model` is Codex. The Agent tool and the model aliases exist only in Claude Code, and the user can run the prompt in Codex.
+
+These rules do not change the mode selection. If the task is large or difficult enough for a subagent, select Subagent, whatever the session model is.
 
 ## Select foreground or background
 
@@ -67,3 +86,14 @@ State in the dispatch block what the parent does with the report. For example:
 - Combine the reports of the parallel subagents into one result.
 
 Tell the parent not to wait in a loop for a background subagent. The parent gets a notification when the subagent finishes.
+
+## Run section
+
+Add this section after the code block of each Inline output, conditional or plain. It goes after the `**Assumed:**` line.
+
+```markdown
+**Run with**
+- Claude Code: <model>, <effort> — `/model <alias>`, then `/effort <effort>`
+- Codex: <model>, <effort label> — `/model`, then select <model> and <effort label>
+- Better fit: <Claude Code, Codex, or Either>
+```
