@@ -176,7 +176,7 @@ $githubContractPath = Join-Path (Get-Location) 'docs/agents/github-project.md'
         PointerCount = Get-PointerCount 'docs/agents/github-project.md'
     }
     Labels = @($labels | ForEach-Object { [pscustomobject]@{ Name=$_.name; Description=$_.description; Color=$_.color } })
-    Milestones = @($milestones | ForEach-Object { [pscustomobject]@{ Number=$_.number; Title=$_.title; State=$_.state; DueOn=$_.due_on } })
+    Milestones = @($milestones | ForEach-Object { [pscustomobject]@{ Number=$_.number; Title=$_.title; State=$_.state; DueOn=$_.due_on; Description=$_.description } })
     Issues = $issues
     Projects = $projects
     Project = [pscustomobject]$projectState

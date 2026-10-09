@@ -112,16 +112,88 @@ $legacy.Issues += [pscustomobject]@{ Number=99; Url='https://github.com/octocat/
 $result = Get-GitHubProjectAssessment -State $legacy -Repository 'octocat/game'
 Assert-True ($result.LegacyConflicts.Count -ge 2) 'Known legacy labels and issues must be reported.'
 
-$emptyFixture = Get-Content -Raw -LiteralPath $emptyMilestonesPath | ConvertFrom-Json -Depth 20
-$sequence = Invoke-MilestoneReconciliation -ExistingMilestones $emptyFixture.Milestones -CreateMilestone {
-    param($Title, $Sequence)
-    [pscustomobject]@{ Title=$Title; State='open'; Number=$Sequence }
-} -ReadMilestone {
+$missingDescription = Copy-State $state
+$missingDescription.Milestones[2].Description = $null
+$result = Get-GitHubProjectAssessment -State $missingDescription -Repository 'octocat/game'
+Assert-True (@($result.Errors | Where-Object { $_ -match 'Phase 3: Alpha.*no phase description' }).Count -eq 1) 'A canonical milestone without a phase description must fail.'
+Assert-True (@($result.ProposedMutations | Where-Object { $_ -match 'phase description on milestone .Phase 3: Alpha' }).Count -eq 1) 'A missing phase description must propose a description update.'
+
+$partialDescription = Copy-State $state
+$partialDescription.Milestones[0].Description = "**What this phase represents:** Scope only.`n`n**Exit condition:** None."
+$result = Get-GitHubProjectAssessment -State $partialDescription -Repository 'octocat/game'
+Assert-True (@($result.Errors | Where-Object { $_ -match 'Phase 1: Prototype.*no phase description' }).Count -eq 1) 'A description without all four phase parts must fail.'
+
+$descriptions = Get-MilestoneDescriptions -Path (Join-Path $skillRoot 'templates/milestones')
+Assert-Equal @($descriptions.Keys) @(Get-CanonicalMilestoneTitles) 'The bundled descriptions must cover every canonical milestone in order.'
+foreach ($title in Get-CanonicalMilestoneTitles) {
+    Assert-True (Test-MilestoneDescription $descriptions[$title]) "The bundled description for '$title' must contain the four phase parts."
+}
+Assert-False (Test-MilestoneDescription "**Exit condition:** Done.`n**What this phase represents:** Late.`n**Work that belongs here**`n**Work that does not belong here**") 'Phase parts in the wrong order must fail.'
+
+$incompleteDescriptionsPath = Join-Path ([System.IO.Path]::GetTempPath()) "setup-github-project-tests-$([guid]::NewGuid())"
+New-Item -ItemType Directory -Path $incompleteDescriptionsPath | Out-Null
+try {
+    Copy-Item -Path (Join-Path $skillRoot 'templates/milestones/*') -Destination $incompleteDescriptionsPath
+    Set-Content -LiteralPath (Join-Path $incompleteDescriptionsPath 'phase-4.md') -Value 'Beta makes the game stable.'
+    $incompleteError = $null
+    try { Get-MilestoneDescriptions -Path $incompleteDescriptionsPath | Out-Null } catch { $incompleteError = $_.Exception.Message }
+    Assert-True ($incompleteError -match 'phase-4\.md.*four phase parts') 'A description file without the four phase parts must be rejected.'
+} finally {
+    Remove-Item -LiteralPath $incompleteDescriptionsPath -Recurse -Force
+}
+
+$createMilestone = {
+    param($Title, $Sequence, $Description)
+    [pscustomobject]@{ Title=$Title; State='open'; Number=$Sequence; Description=$Description }
+}
+$updateMilestone = {
+    param($Milestone, $Description)
+    [pscustomobject]@{ Title=$Milestone.Title; State=$Milestone.State; Number=$Milestone.Number; Description=$Description }
+}
+$readMilestone = {
     param($Title, $Sequence, $Milestones)
     $Milestones | Where-Object { $_.Title -ceq $Title } | Select-Object -First 1
 }
+
+$emptyFixture = Get-Content -Raw -LiteralPath $emptyMilestonesPath | ConvertFrom-Json -Depth 20
+$sequence = Invoke-MilestoneReconciliation -ExistingMilestones $emptyFixture.Milestones -Descriptions $descriptions -CreateMilestone $createMilestone -UpdateMilestone $updateMilestone -ReadMilestone $readMilestone
 $createdTitles = @($sequence.Operations | Where-Object { $_.Operation -eq 'Create' } | ForEach-Object { $_.Title })
 Assert-Equal $createdTitles @(Get-CanonicalMilestoneTitles) 'Milestones must be created in strict canonical order.'
+foreach ($milestone in $sequence.Milestones) {
+    Assert-Equal $milestone.Description $descriptions[$milestone.Title] "Milestone '$($milestone.Title)' must be created with its approved description."
+}
+
+$existingScope = 'Ship an end-to-end browser gameplay Prototype.'
+$tailoredDescriptions = [ordered]@{}
+foreach ($title in Get-CanonicalMilestoneTitles) { $tailoredDescriptions[$title] = $descriptions[$title] }
+$tailoredDescriptions['Phase 1: Prototype'] = "$($descriptions['Phase 1: Prototype'])`n`n**Scope for game:** $existingScope"
+$describedMilestones = @(
+    [pscustomobject]@{ Title='Phase 1: Prototype'; State='closed'; Number=1; Description=$existingScope }
+    [pscustomobject]@{ Title='Phase 2: Vertical Slice'; State='open'; Number=2; Description=$null }
+    [pscustomobject]@{ Title='Phase 3: Alpha'; State='open'; Number=3; Description="**What this phase represents:** Approved text.`n**Work that belongs here**`n**Work that does not belong here**`n**Exit condition:** Approved exit." }
+)
+$plan = Get-MilestoneReconciliationPlan -ExistingMilestones $describedMilestones
+Assert-Equal @($plan | ForEach-Object { $_.Action }) @('DescribeAndValidate', 'DescribeAndValidate', 'ReuseAndValidate', 'CreateAndValidate', 'CreateAndValidate') 'The plan must describe, reuse, or create each milestone from its current description.'
+$described = Invoke-MilestoneReconciliation -ExistingMilestones $describedMilestones -Descriptions $tailoredDescriptions -CreateMilestone $createMilestone -UpdateMilestone $updateMilestone -ReadMilestone $readMilestone
+$describedOperations = @($described.Operations | Where-Object { $_.Operation -in @('Create', 'Reuse', 'Describe') } | ForEach-Object { $_.Operation })
+Assert-Equal $describedOperations @('Describe', 'Describe', 'Reuse', 'Create', 'Create') 'Existing milestones without a phase description must receive one, and conforming descriptions must be reused.'
+$phaseOne = $described.Milestones | Where-Object { $_.Title -ceq 'Phase 1: Prototype' }
+Assert-Equal $phaseOne.State 'closed' 'A description update must keep the milestone state.'
+Assert-True ($phaseOne.Description.Contains($existingScope)) 'A description update must keep the existing description text.'
+$phaseThree = $described.Milestones | Where-Object { $_.Title -ceq 'Phase 3: Alpha' }
+Assert-True ($phaseThree.Description.Contains('Approved text.')) 'A conforming description must stay unchanged.'
+
+$discardOperations = @()
+$discardError = $null
+try {
+    Invoke-MilestoneReconciliation -ExistingMilestones $describedMilestones -Descriptions $descriptions -CreateMilestone $createMilestone -UpdateMilestone $updateMilestone -ReadMilestone $readMilestone | Out-Null
+} catch {
+    $discardError = $_.Exception.Message
+    $discardOperations = @($_.Exception.Data['Operations'])
+}
+Assert-True ($discardError -match 'Phase 1: Prototype.*does not keep the existing description text') 'A description that drops existing text must stop reconciliation.'
+Assert-True (@($discardOperations | Where-Object { $_.Operation -in @('Create', 'Describe') }).Count -eq 0) 'A dropped existing description must prevent every milestone write.'
+
 $operations = @($sequence.Operations)
 for ($index = 1; $index -lt 5; $index++) {
     $previousValidation = [array]::FindIndex($operations, [Predicate[object]]{ param($item) $item.Title -eq (Get-CanonicalMilestoneTitles)[$index - 1] -and $item.Operation -eq 'Validate' })
@@ -131,10 +203,7 @@ for ($index = 1; $index -lt 5; $index++) {
 
 $failureOperations = @()
 try {
-    Invoke-MilestoneReconciliation -ExistingMilestones @() -CreateMilestone {
-        param($Title, $Sequence)
-        [pscustomobject]@{ Title=$Title; Number=$Sequence; State='open' }
-    } -ReadMilestone {
+    Invoke-MilestoneReconciliation -ExistingMilestones @() -Descriptions $descriptions -CreateMilestone $createMilestone -UpdateMilestone $updateMilestone -ReadMilestone {
         param($Title, $Sequence, $Milestones)
         if ($Title -ceq 'Phase 3: Alpha') { return $null }
         $Milestones | Where-Object { $_.Title -ceq $Title } | Select-Object -First 1
@@ -145,6 +214,11 @@ try {
 }
 Assert-True (@($failureOperations | Where-Object { $_.Title -eq 'Phase 3: Alpha' -and $_.Operation -eq 'Validate' }).Count -eq 1) 'Phase 3 validation must be attempted.'
 Assert-True (@($failureOperations | Where-Object { $_.Title -eq 'Phase 4: Beta' }).Count -eq 0) 'A failed Phase 3 validation must prevent every Phase 4 operation.'
+
+$reconcileScript = Join-Path $skillRoot 'scripts/reconcile-milestones.ps1'
+$scriptResult = & $reconcileScript -Repository 'octocat/game' -FixturePath $emptyMilestonesPath | ConvertFrom-Json -Depth 20
+Assert-True $scriptResult.Completed 'The reconcile script must complete against an empty fixture with the bundled descriptions.'
+Assert-Equal @($scriptResult.Operations | Where-Object { $_.Operation -eq 'Create' }).Count 5 'The reconcile script must create all five milestones.'
 
 $parseErrors = @()
 Get-ChildItem -LiteralPath (Join-Path $skillRoot 'scripts') -Filter '*.ps1' | ForEach-Object {

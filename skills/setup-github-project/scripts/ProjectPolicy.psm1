@@ -10,6 +10,50 @@ function Get-CanonicalMilestoneTitles {
     )
 }
 
+function Get-MilestoneDescriptionParts {
+    @(
+        '**What this phase represents:**'
+        '**Work that belongs here**'
+        '**Work that does not belong here**'
+        '**Exit condition:**'
+    )
+}
+
+function ConvertTo-NormalizedDescription {
+    param([string]$Description)
+    return ("$Description" -replace "`r`n?", "`n").Trim()
+}
+
+function Test-MilestoneDescription {
+    [CmdletBinding()]
+    param([AllowNull()][AllowEmptyString()][string]$Description)
+    $position = 0
+    foreach ($part in Get-MilestoneDescriptionParts) {
+        $position = "$Description".IndexOf($part, $position, [System.StringComparison]::Ordinal)
+        if ($position -lt 0) { return $false }
+        $position += $part.Length
+    }
+    return $true
+}
+
+function Get-MilestoneDescriptions {
+    [CmdletBinding()]
+    param([Parameter(Mandatory)][string]$Path)
+    $descriptions = [ordered]@{}
+    $sequence = 0
+    foreach ($title in Get-CanonicalMilestoneTitles) {
+        $sequence++
+        $file = Join-Path $Path "phase-$sequence.md"
+        if (-not (Test-Path -LiteralPath $file)) { throw "Milestone description file '$file' is missing." }
+        $description = ConvertTo-NormalizedDescription (Get-Content -Raw -LiteralPath $file)
+        if (-not (Test-MilestoneDescription $description)) {
+            throw "Milestone description file '$file' does not contain the four phase parts in order."
+        }
+        $descriptions[$title] = $description
+    }
+    return $descriptions
+}
+
 function Get-PropertyValue {
     param($Object, [string]$Name, $Default = $null)
     if ($null -eq $Object) { return $Default }
@@ -104,6 +148,12 @@ function Get-GitHubProjectAssessment {
         } elseif ($matchingMilestoneCount -gt 1) {
             $errors.Add("Canonical milestone '$title' exists more than once.")
             $proposed.Add("Resolve duplicate canonical milestone '$title' through an approved migration.")
+        } else {
+            $milestone = $milestones | Where-Object { (Get-PropertyValue $_ 'Title' '') -ceq $title } | Select-Object -First 1
+            if (-not (Test-MilestoneDescription (Get-PropertyValue $milestone 'Description' ''))) {
+                $errors.Add("Canonical milestone '$title' has no phase description.")
+                $proposed.Add("Set the approved phase description on milestone '$title' without a change to its state.")
+            }
         }
     }
     foreach ($milestoneTitle in $milestoneTitles) {
@@ -287,15 +337,21 @@ function Get-GitHubProjectAssessment {
 function Get-MilestoneReconciliationPlan {
     [CmdletBinding()]
     param([Parameter(Mandatory)]$ExistingMilestones)
-    $existingTitles = @($ExistingMilestones | ForEach-Object { Get-PropertyValue $_ 'Title' '' })
     $sequence = 0
     @(
         foreach ($title in Get-CanonicalMilestoneTitles) {
             $sequence++
+            $match = $ExistingMilestones | Where-Object { (Get-MilestoneTitle $_) -ceq $title } | Select-Object -First 1
             [pscustomobject]@{
                 Sequence = $sequence
                 Title = $title
-                Action = if ($title -cin $existingTitles) { 'ReuseAndValidate' } else { 'CreateAndValidate' }
+                Action = if (-not $match) {
+                    'CreateAndValidate'
+                } elseif (Test-MilestoneDescription (Get-MilestoneDescription $match)) {
+                    'ReuseAndValidate'
+                } else {
+                    'DescribeAndValidate'
+                }
             }
         }
     )
@@ -375,11 +431,20 @@ function Get-MilestoneState {
     return "$state"
 }
 
+function Get-MilestoneDescription {
+    param($Milestone)
+    $description = Get-PropertyValue $Milestone 'Description'
+    if (-not $description) { $description = Get-PropertyValue $Milestone 'description' '' }
+    return "$description"
+}
+
 function Invoke-MilestoneReconciliation {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory)]$ExistingMilestones,
+        [Parameter(Mandatory)][AllowEmptyCollection()]$ExistingMilestones,
+        [Parameter(Mandatory)][System.Collections.IDictionary]$Descriptions,
         [Parameter(Mandatory)][scriptblock]$CreateMilestone,
+        [Parameter(Mandatory)][scriptblock]$UpdateMilestone,
         [Parameter(Mandatory)][scriptblock]$ReadMilestone
     )
 
@@ -390,22 +455,40 @@ function Invoke-MilestoneReconciliation {
         foreach ($title in Get-CanonicalMilestoneTitles) {
             $sequence++
             $operations.Add([pscustomobject]@{ Sequence=$sequence; Title=$title; Operation='Inspect' })
+            $description = ConvertTo-NormalizedDescription $Descriptions[$title]
+            if (-not (Test-MilestoneDescription $description)) {
+                throw "The approved description for milestone '$title' does not contain the four phase parts in order."
+            }
             $match = $existing | Where-Object { (Get-MilestoneTitle $_) -ceq $title } | Select-Object -First 1
+            $expectedState = 'open'
             if (-not $match) {
                 $operations.Add([pscustomobject]@{ Sequence=$sequence; Title=$title; Operation='Create' })
-                $created = & $CreateMilestone $title $sequence
+                $created = & $CreateMilestone $title $sequence $description
                 if ($created) { $existing += $created }
             } else {
-                $operations.Add([pscustomobject]@{ Sequence=$sequence; Title=$title; Operation='Reuse' })
+                $expectedState = Get-MilestoneState $match
+                $currentDescription = ConvertTo-NormalizedDescription (Get-MilestoneDescription $match)
+                if (Test-MilestoneDescription $currentDescription) {
+                    $operations.Add([pscustomobject]@{ Sequence=$sequence; Title=$title; Operation='Reuse' })
+                } else {
+                    if ($currentDescription -and -not $description.Contains($currentDescription)) {
+                        throw "The approved description for milestone '$title' does not keep the existing description text."
+                    }
+                    $operations.Add([pscustomobject]@{ Sequence=$sequence; Title=$title; Operation='Describe' })
+                    $updated = & $UpdateMilestone $match $description
+                    if ($updated) {
+                        $existing = @($existing | ForEach-Object { if ((Get-MilestoneTitle $_) -ceq $title) { $updated } else { $_ } })
+                    }
+                }
             }
 
             $operations.Add([pscustomobject]@{ Sequence=$sequence; Title=$title; Operation='Validate' })
             $readBack = & $ReadMilestone $title $sequence $existing
-            $readBackState = Get-MilestoneState $readBack
             if (-not $readBack -or
                 (Get-MilestoneTitle $readBack) -cne $title -or
                 $null -eq (Get-MilestoneNumber $readBack) -or
-                $readBackState -notin @('open', 'closed')) {
+                (Get-MilestoneState $readBack) -cne $expectedState -or
+                -not (Test-MilestoneDescription (Get-MilestoneDescription $readBack))) {
                 throw "Milestone '$title' could not be validated after reconciliation."
             }
         }
@@ -417,4 +500,4 @@ function Invoke-MilestoneReconciliation {
     return [pscustomobject]@{ Completed=$true; Operations=@($operations); Milestones=@($existing) }
 }
 
-Export-ModuleMember -Function Get-CanonicalMilestoneTitles, Get-AmbiguousMilestoneTitles, Get-DuplicateCanonicalMilestoneTitles, Get-GitHubProjectAssessment, Get-MilestoneReconciliationPlan, Get-RepositoryBootstrapDecision, Invoke-MilestoneReconciliation
+Export-ModuleMember -Function Get-CanonicalMilestoneTitles, Get-AmbiguousMilestoneTitles, Get-DuplicateCanonicalMilestoneTitles, Get-GitHubProjectAssessment, Get-MilestoneDescriptions, Get-MilestoneReconciliationPlan, Get-RepositoryBootstrapDecision, Invoke-MilestoneReconciliation, Test-MilestoneDescription

@@ -22,7 +22,7 @@ Before every local or GitHub write:
 
 1. Read repository instructions, planning documents, and existing `docs/agents/` contracts.
 2. Run `scripts/preflight.ps1`, then inspect the repository and GitHub read-only.
-3. Present the exact repository, remote, BB coordination, labels, milestones, Project, membership, views, workflows, and local files to create, reuse, change, or leave unresolved.
+3. Present the exact repository, remote, BB coordination, labels, milestones, milestone descriptions, Project, membership, views, workflows, and local files to create, reuse, change, or leave unresolved.
 4. Identify every inferred, missing, conflicting, legacy, and browser-only value.
 5. Wait for explicit approval from the human executor.
 
@@ -53,7 +53,7 @@ Run `scripts/inspect.ps1 -Repository OWNER/REPO` only after preflight permits Gi
 
 - repository ownership, visibility, remotes, and linked Projects;
 - BB-owned labels and conflicting or legacy labels;
-- canonical and ambiguous milestones;
+- canonical and ambiguous milestones, and the description of each canonical milestone;
 - every Ticket, its milestone, state, and Project membership;
 - Task and unrelated Project membership;
 - Project visibility, repository linkage, fields, Status options, saved views, and workflows;
@@ -61,12 +61,14 @@ Run `scripts/inspect.ps1 -Repository OWNER/REPO` only after preflight permits Gi
 
 Reuse an existing compatible private Project. Create one only when none exists. Never create Tickets or Tasks.
 
+Prepare a phase description for every canonical milestone that has no conforming description. Follow "Phase descriptions" in [REFERENCE.md](REFERENCE.md), and include the full text of each description in the approval proposal.
+
 ## Approved execution
 
 After exact approval, execute in this order:
 
 1. Create and validate the private GitHub repository and remote when missing.
-2. Run `scripts/reconcile-milestones.ps1 -Repository OWNER/REPO`; it must validate each canonical milestone before proceeding to the next.
+2. Run `scripts/reconcile-milestones.ps1 -Repository OWNER/REPO -DescriptionsPath DIRECTORY` with the approved phase descriptions; it must validate each canonical milestone and its description before proceeding to the next.
 3. Create or reuse the private Project named after the repository and link it.
 4. Reconcile Status to `Todo`, `In Progress`, and `Done`.
 5. Reconcile the single `Tickets` board defined in [REFERENCE.md](REFERENCE.md).

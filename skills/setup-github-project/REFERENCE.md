@@ -24,7 +24,39 @@ Every configured repository has these exact milestones:
 
 Process them strictly in that order. For each milestone: inspect, create or reuse, read back, and validate its repository, exact title, state, and identity. Proceed only after validation. Stop on the first failure. Never reconcile milestones concurrently.
 
-Reuse exact matches without changing their open or closed state. Create missing matches as open without invented descriptions or due dates. Treat unnumbered and alternate counterparts as ambiguous legacy configuration; pause before creating a duplicate and require an exact approved migration to rename, merge, close, reopen, or delete anything.
+Reuse exact matches without changing their open or closed state. Create missing matches as open with their approved phase description and without due dates. Treat unnumbered and alternate counterparts as ambiguous legacy configuration; pause before creating a duplicate and require an exact approved migration to rename, merge, close, reopen, or delete anything.
+
+## Phase descriptions
+
+The description of each canonical milestone is the definition of its phase. Other skills read these descriptions from GitHub to select the milestone for a Ticket. [templates/milestones/](templates/milestones/) holds one base description for each phase in game-development terms.
+
+A conforming description has these four parts in this order:
+
+1. `**What this phase represents:**` gives the definition of the phase.
+2. `**Work that belongs here**` lists examples of work in the phase.
+3. `**Work that does not belong here**` lists examples of work for a different phase.
+4. `**Exit condition:**` gives the condition that ends the phase.
+
+Studios put the Alpha and Beta lines in different places. The base descriptions end Alpha at feature complete and end Beta at content complete.
+
+Prepare the descriptions before the approval proposal:
+
+1. Copy `templates/milestones/` to a temporary directory. The files `phase-1.md` to `phase-5.md` map to the canonical milestones in order.
+2. Skip each milestone that has a conforming description on GitHub. The script reuses that description.
+3. For each other milestone, tailor the two work lists in its file:
+   - Replace a base example with a project example only when repository evidence supports the example. Evidence is a domain term from `CONTEXT.md` or a glossary, a planning document, or a Ticket in that milestone.
+   - Keep the base example when the repository has no evidence.
+   - Keep the definition, the exit condition, and each line about code structure work.
+4. If a milestone has description text without the four parts, add that text unchanged after the exit condition. Put the text under `**Scope for <project name>:**`.
+5. In the approval proposal, show the full text of each description that the script will set. State that the examples show the type of work and are not commitments.
+
+`scripts/reconcile-milestones.ps1 -DescriptionsPath DIRECTORY` applies the approved directory. For each milestone, the script does one of these operations:
+
+- `Create`: The milestone is missing. The script creates the milestone with its description.
+- `Describe`: The milestone has no conforming description. The script sets the description and keeps the open or closed state.
+- `Reuse`: The milestone has a conforming description. The script writes nothing.
+
+The script stops before a write when an approved description does not contain the existing description text. A change to a conforming description requires an exact approved edit.
 
 ## Project
 
@@ -92,7 +124,7 @@ Confirm:
 
 - the private repository and private linked Project match the approved owner and target;
 - the BB contract is complete and its confirmed labels exist;
-- all five exact canonical milestones exist;
+- all five exact canonical milestones exist and each has a conforming phase description;
 - every Ticket has exactly one canonical milestone and belongs to the Project;
 - no Task or unrelated issue belongs to the Project;
 - exactly one `Tickets` view has the required board, filter, Status column, Milestone slice, and presentation;

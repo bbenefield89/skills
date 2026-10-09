@@ -12,6 +12,12 @@ Tickets use exactly one of these GitHub milestones:
 4. `Phase 4: Beta`
 5. `Phase 5: Release`
 
+The description of each GitHub milestone defines its phase. Each description gives the meaning of the phase, the work that belongs in the phase, the work that does not belong, and the exit condition. Before you assign a Ticket to a milestone, read the descriptions:
+
+```
+gh api "repos/{owner}/{repo}/milestones?state=all" --jq '.[] | .title, .description'
+```
+
 Tasks omit milestones because their parent Ticket carries release grouping.
 
 ## Project membership
