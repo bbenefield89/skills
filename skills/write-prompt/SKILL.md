@@ -19,8 +19,8 @@ Agents read the output, not humans. Do not apply ASD-STE100 to the output.
 3. Read [the prompting reference](references/prompting.md) and [the dispatch rules](references/dispatch.md).
 4. Ask the clarifying questions. Do this before you write any part of the output.
 5. Select the mode, the agent type, and foreground or background with the dispatch rules.
-6. If the mode is Subagent or Parallel subagents, get the model and effort as the dispatch rules state.
-7. Write the output in the format below.
+6. Get the model and effort as the dispatch rules state. Do this in every mode.
+7. Write the output in the format below. [The example](references/example.md) shows a complete Subagent run.
 8. Check each task prompt against the checklist in the prompting reference. Correct each failure.
 
 ## Clarifying questions
@@ -45,9 +45,8 @@ If the material has no gap, continue to the next step without a question.
 
 ## Output format
 
-Put the complete output in one code block with four backticks and the `text` language.
-The four backticks keep code blocks inside the task prompt intact.
-Add no other text, except the `**Assumed:**` line below.
+Put the complete output in one code block with four backticks and the `text` language. Four backticks keep inner code blocks intact.
+Add no other text, except the `**Assumed:**` line and the run section below.
 
 For the Inline mode:
 
@@ -91,10 +90,11 @@ For the Parallel subagents mode, use the Subagent format with these changes:
 
 If you assumed a fact, add one line after the code block: `**Assumed:** <assumption>`.
 
-## Example
+For the Inline mode, end the response with the run section. Put it after the `**Assumed:**` line. The user reads it to set the session.
 
-A user asks for a prompt to find every caller of a deprecated API in a large repository.
-The dispatch selects Subagent with `Explore`, because the search reads many files and the parent needs only the list.
-`suggest-model` returns Research · Light with Haiku 5.5, medium. The dispatch uses `model: haiku` and `effort: medium`.
-The task prompt names the API, the directories to search, and the directories to ignore.
-Its output format asks for a table of file path, line, and call form. It tells the agent to run one real search check, because the model is Haiku 5.5.
+```markdown
+**Run with**
+- Claude Code: <model>, <effort> — `/model <alias>`, then `/effort <effort>`
+- Codex: <model>, <effort label> — `/model`, then select <model> and <effort label>
+- Better fit: <Claude Code, Codex, or Either>
+```
