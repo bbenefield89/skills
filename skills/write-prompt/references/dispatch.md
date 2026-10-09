@@ -43,9 +43,9 @@ Do not select a subagent only to verify or review the work of the parent.
 ## Select the model and effort
 
 1. Invoke the `suggest-model` skill with a one-sentence description of the task.
-2. Use only the Claude Code row. Ignore the Codex row and the winner. A subagent always runs in Claude Code.
+2. Use only the Claude Code model and effort. Ignore the Codex suggestion and the better fit. A subagent always runs in Claude Code.
 3. Convert the model: Opus 5.5 is `opus`, Sonnet 5.5 is `sonnet`, and Haiku 5.5 is `haiku`.
-4. Use the effort from the row without a change.
+4. Use the effort without a change.
 
 For parallel subagents, invoke `suggest-model` one time for each different task type.
 If the `suggest-model` skill is not available, omit the model and effort. Then the subagent uses the session model.

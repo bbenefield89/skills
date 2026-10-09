@@ -30,15 +30,19 @@ Suggest a model for each task that has the agent executor.
 Read and apply [the shared suggest-model skill](../../suggest-model/SKILL.md) one time for each of these tasks.
 Match the task type to the work of that task, not to the parent ticket. Select the nearest task type instead of asking the user.
 
-Keep that skill's picks and winner. Replace its reply format with this one line:
+Keep that skill's picks and better fit. Replace its reply format with this list:
 
 ```markdown
-Claude Code: <model>, <effort> · Codex: <model>, <effort> · Winner: <Claude Code, Codex, or Tie>
+- Claude Code: <model>, <effort>
+- Codex: <model>, <effort>
+- Better fit: <Claude Code, Codex, or Either>
 ```
+
+In a table cell, write the three items on three lines without the list markers. Separate the lines with `<br>`.
 
 Use `—` as the suggestion for a task that has the human executor.
 If the suggest-model skill is unavailable, state that limit one time in the review and use `—` for every task.
-If that skill requires a note about the age of its picks, state the note one time in the review.
+If that skill gives a note about the age of its catalog, state the note one time in the review.
 
 ## Wide refactors
 
@@ -91,7 +95,7 @@ After every child task and relationship is verified, prepend this generated sect
 
 | Task | What it delivers | Ready for | Suggested model |
 |---|---|---|---|
-| [#<number> - <title>](<task URL>) | <Plain-English result.> | `<ready-for-* label>` | <Approved model suggestion, or `—`.> |
+| [#<number> - <title>](<task URL>) | <Plain-English result.> | `<ready-for-* label>` | <Approved model suggestion with `<br>` between its lines, or `—`.> |
 
 ---
 ```
@@ -123,7 +127,7 @@ Before publishing, present:
 2. **Executor:** configured agent or human classification
 3. **Blocked by:** task numbers/titles or none
 4. **What it delivers:** the observable behavior or enabling result
-5. **Suggested model:** the model suggestion line, or `—`
+5. **Suggested model:** the model suggestion list, or `—`
 
 Ask:
 
