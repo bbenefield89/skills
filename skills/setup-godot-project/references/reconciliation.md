@@ -18,6 +18,7 @@ Do not include **Current** steps as proposed setup actions. A detected Just exec
 | Step | Current version | Owned artifacts |
 | --- | ---: | --- |
 | Architecture document | 2 | `docs/agents/godot-architecture.md` and the `godot-architecture` AGENTS block |
+| Godot standards document | 1 | `docs/agents/godot-standards.md` and the `godot-standards` AGENTS block |
 | Ignore rules | 2 | Managed block in `.gitignore` |
 | Just validation | 3 | Managed variables and recipes in one detected Justfile |
 | GUT smoke | 2 | `tests/test_gut_setup.gd` |
@@ -26,6 +27,8 @@ Do not include **Current** steps as proposed setup actions. A detected Just exec
 | Godot warnings | detected-engine contract | Applicable `project.godot` warning settings |
 
 The current architecture document is separate from the obsolete version-1 `docs/agents/architecture.md`. Apply [architecture-document.md](architecture-document.md) when publishing it. Its scope is the agreed vertical-slice standard; legacy Deliver-policy migration remains unchanged.
+
+The current Godot standards document is separate from the obsolete version-1 `docs/agents/gdscript.md`. Apply [standards-document.md](standards-document.md) when publishing it, including its Outdated classification for an earlier template version.
 
 Each generated text artifact carries a stable marker containing its template name and version. Markers identify prior generated intent; they never authorize overwriting user changes.
 

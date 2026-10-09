@@ -4,6 +4,12 @@ Load this profile when the repository contains `project.godot`, GDScript, Godot 
 
 Apply these rules to changed project-owned Godot code and directly affected interfaces. Exclude vendored dependencies such as GUT.
 
+## Godot standards
+
+Use the repository's `docs/agents/godot-standards.md`, read during preflight. Apply every applicable rule during both Implementation and Standards review. In this workflow, a departure in changed code or a directly affected interface is an actionable finding rather than an optional recommendation.
+
+If the document is absent, state that limit in the completion report. Continue with this profile, other repository guidance, and official Godot documentation for the project's engine version.
+
 ## Repository architecture
 
 Read the repository architecture document identified during preflight. Use its vertical-slice placement rules and deep-module contracts during implementation and review. Keep each feature's scenes, scripts, resources, assets, and UI together as the document requires. Use feature-local tests and root-level integration or regression tests as the document requires. Keep discovery aligned with both locations and preserve the configured test framework and public validation commands.
@@ -12,32 +18,10 @@ Review changes for clear ownership and simple public methods, signals, and data 
 
 Update project-specific architecture documentation when an approved change alters a documented contract. Treat the generated universal standard as policy: change it only when the user explicitly authorizes a policy change. Do not rewrite it to match legacy structure or introduce a new convention for one implementation.
 
-## Typed GDScript
-
-- Prefer concrete project types, explicit local and return types, typed enums, typed exported node references, typed getters, and direct method calls.
-- Treat avoidable `Variant`, broad engine types, unsafe inference, and reflective method calls as actionable findings.
-- Refresh Godot import/class metadata before weakening an unresolved project type.
-- Cast unavoidable broad API results to the concrete expected type, including node lookups and dictionary extraction.
-- Permit reflection or dynamic typing only for a genuine dynamic requirement documented at the use site.
-- Reference a registered `class_name` type directly. Keep `preload()` when the resource has no registered type, explicit resource loading is the intent, or a documented load-order constraint requires it.
-- Follow the official GDScript style guide manually. Do not introduce a formatter, linter, Python, or gdtoolkit dependency.
-
-## Configuration and Inspector authoring
+## Configuration and scenes
 
 - Apply the core configuration-cohesion and YAGNI rules to custom `Resource` fields, exported properties, nodes, physics processing, and mechanics.
-- Keep Inspector authoring unambiguous. Remove duplicate, irrelevant, or competing tuning properties from changed resources and scripts.
-- Put designer-owned presentation configuration in the appropriate exported property, theme, resource, or localization contract. Do not export every literal by default; keep fixed implementation details private.
-
-## Scene authoring
-
-If a Godot object is a stable, intentional part of the game world, author it in a `.tscn` scene. Create objects at runtime only when their existence or quantity is genuinely dynamic.
-
-Treat stable world objects assembled through `Node.new()`, scripted child construction, or equivalent runtime setup as actionable review findings unless the code documents a genuinely dynamic reason. Do not invent gameplay folders, placeholder scenes, or architecture layers.
-
-## Scene dependencies
-
-- Make required cross-boundary scene dependencies explicit with concrete typed exports and wire them in the owning scene. A stable private child owned by the same scene may use a typed `%UniqueName` lookup; do not export internal details solely to avoid `%`.
-- When editing `.tscn` text, serialize exported node references with Godot's `node_paths` metadata and valid `NodePath` values. Ordinary property assignment without the required metadata does not establish a valid node-reference export.
+- Do not invent gameplay folders, placeholder scenes, or architecture layers.
 - After changing scene dependencies, verify that the project parses the scripts and can load and instantiate every affected scene. Textual inspection alone is insufficient.
 
 ## Behavioral ownership
@@ -50,49 +34,6 @@ Apply the core cohesion and state-model prompts to Godot responsibilities such a
 - Character-specific scripts own telegraph styling, strike geometry, collision configuration, or indicators that change for a different reason from character policy.
 
 Move transient state and attack presentation to focused modules or resources when current behavior demonstrates distinct ownership. A reusable reaction seam is justified when multiple real clients, such as NPC and player combatants, require the same policy.
-
-## Native documentation
-
-Document every created or changed project-owned script, including tests:
-
-- Begin each script with a native `##` header that briefly explains what it does, enumerates its responsibilities, and states its single reason to change.
-- Document every method, including private helpers, lifecycle callbacks, and test methods.
-- Document every signal.
-- Document named classes, exported properties, enums, and non-obvious constants.
-
-Method and signal documentation describes behavior, parameters with `[param name]`, return value, side effects, emitted signals, preconditions, failure behavior, or listener contract when applicable. Omit sections that genuinely do not apply. Explain intent and contracts rather than syntax.
-
-Use Godot BBCode that renders correctly in editor hover help:
-
-- Use a single `[br]` at the end of the preceding content line.
-- Never use `[br][br]`.
-- Never begin a documentation line with `[br]`.
-- Put `[br]` after bold section labels.
-
-Canonical signal example:
-
-```gdscript
-## Emitted after current health is initialized or successfully changed by damage.[br]
-## [b]Parameters[/b][br]
-## [param current_health] — The new clamped health.[br]
-## [param maximum_health] — The configured full-health reference.[br]
-## [b]Listener contract[/b][br]
-## [code]PlayerHealthBar[/code] listens to update its visible [ProgressBar].
-signal health_changed(current_health: int, maximum_health: int)
-```
-
-Header example:
-
-```gdscript
-## Coordinates health changes for one combatant.[br]
-## [b]Responsibilities[/b][br]
-## 1. Clamp accepted health values.[br]
-## 2. Notify listeners after health changes.[br]
-## [b]Single reason to change[/b][br]
-## The combatant health-state contract changes.
-class_name CombatantHealth
-extends Node
-```
 
 ## Tests
 
@@ -110,9 +51,3 @@ Use progressive Godot feedback during Implementation:
 4. Run the full relevant Godot test suite.
 
 When GUT is configured, use focused GUT tests for the relevant steps. Final Validation still uses the repository's documented aggregate command; the profile does not invent one.
-
-## Stable references
-
-- [Godot GDScript style guide](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_styleguide.html)
-- [Godot GDScript documentation comments](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_documentation_comments.html)
-- [Godot nodes and scene instances](https://docs.godotengine.org/en/stable/tutorials/scripting/nodes_and_scene_instances.html)

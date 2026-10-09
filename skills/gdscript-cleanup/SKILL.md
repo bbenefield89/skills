@@ -14,7 +14,9 @@ If the shared skill or profile is unavailable, state that limit in the response.
 This notice is the only exception to an exact-output rule.
 Then apply ASD-STE100 as closely as possible from the available context.
 
-Perform active, behavior-preserving post-implementation hygiene. Read [references/gdscript-standards.md](references/gdscript-standards.md) for every run and [references/scene-authoring.md](references/scene-authoring.md) when touched code creates or assembles nodes.
+Perform active, behavior-preserving post-implementation hygiene. Read the target repository's `docs/agents/godot-standards.md` for every run and apply each rule that the touched code reaches.
+
+If the document is absent, ask which standards to apply before you edit. `$setup-godot-project` publishes the document.
 
 ## 1. Resolve scope
 

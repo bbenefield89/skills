@@ -1,6 +1,6 @@
 ---
 name: setup-godot-project
-description: Configures or reconciles universal GUT, Just, validation, warning, version-control infrastructure, and a fixed vertical-slice architecture document in a new or existing Godot project. Use when a directory containing project.godot needs reproducible Godot project guardrails or prior setup-godot-project artifacts need consolidation.
+description: Configures or reconciles universal GUT, Just, validation, warning, version-control infrastructure, a fixed vertical-slice architecture document, and a fixed Godot standards document in a new or existing Godot project. Use when a directory containing project.godot needs reproducible Godot project guardrails or prior setup-godot-project artifacts need consolidation.
 ---
 
 # Set Up a Godot Project
@@ -14,7 +14,7 @@ If the shared skill or profile is unavailable, state that limit in the response.
 This notice is the only exception to an exact-output rule.
 Then apply ASD-STE100 as closely as possible from the available context.
 
-Configure universal Godot infrastructure and publish the fixed architecture standard. Setup writes architecture documentation; it does not move gameplay files, audit layout deviations, or refactor gameplay code.
+Configure universal Godot infrastructure and publish the fixed architecture standard and the fixed Godot standards. Setup writes these two documents; it does not move gameplay files, audit layout or standards deviations, or refactor gameplay code.
 
 ## 1. Discover read-only
 
@@ -63,10 +63,11 @@ Reconcile these independent steps:
 7. Optional tracker setup through `$setup-bb-skills`.
 8. Recognized legacy setup-godot-project policy documents and AGENTS blocks.
 9. The fixed architecture document and AGENTS pointer from [references/architecture-document.md](references/architecture-document.md).
+10. The fixed Godot standards document and AGENTS pointer from [references/standards-document.md](references/standards-document.md).
 
 Use `assets/project-template/` as merge input, never as authority to replace customized files wholesale. Install GUT only through [references/gut-installation.md](references/gut-installation.md).
 
-Generate only the fixed architecture document as repository architecture guidance. Deliver retains ownership of general implementation, language, testing, and review standards. Do not duplicate those policies or workflow-adapter bindings in the target repository.
+Generate only the fixed architecture document and the fixed Godot standards document as repository guidance. Deliver retains ownership of general implementation, testing, and review standards. Do not duplicate those policies or workflow-adapter bindings in the target repository.
 
 Do not create GitHub Actions, placeholder scenes, gameplay folders, speculative architecture layers, or gameplay debt reports. Never commit or push unless the current user explicitly instructs it. An explicit instruction not to commit or push always wins.
 
@@ -76,7 +77,7 @@ Run discovery again after reconciliation. Verify:
 
 - every owned step now classifies as Current, approved customization, or explicitly reduced;
 - managed markers are unique and well formed;
-- the architecture document matches the fixed template or an explicitly approved customization, and the AGENTS pointer resolves;
+- the architecture document and the Godot standards document each match their fixed template or an explicitly approved customization, and each AGENTS pointer resolves;
 - the GUT plugin is enabled without disturbing other plugins;
 - `just --list` or `just --summary` exposes the required public recipes;
 - `just import`, the focused setup smoke test, `just test-all`, `just runtime`, and `just validate` behave correctly on the detected operating system;
