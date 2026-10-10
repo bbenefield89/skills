@@ -44,7 +44,7 @@ Prepare the descriptions before the approval proposal:
 1. Copy `templates/milestones/` to a temporary directory. The files `phase-1.md` to `phase-5.md` map to the canonical milestones in order.
 2. Skip each milestone that has a conforming description on GitHub. The script reuses that description.
 3. For each other milestone, tailor the two work lists in its file:
-   - Replace a base example with a project example only when repository evidence supports the example. Evidence is a domain term from `CONTEXT.md` or a glossary, a planning document, or a Ticket in that milestone.
+   - Replace a base example with a project example only when repository evidence supports the example. Evidence is a domain term from `GLOSSARY.md`, a planning document, or a Ticket in that milestone.
    - Keep the base example when the repository has no evidence.
    - Keep the definition, the exit condition, and each line about code structure work.
 4. If a milestone has description text without the four parts, add that text unchanged after the exit condition. Put the text under `**Scope for <project name>:**`.

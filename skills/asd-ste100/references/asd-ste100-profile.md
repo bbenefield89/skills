@@ -16,7 +16,7 @@ This profile is an original operational summary. It does not reproduce the contr
 - Prefer common words that you know have a clear technical meaning.
 - Use a word only with the intended part of speech and meaning.
 - Use only the necessary form of a verb or adjective.
-- Use project terminology from `CONTEXT.md`, official names, and exact user terms as technical nouns.
+- Use project terminology from `GLOSSARY.md`, official names, and exact user terms as technical nouns.
 - Use a subject-specific technical verb only when it names the action more accurately than a common verb.
 - Do not use a technical noun as a verb. Do not use a technical verb as a noun.
 - Use one term for one item, concept, or action. Do not replace it with a synonym for variety.

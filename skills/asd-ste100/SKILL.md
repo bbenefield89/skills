@@ -12,8 +12,8 @@ The calling skill or user controls the output structure, scope, and level of det
 
 1. Read and apply [the ASD-STE100 Issue 9 writing profile](references/asd-ste100-profile.md) before you produce output.
 2. Resolve project terminology:
-   - If the repository has multiple `CONTEXT.md` files, read `CONTEXT-MAP.md` first to find the applicable file.
-   - Use domain terms from the applicable `CONTEXT.md`.
+   - If the repository has multiple `GLOSSARY.md` files, read `CONTEXT-MAP.md` first to find the applicable file.
+   - Use domain terms from the applicable `GLOSSARY.md`.
    - If no terminology file exists, use plain words and established terms from the supplied material or current context.
 3. Preserve exact code, commands, identifiers, file paths, quotations, and required domain terms.
 4. Apply the profile to natural-language text, including progress updates, questions, reports, instructions, and artifact prose.
