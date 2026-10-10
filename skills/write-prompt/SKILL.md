@@ -8,6 +8,7 @@ argument-hint: "Optional: the task, or emphasis for the prompt"
 
 Write one prompt that another agent can execute. The prompt has a dispatch block and one or more task prompts.
 This skill only writes the prompt. Do not do the task, and do not spawn a subagent.
+The receiving agent runs in Claude Code or in Codex. Write each output so that it runs in both tools.
 
 Agents read the output, not humans. Do not apply ASD-STE100 to the output.
 
@@ -65,8 +66,8 @@ For the Plan mode, use [the Plan format](references/plan.md). It covers one agen
 
 For the conditional Inline mode, use the Inline format with these changes. The dispatch rules state when to use it:
 
-- Replace the first dispatch line with: "If you run on <Claude Code model name>, do the task in <task_prompt> in this session. Do not spawn a subagent. Otherwise, spawn one subagent with the Agent tool. Give it the complete text inside <task_prompt> as its prompt. Do not do the task in this session. Use these settings exactly:"
-- Add a settings list after it: `- subagent_type: <agent type>`, `- model: <opus | sonnet | haiku>`, `- effort: <low | medium | high | xhigh | max>`, and `- run_in_background: false`.
+- Replace the first dispatch line with: "If you run on <Claude Code model name> or <Codex model name>, do the task in <task_prompt> in this session. Do not spawn a subagent. Otherwise, spawn one subagent. Give it the complete text inside <task_prompt> as its prompt. Do not do the task in this session. Use the settings for the tool that you run in, exactly:"
+- Add the two settings lists from the subagent form in [the Plan format](references/plan.md#agent-forms) after it, without the `Task type` line. Use `run_in_background: false`.
 - Keep the Reason line. Add a `Task type: <task type from suggest-model>` line and a `When the subagent returns: <what the parent does with the report>` line.
 
 If you assumed a fact, add one line after the code block: `**Assumed:** <assumption>`.
