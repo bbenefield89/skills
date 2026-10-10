@@ -17,22 +17,22 @@ Do not include **Current** steps as proposed setup actions. A detected Just exec
 
 | Step | Current version | Owned artifacts |
 | --- | ---: | --- |
-| Architecture document | 2 | `docs/agents/godot-architecture.md` and the `godot-architecture` AGENTS block |
+| Architecture document | 3 | `docs/agents/godot-architecture.md` and the `godot-architecture` AGENTS block |
 | Godot standards document | 1 | `docs/agents/godot-standards.md` and the `godot-standards` AGENTS block |
 | Ignore rules | 2 | Managed block in `.gitignore` |
-| Just validation | 3 | Managed variables and recipes in one detected Justfile |
+| Just validation | 4 | Managed variables and recipes in one detected Justfile |
 | GUT smoke | 2 | `tests/test_gut_setup.gd` |
 | Runtime verification | 2 | `tests/verify_runtime.gd` |
 | GUT dependency | selected release | `addons/gut` plus enabled `gut` editor plugin |
 | Godot warnings | detected-engine contract | Applicable `project.godot` warning settings |
 
-The current architecture document is separate from the obsolete version-1 `docs/agents/architecture.md`. Apply [architecture-document.md](architecture-document.md) when publishing it. Its scope is the agreed vertical-slice standard; legacy Deliver-policy migration remains unchanged.
+The current architecture document is separate from the obsolete version-1 `docs/agents/architecture.md`. Apply [architecture-document.md](architecture-document.md) when publishing it. Its scope is the agreed vertical-slice standard; legacy Deliver-policy migration remains unchanged. Apply its Outdated classification in [architecture-document.md](architecture-document.md) for an earlier template version.
 
 The current Godot standards document is separate from the obsolete version-1 `docs/agents/gdscript.md`. Apply [standards-document.md](standards-document.md) when publishing it, including its Outdated classification for an earlier template version.
 
 Each generated text artifact carries a stable marker containing its template name and version. Markers identify prior generated intent; they never authorize overwriting user changes.
 
-When a Justfile already exists, merge the required recipes into its established conventions. Version 3 adds recursive discovery under `tests/` and conditionally under `features/`; preserve existing custom checks. An unchanged version-2 recipe requires this narrow update, not replacement of the whole Justfile. The version-2 setup smoke and runtime scripts remain current. Detect names case-insensitively. If multiple distinct Justfiles are present, treat ownership as a hard conflict. Preserve unrelated recipes and variables.
+When a Justfile already exists, merge the required recipes into its established conventions. Version 4 makes `test-all` discover tests recursively under `tests/` only; preserve existing custom checks. An unchanged version-2 or version-3 recipe requires this narrow update, not replacement of the whole Justfile. When the project has `test_*.gd` files under `features/`, state in the setup proposal that `test-all` stops discovering them after the update and that setup does not move them. Setup never moves project files, so without this notice the tests stop running and nobody sees it. The version-2 setup smoke and runtime scripts remain current. Detect names case-insensitively. If multiple distinct Justfiles are present, treat ownership as a hard conflict. Preserve unrelated recipes and variables.
 
 Add only universal generated/editor output to `.gitignore`. Preserve existing rules. Never ignore assets, imported source files, `.uid` files, tests, vendored GUT, or other project content that belongs in version control.
 

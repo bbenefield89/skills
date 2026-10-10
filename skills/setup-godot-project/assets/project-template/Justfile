@@ -1,10 +1,9 @@
-# setup-godot-project:template=justfile;version=3;section=godot-validation
+# setup-godot-project:template=justfile;version=4;section=godot-validation
 set windows-shell := ["powershell.exe", "-NoLogo", "-NoProfile", "-Command"]
 
 godot_repository_executable := "godot"
 godot_executable := env_var_or_default("GODOT", godot_repository_executable)
 invoke := if os() == "windows" { "&" } else { "" }
-feature_test_args := if path_exists("features") == "true" { "-gdir res://features" } else { "" }
 
 import:
     {{ invoke }} "{{ godot_executable }}" --path . --headless --import --quit
@@ -13,7 +12,7 @@ test test_path:
     {{ invoke }} "{{ godot_executable }}" --path . --headless --script addons/gut/gut_cmdln.gd -- -gtest res://{{ test_path }} -gexit
 
 test-all:
-    {{ invoke }} "{{ godot_executable }}" --path . --headless --script addons/gut/gut_cmdln.gd -- -gdir res://tests {{ feature_test_args }} -ginclude_subdirs -gexit
+    {{ invoke }} "{{ godot_executable }}" --path . --headless --script addons/gut/gut_cmdln.gd -- -gdir res://tests -ginclude_subdirs -gexit
 
 runtime:
     {{ invoke }} "{{ godot_executable }}" --path . --headless --script tests/verify_runtime.gd

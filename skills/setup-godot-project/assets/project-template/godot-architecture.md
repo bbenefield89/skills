@@ -1,4 +1,4 @@
-<!-- setup-godot-project:template=godot-architecture;version=2 -->
+<!-- setup-godot-project:template=godot-architecture;version=3 -->
 # Godot architecture standard
 
 Apply this standard when adding, moving, or reviewing project-owned Godot files. Use the same organization rules across projects.
@@ -9,7 +9,7 @@ Organize primarily by feature or domain. Keep each feature's related implementat
 
 | Location | Responsibility |
 | --- | --- |
-| `features/<feature>/` | Gameplay behavior, feature scenes, scripts, exclusive resources, UI, and feature tests. |
+| `features/<feature>/` | Gameplay behavior, feature scenes, scripts, exclusive resources, and UI. |
 | `app/bootstrap/` | Separate startup helpers, when needed. A scene's attached script stays beside that scene. |
 | `app/autoload/` | True application-wide services registered as Godot autoloads. |
 | `app/config/` | Application configuration and input registration. |
@@ -20,7 +20,7 @@ Organize primarily by feature or domain. Keep each feature's related implementat
 | `data/<domain>/` | Shared authored datasets, such as item catalogs and game-wide balance data. Feature-owned resource definitions and instances stay together in their feature. |
 | `persistence/<responsibility>/` | Save/load boundaries, serializers, migrations, and stored-data models. |
 | `assets/<kind>/` | Passive art, audio, fonts, materials, shaders, and animation content shared across features. |
-| `tests/` | Integration tests, regression tests, fixtures, and setup validation infrastructure. |
+| `tests/` | All tests: unit tests in `tests/unit/<feature>/`, integration tests, regression tests, fixtures, and setup validation infrastructure. |
 | `docs/` | Architecture, decisions, conventions, and project documentation. |
 | `addons/` | Third-party plugins. |
 | `scenes/<composition>/` | Game-wide composition scenes and their attached scripts, such as `scenes/main/main.tscn` and `main.gd`. |
@@ -57,9 +57,9 @@ Application-wide scope alone does not require an autoload. Use `app/autoload/` o
 
 ## Tests and setup
 
-Keep focused feature tests beside their feature, under a `tests/` subfolder. Keep tests spanning features under root `tests/integration/` or `tests/regression/`. Shared fixtures belong under `tests/fixtures/`.
+Keep all tests under root `tests/`. Keep a feature's focused tests in `tests/unit/<feature>/`, where `<feature>` is the name of the feature's folder under `features/`. Keep tests spanning features under `tests/integration/` or `tests/regression/`. Shared fixtures belong under `tests/fixtures/`.
 
-Retain GUT and the public Just commands. Configure `test-all` to discover `test_*.gd` recursively under root `tests/` and `features/` when that directory exists. Keep setup smoke and runtime validation scripts at their configured root-test paths. A focused test command accepts the test's repository-relative path.
+Retain GUT and the public Just commands. Configure `test-all` to discover `test_*.gd` recursively under root `tests/` only. Keep setup smoke and runtime validation scripts at their configured root-test paths. A focused test command accepts the test's repository-relative path.
 
 Setup publishes this fixed document and its `AGENTS.md` pointer. It does not move gameplay files, inspect layout deviations, or customize the standard to the existing layout.
 

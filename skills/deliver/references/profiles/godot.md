@@ -12,7 +12,7 @@ If the document is absent, state that limit in the completion report. Continue w
 
 ## Repository architecture
 
-Read the repository architecture document identified during preflight. Use its vertical-slice placement rules and deep-module contracts during implementation and review. Keep each feature's scenes, scripts, resources, assets, and UI together as the document requires. Use feature-local tests and root-level integration or regression tests as the document requires. Keep discovery aligned with both locations and preserve the configured test framework and public validation commands.
+Read the repository architecture document identified during preflight. Use its vertical-slice placement rules and deep-module contracts during implementation and review. Keep each feature's scenes, scripts, resources, assets, and UI together as the document requires. Put tests where the document requires. Keep test discovery aligned with the document and preserve the configured test framework and public validation commands.
 
 Review changes for clear ownership and simple public methods, signals, and data contracts. Folder moves alone do not establish deep modules. Keep a behavior-preserving migration limited to files and references unless the request separately authorizes changes to state ownership or public contracts.
 
