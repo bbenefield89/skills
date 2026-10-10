@@ -1,55 +1,6 @@
 # Skills
 
-This repository packages custom skills in the expected multi-skill layout:
-
-```text
-skills/
-  architecture-grill/
-    SKILL.md
-  asd-ste100/
-    SKILL.md
-  close-task/
-    SKILL.md
-  code-brief/
-    SKILL.md
-  code-review/
-    SKILL.md
-  create-and-merge-pr/
-    SKILL.md
-  create-ticket/
-    SKILL.md
-  deliver/
-    SKILL.md
-  engineering-principles/
-    SKILL.md
-  gdscript-cleanup/
-    SKILL.md
-  goal-prompt/
-    SKILL.md
-  post-review-findings/
-    SKILL.md
-  setup-bb-skills/
-    SKILL.md
-  setup-github-project/
-    SKILL.md
-  setup-godot-project/
-    SKILL.md
-  suggest-model/
-    SKILL.md
-  ticket-to-tasks/
-    SKILL.md
-  tldr/
-    SKILL.md
-  write-a-skill/
-    SKILL.md
-  write-prompt/
-    SKILL.md
-  ynab-budget-review/
-    SKILL.md
-  zoom-out/
-    SKILL.md
-```
-
+This repository packages custom skills in the expected multi-skill layout.
 Each installable skill lives in its own directory under `skills/` and must contain a `SKILL.md`.
 
 Use `ticket-to-tasks` to post a clarified ticket's specification behind the scenes and review only the task drafts.
@@ -71,4 +22,4 @@ Example install shape:
 npx skills add <owner>/<repo>
 ```
 
-The original local source skills remain under `C:\Users\bsqua\.agents\skills`. This repo is a packaged copy intended to act as the shareable/installable source for `npx skills add <owner>/skills`.
+This repository is the source of the skills. The installed copies under `C:\Users\bsqua\.agents\skills` come from it through the `skills` CLI. Edit skills here, and update the installed copies with `npx skills`.
