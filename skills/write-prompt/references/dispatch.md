@@ -75,8 +75,22 @@ Use 2 to 4 agents for a comparison. Use more only for wide research with many in
 The parent can do a step itself when that costs less than a new subagent and the quality is similar.
 For example, the step is small, or it needs only the reports of earlier steps, such as a step that combines reports.
 Use the parent form of the Plan format for that step. A parent step has one agent.
-The parent form uses the same check as the conditional Inline dispatch. The parent does the step only if it runs on the model of the step. Otherwise it spawns a subagent with the settings of the step.
-A different effort with the same model does not start a subagent.
+The parent form uses the same check as the conditional Inline dispatch. The parent does the step only if it runs on the shared model below. Otherwise it spawns a subagent with the settings in the parent form.
+A different effort with the same model does not start a subagent. An effort change keeps the prompt cache, and a spawn costs more. So the session effort decides the effort of a parent step. The run section tells the user which effort to set before the prompt runs.
+
+One session runs all parent steps of an output. So all of them name the same model and the same effort. The parent forms of one plan never differ in model or in effort.
+
+- The shared effort is the highest effort among the picks of the parent steps. The order is low, medium, high, xhigh, max. A step that runs above its pick costs a little more on a small step. A step that runs below its pick can give a worse result that nobody notices.
+- The shared model is the most capable model among the picks of the steps that stay parent steps. The order is Opus 5.5, Sonnet 5.5, Haiku 5.5. No step runs on a model below its pick.
+
+A step can qualify as a parent step while its pick names a less capable model than the pick of another parent step. Choose one of these for that step:
+
+- Raise it. The step stays a parent step and takes the shared model and effort. Choose this when the step is small or needs only the reports of earlier steps, so that the setup and coordination of a new subagent cost more than the run on the more capable model.
+- Use the subagent form with the pick of the step. Choose this when the cost rule supports a split: the step is large, its pick is much cheaper, and its input and output are compact.
+
+Make this choice for each such step first. Then find the shared model and effort from the steps that stay parent steps. A raised step counts with its own pick for the effort.
+Write the shared model and effort in the parent form of each parent step: in the model name of the condition, and in the model and effort lines of the fallback settings. Then every parent form in one plan shows identical model and effort lines.
+Add the plan run section from "Run section" to the response when the plan has one or more parent steps.
 
 ### Gated steps
 
@@ -111,8 +125,9 @@ In the other cases, spawn a new subagent. Give it only the earlier reports that 
 3. Convert the model: Opus 5.5 is `opus`, Sonnet 5.5 is `sonnet`, and Haiku 5.5 is `haiku`.
 4. Use the effort without a change.
 5. For the Inline mode, keep the Claude Code pick, the Codex pick, and the better fit for the run section. Get the set commands from the catalog of `suggest-model`. For the conditional Inline dispatch, also use the Claude Code model name and the alias as the rules in "Make Inline conditional" state.
+6. For a Plan with a parent step, keep the alias of the shared model from the catalog of `suggest-model` for the run section. The shared model and effort come from the rules in "Parent steps".
 
-If the `suggest-model` skill is not available in the Plan mode, omit the model and effort of each agent. Then each subagent uses the session model. Do not split parts by cost, because no pick shows a difference in cost.
+If the `suggest-model` skill is not available in the Plan mode, omit the model and effort of each agent. Then each subagent uses the session model. Do not split parts by cost, because no pick shows a difference in cost. Use no parent form and add no run section, because no pick names a model.
 If the `suggest-model` skill is not available in the Inline mode, omit the run section and use the plain Inline dispatch. Add an `**Assumed:**` line that states this.
 
 ## Make Inline conditional
@@ -153,6 +168,8 @@ Tell the parent not to wait in a loop for a background subagent. The parent gets
 
 ## Run section
 
+### Inline output
+
 Add this section after the code block of each Inline output, conditional or plain. It goes after the `**Assumed:**` line.
 
 ```markdown
@@ -161,3 +178,19 @@ Add this section after the code block of each Inline output, conditional or plai
 - Codex: <model>, <effort label> — `/model`, then select <model> and <effort label>
 - Better fit: <Claude Code, Codex, or Either>
 ```
+
+### Plan output
+
+Add this section after the code block of each Plan output that has one or more parent steps. It goes after the `**Assumed:**` line, in the same position as the Inline run section.
+Use the shared model and the shared effort from "Parent steps". The user sets them before the prompt runs, because the effort of the session decides the effort of each parent step.
+
+```markdown
+**Run with**
+- Claude Code: <model>, <effort> — `/model <alias>`, then `/effort <effort>`
+- Applies to: <the parent steps>, which run in this session on <model>.
+```
+
+Name the parent steps by their step numbers.
+When a step runs above its pick in model or in effort, the "Applies to" line also states it. For example: "Applies to: steps 1 and 3, which run in this session on Opus 5.5. Step 1 is picked at low and runs at medium."
+The Plan run section has no Codex line and no "Better fit" line, because a plan spawns subagents with the Agent tool, which exists only in Claude Code.
+A Plan output with no parent step has no run section, because each subagent step sets its own model and effort.

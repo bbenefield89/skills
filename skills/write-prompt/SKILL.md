@@ -71,4 +71,5 @@ For the conditional Inline mode, use the Inline format with these changes. The d
 
 If you assumed a fact, add one line after the code block: `**Assumed:** <assumption>`.
 
-For each Inline output, end the response with the run section. Use [the template in the dispatch rules](references/dispatch.md#run-section). Put it after the `**Assumed:**` line. The user reads it to set the session.
+For each Inline output, and for each Plan output that has a parent step, end the response with the run section. Use [the template for the mode in the dispatch rules](references/dispatch.md#run-section). Put it after the `**Assumed:**` line. The user reads it to set the session.
+A Plan output with no parent step has no run section.

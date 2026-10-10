@@ -37,7 +37,7 @@ The subagent form spawns a new subagent:
   - Task type: <task type from suggest-model>
 ```
 
-The parent form lets the parent do the step when it runs on the model of the step:
+The parent form lets the parent do the step when it runs on the shared model of the parent steps. [The dispatch rules](dispatch.md#parent-steps) state how to find the shared model and effort:
 
 ```text
 - task_prompt id="<n>": If you run on <Claude Code model name>, do the task in <task_prompt id="<n>"> in this session. Otherwise, spawn one subagent with the Agent tool. Give it the complete text inside <task_prompt id="<n>"> as its prompt. Use these settings exactly:
@@ -61,4 +61,6 @@ The continue form sends the step to a subagent from an earlier step:
 - For a step with 2 or more agents, tell the parent in "When the step finishes" how to combine the reports.
 - For a plan with one step, omit the `Step <n>` line, the `Input` line, and the "When the step finishes" line.
 - For a plan with one agent, you can write `<task_prompt>` without an id. Then omit the id in the agent form too.
+- Write the same model name, the same `model` line, and the same `effort` line in every parent form of one plan. They carry the shared model and effort, not the pick of the step.
+- End a plan with a parent form with the run section from [the dispatch rules](dispatch.md#plan-output).
 - If the `suggest-model` skill is not available, omit the `model`, `effort`, and `Task type` lines.
