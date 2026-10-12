@@ -38,9 +38,28 @@ Group by severity — `high`, `medium`, `low` — dropping every `info` finding 
 
 Don't invent or require a special config file for this. If the session can already reach Azure DevOps (CLI login, browser, or otherwise), use that directly.
 
+## 2c. Classify logic-neutral items
+
+Before the walk, sort every item from step 2a or 2b. Apply this to both sources.
+
+An item is **logic-neutral** when its change touches only:
+
+- test files,
+- Markdown (`.md`) or other documentation files,
+- code comments, or
+- formatting and whitespace.
+
+It must make no difference to runtime behavior.
+
+- An item that mixes a logic change with a logic-neutral change is **not** logic-neutral.
+- An item you are not sure about is **not** logic-neutral.
+- Both get the normal walk in step 4. A wrong auto-accept skips a decision that the user wants to make.
+
+Hold the logic-neutral items back. Step 4 does not walk them. Step 4b shows them.
+
 ## 3. Set up the tracking scratchpad
 
-Before the first item, create a scratch file in the OS temp directory (not the repo). After each item is locked in, append one line:
+Before the first item, create a scratch file in the OS temp directory (not the repo). After each item is locked in, append one line. Add the `(auto)` marker after the outcome for an item that step 4b auto-accepts:
 
 - For CR: finding/severity/outcome/rationale.
 - For PR threads: thread link, opener, full comment history (author + text per comment, in order), outcome, rationale.
@@ -49,7 +68,7 @@ Working memory only, in case the session runs long enough to compact. Never pres
 
 ## 4. Walk the items, one at a time
 
-For CR: all **high**, then all **medium**, then all **low**. For PR threads: in PR order. Within that order, one item at a time:
+For CR: all **high**, then all **medium**, then all **low**. For PR threads: in PR order. Skip the logic-neutral items from step 2c. Within that order, one item at a time:
 
 1. **Recommend first.** State the item — for a thread, its link, who opened it, and who else commented (if anyone); for a finding, its title/location — and a recommended outcome (Fix / Do Not Fix / Defer) with one concise one-line reason.
 2. **Explain the issue.** Give the fuller explanation of what's wrong and why it matters. For a thread with more than one comment, summarize the back-and-forth so far — who said what — before moving to discussion, so nothing already settled between reviewers gets re-litigated.
@@ -58,9 +77,24 @@ For CR: all **high**, then all **medium**, then all **low**. For PR threads: in 
 5. **Lock it in.** Record the outcome and rationale/approach to the scratchpad. State plainly that no action happens now — not a code fix, not a thread reply, not a status change — it's handled after the full pass.
 6. Move to the next item.
 
+## 4b. Batch the logic-neutral items
+
+After the last item of step 4, and before the final summary, show all logic-neutral items from step 2c as one list. Skip this step if there are none.
+
+Each entry shows:
+
+- the item: the finding title and location, or the thread link and opener, and
+- the recommended outcome (**Fix**, **Do Not Fix**, or **Defer**) with a one-line reason.
+
+Every item in the list locks in with your recommendation, whatever the outcome is. The list is for the user's awareness. It is not a confirmation step, so do not wait for approval.
+
+- The user can name any item in the list to pull it out. A pulled-out item goes through the normal walk in step 4.
+- Record each remaining item in the scratchpad with the `(auto)` marker, for example `Fix (auto)`.
+- State plainly that no action happens now, as in step 4.
+
 ## 5. Final summary
 
-After the last item, present a table directly in chat.
+After step 4b, present a table directly in chat. In the Outcome column, write `(auto)` after the outcome of each item that step 4b auto-accepted, for example `Fix (auto)`.
 
 - For CR: `| Finding | Severity | Outcome | Rationale / Approach |`
 - For PR threads: `| Thread (linked) | Opened by | Also commented | Outcome | Rationale / Approach |`
