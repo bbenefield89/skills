@@ -21,7 +21,7 @@ Classify each artifact independently:
 
 Preserve unrelated AGENTS content. When a difference contains a project-specific rule, ask whether to move it to project-owned guidance before the replacement removes it. The template states that such guidance overrides the matching rule.
 
-The document specifies GDScript typing, declarations, node references, scene authoring, UI layout and theming, Inspector configuration, and native documentation. Publishing it does not authorize code cleanup or scene changes. Those require a separate implementation or cleanup request.
+The document specifies GDScript typing, declarations, node references, scene authoring, UI layout and theming, Inspector configuration, native documentation, and readable function bodies. Publishing it does not authorize code cleanup or scene changes. Those require a separate implementation or cleanup request.
 
 Verify the document, its stable marker, the single AGENTS block, and the pointer target after writing. An unchanged repeat run must propose no documentation edits. The legacy `gdscript` AGENTS key and `docs/agents/gdscript.md` are distinct from this current artifact.
 

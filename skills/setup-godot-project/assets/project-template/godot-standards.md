@@ -1,4 +1,4 @@
-<!-- setup-godot-project:template=godot-standards;version=1 -->
+<!-- setup-godot-project:template=godot-standards;version=2 -->
 # Godot standards
 
 Apply this standard when writing, cleaning, or reviewing project-owned Godot scripts, scenes, and resources. Use the same rules across projects.
@@ -128,6 +128,56 @@ Header example:
 ## The combatant health-state contract changes.
 class_name CombatantHealth
 extends Node
+```
+
+## GD8. Readable function bodies
+
+Shape a function body so that a reader can see its steps. This rule changes the shape of code and keeps its behavior.
+
+- Separate the logical steps of a body with one blank line. Local setup, a group of related assignments, and each branch or loop block are examples.
+- Keep the statements of one step on adjacent lines. A short body that is one step needs no blank line. Do not put a blank line after every line.
+- Give a condition that the body uses more than once, or that combines several comparisons, a typed local with a descriptive name.
+- When several branches only select one value, such as a button label or a message, move the selection to a small helper that returns the value. The caller keeps one assignment. GD7 requires a `##` comment on the helper.
+- Write a statement on one line when a named value or a helper makes that possible. An expression that wraps over several lines is the usual sign of a departure.
+
+Exception: a literal or an argument list that has no meaningful shorter form can wrap as the official style guide shows.
+
+Dense form:
+
+```gdscript
+## Updates the recovery dialog from the recovery state.
+func _refresh() -> void:
+	visible = recovery.state in [
+		MachineRecovery.RecoveryState.FAULT,
+		MachineRecovery.RecoveryState.RESTORING,
+	]
+	confirmation.visible = (
+		recovery.state == MachineRecovery.RecoveryState.FAULT and recovery.can_recover
+	)
+	message.text = recovery.reason
+	if confirmation.visible:
+		confirm.text = "Retry" if recovery.retry_required else "Recover"
+		if not recovery.has_snapshot:
+			confirm.text = "Retry startup"
+		confirm.grab_focus()
+	elif recovery.state == MachineRecovery.RecoveryState.FAULT:
+		message.text += "\nNo READY snapshot is available."
+```
+
+Readable form:
+
+```gdscript
+## Updates the recovery dialog from the recovery state.
+func _refresh() -> void:
+	var faulted: bool = recovery.state == MachineRecovery.RecoveryState.FAULT
+
+	visible = faulted or recovery.state == MachineRecovery.RecoveryState.RESTORING
+	confirmation.visible = faulted and recovery.can_recover
+	message.text = _state_message()
+
+	if confirmation.visible:
+		confirm.text = _confirmation_label()
+		confirm.grab_focus()
 ```
 
 ## Official references

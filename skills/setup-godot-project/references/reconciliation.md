@@ -18,7 +18,7 @@ Do not include **Current** steps as proposed setup actions. A detected Just exec
 | Step | Current version | Owned artifacts |
 | --- | ---: | --- |
 | Architecture document | 3 | `docs/agents/godot-architecture.md` and the `godot-architecture` AGENTS block |
-| Godot standards document | 1 | `docs/agents/godot-standards.md` and the `godot-standards` AGENTS block |
+| Godot standards document | 2 | `docs/agents/godot-standards.md` and the `godot-standards` AGENTS block |
 | Ignore rules | 2 | Managed block in `.gitignore` |
 | Just validation | 4 | Managed variables and recipes in one detected Justfile |
 | GUT smoke | 2 | `tests/test_gut_setup.gd` |

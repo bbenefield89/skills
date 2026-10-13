@@ -17,6 +17,7 @@ Report an authoring preference separately from a behavior defect.
 Before you report a departure, check for a stated exception, a native limitation, or a dynamic requirement that justifies the code.
 Respect project-owned guidance that selects another convention, such as programmatic UI.
 Rate a declaration-spacing departure Low.
+Rate a GD8 departure Low, because it does not change behavior.
 GD7 documentation coverage replaces the general preference to leave obvious methods without comments.
 
 A container controls its child layout. Check manual child positioning against the parent's layout behavior.
