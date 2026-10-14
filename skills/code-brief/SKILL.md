@@ -1,6 +1,7 @@
 ---
 name: code-brief
 description: Brief the user on a code change with a one-screen recall infographic of what it introduced (purpose, risks, renames, new config, contracts), not a walkthrough. Use when the user asks for a code brief, wants to recall what a branch, PR, commit, or uncommitted work added, or approved a change through agentic review and wants just enough familiarity to recognise it later.
+argument-hint: "Optional: changes | staged | unstaged | head | branch [base] | file <path> | system <name>"
 ---
 
 # Code brief
