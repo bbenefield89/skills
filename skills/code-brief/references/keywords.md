@@ -83,7 +83,8 @@ Top strip: `head <short-sha> on <branch> · <m> files · <primary project or fol
 
 There is no diff and no commit isolation. Use the current working tree unless the user
 names another version. For `system`, locate the system's files first and list the
-primary folder. The layout drops the Renamed or removed card and retitles the risk and
-config sections (see Layout in `SKILL.md`).
+primary folder. The layout drops the Renamed or removed card and retitles the How it works, risk, and
+config sections: "How it works today", "Easy to break by accident", and "Config surface"
+(see Layout in `SKILL.md`).
 
 Top strip: `<path or system name> · current working tree · <m> files`.

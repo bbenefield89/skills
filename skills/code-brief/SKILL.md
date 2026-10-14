@@ -1,6 +1,6 @@
 ---
 name: code-brief
-description: Brief the user on a code change with a one-screen recall infographic of what it introduced (purpose, risks, renames, new config, contracts), not a walkthrough. Use when the user asks for a code brief, wants to recall what a branch, PR, commit, or uncommitted work added, or approved a change through agentic review and wants just enough familiarity to recognise it later.
+description: Brief the user on a code change with a one-screen recall infographic of what it introduced (purpose, a short flow of how each main change works, risks, renames, new config, contracts), not a walkthrough. Use when the user asks for a code brief, wants to recall what a branch, PR, commit, or uncommitted work added, or approved a change through agentic review and wants just enough familiarity to recognise it later.
 argument-hint: "Optional: changes | staged | unstaged | head | branch [base] | file <path> | system <name>"
 ---
 
@@ -10,14 +10,17 @@ Turn a code change into a **recall** infographic. The user approved the change l
 through agentic review. They want just enough familiarity to recognise what the change
 introduced. When someone mentions it, or an agent proposes a plan that conflicts with it,
 the user should think "oh right, we added that." Extract nouns: names, knobs, contracts,
-and vocabulary. Leave out logic. Assume the user may not know the underlying technology.
+and vocabulary. Show each main change as a short flow of steps, so the user knows how it
+works without reading the code. The flow is a whiteboard sketch, not a code tour. Leave
+out line-level logic: conditions, loops, error-handling details, and helper methods.
+Assume the user may not know the underlying technology.
 
 The infographic is the deliverable. Keep prose out of chat.
 
 ## Boundaries
 
 - Read-only. Run only non-mutating Git commands. Stay on the current branch, and leave
-  remotes alone (no fetch, no pull). The single write is the HTML copy in step 5.
+  remotes alone (no fetch, no pull). The single write is the HTML copy in step 6.
 - Exclude test code from every card and every count: unit and integration tests,
   fixtures, mocks, test helpers, and test infrastructure. Apply this after resolving the
   scope. If only test code remains, say so in one sentence and stop.
@@ -41,13 +44,39 @@ From the resolved scope only (for `branch`, the ticket's own commits):
 - added `[HttpGet|HttpPost|HttpPut|HttpDelete|HttpPatch]` attributes
 - added `public`/`internal` `class|record|interface|enum`
 
-Add targeted greps when the stack suggests them. Read individual files only to name a
-thing accurately. For `file` and `system`, extract the same categories from the current
-code instead of from added lines.
+Add targeted greps when the stack suggests them. In this step, read individual files only
+to name a thing accurately. Step 3 reads the files on each flow's path. For `file` and
+`system`, extract the same categories from the current code instead of from added lines.
 
 Done when every non-test file in scope has been checked against each category.
 
-### 3. Write the purpose
+### 3. Trace the flows
+
+Find the entry points in scope: added or changed endpoints, scheduled jobs, message
+handlers, background services, and UI event handlers (button clicks, form submits).
+
+Pick at most 2 flows: the ones behind the first purpose sentences. Draft the purpose
+order from the changes you found in step 2. Step 4 writes the final sentences.
+
+For each flow, follow the calls from the entry point through the changed files. Stop at
+6 steps, at code the change did not touch, or at an external system (a database, blob
+storage, a third-party API). Read only the files on the path.
+
+For each step, record:
+
+- what happens, as one plain sentence (for example "The upload job checks whether the
+  file is already in storage.")
+- the class or method name, for a mono label
+- whether the step is new, changed, or unchanged context
+
+When the change alters an existing flow, record the old step that the new one replaced or
+skipped. For `file` and `system`, trace the current flow and do not mark steps as new or
+changed.
+
+Done when each selected flow runs from its entry point to its stop point. If a flow
+cannot reach a stop point, record its name and where it stopped for the output contract.
+
+### 4. Write the purpose
 
 Write full sentences describing what this change does, from the point of view of someone
 using the product. Write one sentence per distinct change a user would notice, most
@@ -82,15 +111,15 @@ the code)" at the point you are unsure. Keep the specific in the sentence. Do no
 | Bad | "Keeps Save off until you change something." (save what? where?) |
 | Bad | "Introduces IBlobContainerGuard." (mechanism, jargon) |
 
-### 4. Render the widget
+### 5. Render the widget
 
 Call the visualization tool's `read_me`, then `show_widget`. The `read_me` output is
 large and is often saved to a file. Grep that file for the CSS variables, the Rules
 section, and the color palette. Do not read the whole file. Build the layout in
 [Layout](#layout). Run the read-aloud check from [Writing standard](#writing-standard) on
-every line before you render.
+every line before you render, including the step sentences in "How it works".
 
-### 5. Save the HTML copy
+### 6. Save the HTML copy
 
 A rendered widget loses its layout when copied into chat. Write the same infographic as
 one self-contained HTML file in the OS temp directory (`$env:TEMP` on Windows, `$TMPDIR`
@@ -114,7 +143,20 @@ ticket · <m> files · <primary project or folder>`. The file count excludes tes
 Append `· baseline may be stale` only when [keyword scopes](references/keywords.md)
 says to.
 
-**C. Most likely to bite you.** Up to 3 cards with the danger role tint. Rank them by
+**C. How it works.** One row per flow, at most 2, from step 3. Title each row with the
+trigger in plain words, for example "When someone uploads a patient file". Each row is a
+left-to-right chain of step boxes with an arrow icon between them. Each box has:
+
+- the plain sentence, 13px
+- the name in mono, 11px, muted
+- a tint: accent tint and the words "New step" for a new step, warning tint and the words
+  "Changed step" for a changed step, neutral tint and no label for unchanged context
+
+When a step replaced an old one, show the old sentence struck through under the new box.
+For `file` and `system`, title the section "How it works today" and show no step labels.
+With more than 2 flows, show the first 2 and add a muted line "+N more flows: <names>".
+
+**D. Most likely to bite you.** Up to 3 cards with the danger role tint. Rank them by
 how likely the user is to approve something wrong if they forget the item. Each card has:
 
 - a short plain label
@@ -127,7 +169,7 @@ For `file` and `system`, title the section "Easy to break by accident" and repla
 "What was wrong" with **What it protects:**. Explain jargon inline in a few words the
 first time it appears (for example "409 — Azure's 'already exists' error").
 
-**D. Two wide cards side by side.**
+**E. Two wide cards side by side.**
 
 - **Renamed or removed**, warning tint. Each entry is `old` → `new`, with the old name
   struck through and a right-arrow icon. Empty state: "Nothing was renamed or removed."
@@ -137,17 +179,18 @@ first time it appears (for example "409 — Azure's 'already exists' error").
   variables, feature flags, or secrets." For `file` and `system`, title it
   "Config surface".
 
-**E. Four small neutral cards:** Contracts, Data shape, Dependencies, Boundary behavior.
+**F. Four small neutral cards:** Contracts, Data shape, Dependencies, Boundary behavior.
 Names in mono, one per line. Under Boundary behavior, write each entry as a short full
 sentence. Empty state: "Nothing new here." (For `file` and `system`: "Nothing here.")
 
 ### Volume
 
+- At most 2 flows and 6 steps per flow.
 - At most 6 entries per card. Show overflow as a muted "+N more <things>", naming the
   things: "+3 more constructors".
 - With more than 10 config knobs, group them by prefix or subsystem under small sub-labels.
-- Fit everything without scrolling inside the widget. Shrink the cards to fit, and keep
-  every purpose sentence.
+- Fit everything without scrolling inside the widget. To make room, shrink section F (the
+  four small cards) first, then section E. Keep every purpose sentence and every step box.
 
 ### Style
 
@@ -179,10 +222,11 @@ Applies to every plain-English line in the widget and the HTML copy.
 
 ## Output contract
 
-The widget is the answer. Outside it, write at most three short lines:
+The widget is the answer. Outside it, write at most three short lines, plus one more line when a flow was not fully traced:
 
 - the path of the saved HTML copy
 - anything you could not determine, or marked "(not clear from the code)"
+- when a flow could not be traced end to end: its name and where it stopped
 - when the baseline may be stale: "Run `git pull` on local main and re-run code-brief for a
   cleaner baseline."
 
