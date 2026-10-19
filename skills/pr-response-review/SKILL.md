@@ -28,8 +28,17 @@ is the whole deliverable.
 ## 1. Identify the PR
 
 1. Use the PR link or ID the user gave.
-2. If none, infer the PR from the current branch and confirm it with the user
-   before continuing.
+2. If none, resolve the PR from the current branch:
+   1. Get the branch name with `git rev-parse --abbrev-ref HEAD`.
+   2. Find the PR with
+      `az repos pr list --source-branch refs/heads/<branch> --status active`.
+   3. If the session has no `az` CLI, run the same lookup with the access
+      described in step 2.
+3. If the lookup finds exactly one active PR, use it and continue.
+4. If the lookup finds no active PR, or two or more, state what it found and ask
+   the user for the PR link or ID.
+5. At the top of the output, state the **resolved PR** with its number and
+   title.
 
 ## 2. Gather the threads
 
