@@ -35,6 +35,7 @@
       "name": "corrohealth-skills",
       "source": "./",
       "skills": [
+        "./skills/azure-pr",
         "./skills/create-test-plan",
         "./skills/fsi-parallel-stack",
         "./skills/fsi-smoke-test",
