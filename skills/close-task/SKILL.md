@@ -32,7 +32,8 @@ Keep pushes, merges, comments, parent closure, and other Tasks outside this work
 ## Resolve and prepare
 
 1. Resolve the repository and Task from the user's number, URL, or unambiguous conversation context.
-2. Read repository instructions and `docs/agents/bb-skills.md` for Task, Ticket, and parent relationship mappings.
+2. Read `AGENTS.md` and the document that its index names for tickets, usually `docs/process/tickets.md`. Take the Task, Ticket, and parent relationship mappings from its Tracker contract section.
+   A repository that has not migrated points to the legacy contract `docs/agents/bb-skills.md` instead.
    If the contract is missing or inconsistent, stop and direct the user to `$setup-bb-skills`.
 3. Read the live Task body, comments, classification, state, closure reason, and configured parent relationship.
 4. Resolve its parent Ticket through the configured relationship. Native parent relationships take precedence over incidental links.

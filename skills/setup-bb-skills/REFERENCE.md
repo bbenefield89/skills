@@ -30,49 +30,45 @@ A concept may be represented by a label, issue type, field, status, relationship
 - Never place credentials, tokens, or private connection material in the contract.
 - Discover tracker operations from available tools and current capabilities; do not require a hardcoded platform recipe.
 
-## Repository contract
+## Repository document
 
-Write only confirmed repository configuration:
+Write the tracker contract and the ticket rules to `docs/process/tickets.md` from [templates/tickets.md](templates/tickets.md). Replace each placeholder in the Tracker contract with a confirmed value. Write only confirmed repository configuration. Keep the table shape exactly, because other skills and scripts read the rows.
 
-```markdown
-# BB Skills Tracker Contract
+The block starts with `<!-- setup-bb-skills:tickets:start;version=<N> -->` and ends with `<!-- setup-bb-skills:tickets:end -->`. The repository owns all text outside the block, including its project rules. Never change that text.
 
-## Tracker
+Compare only the block with the template filled with the confirmed values. Ignore line-ending differences.
 
-- **System:** <tracker>
-- **Target:** <repository, project, space, or board>
+- **Missing:** the file does not exist. Propose to write the whole template file with the values.
+- **Current:** the block version and the filled block match. No-op.
+- **Outdated:** the block version is lower than the template version, or a confirmed value changed. Show the difference, and propose to replace the block.
+- **Edited block:** the version matches, but the text does not. Show the difference. Ask whether to move each edit to `## Project rules` as a P rule, or to discard it. Then replace the block.
+- **No block:** the file exists without markers, or with duplicate or malformed markers. Show the file, and ask how to proceed.
 
-## Artifact mappings
-
-| Concept | Representation | Confirmed value |
-| --- | --- | --- |
-| Ticket | <label/type/field/status> | <value> |
-| Task | <label/type/field/status> | <value> |
-| Agent executor | <label/type/field/assignment> | <value> |
-| Human executor | <label/type/field/assignment> | <value> |
-| Needs details | <label/type/field/status> | <value> |
-
-## Relationships
-
-| Concept | Confirmed mechanism |
-| --- | --- |
-| Release grouping | <mechanism or Not used> |
-| Task release behavior | <inherit, duplicate, omit, or Not used> |
-| Parent-child | <mechanism or textual fallback> |
-| Blocking | <mechanism or textual fallback> |
-```
+To change a rule, edit only the template, and raise the version in its start marker by one in the same change.
 
 Do not add instructions for running skills, domain-document rules, PR lifecycle, task closure, or implementation order.
 
-## Instruction pointer
+## Legacy contract
 
-Add one concise pointer under an appropriate existing section:
+Earlier releases wrote the contract to `docs/agents/bb-skills.md`, with this pointer in `AGENTS.md` or `CLAUDE.md`:
 
 ```markdown
 Tracker conventions for ticket publishing are defined in `docs/agents/bb-skills.md`.
 ```
 
-Do not create duplicate sections or pointers. Preserve surrounding content.
+Read its values as existing configuration. Propose to write them to `docs/process/tickets.md`, and to remove the legacy file and its pointer in the same change. Text in the legacy file outside the contract shape is project guidance: ask whether to add it as a P rule or to discard it. Remove `docs/agents/` only when it becomes empty.
+
+## AGENTS.md index row
+
+Add this row to the `## Before you…` table in `AGENTS.md` when no row names `docs/process/tickets.md`:
+
+```markdown
+| create or change a ticket | `docs/process/tickets.md` |
+```
+
+When another skill already added a row for the same action, add the path to that row. When `AGENTS.md` does not exist or has no such table, run `$setup-agents-md` first. It creates `AGENTS.md` as an index, and `CLAUDE.md`.
+
+Do not create duplicate sections or rows. Preserve surrounding content.
 
 ## External reconciliation
 
@@ -90,8 +86,9 @@ If a platform cannot configure a confirmed mechanism through available tools, re
 
 Confirm:
 
-- the contract contains every confirmed mapping exactly once;
-- the selected instruction file points to it exactly once;
+- the skill-owned block of `docs/process/tickets.md` contains every confirmed mapping exactly once;
+- `AGENTS.md` names `docs/process/tickets.md` in exactly one row;
+- no legacy contract or pointer remains, unless the user chose to keep it;
 - classifications have the confirmed meanings;
 - configured relationships are available;
 - no unapproved tracker objects changed;

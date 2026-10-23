@@ -6,9 +6,9 @@ Apply these rules to changed project-owned Godot code and directly affected inte
 
 ## Godot standards
 
-Use the repository's `docs/agents/godot-standards.md`, read during preflight. Apply every applicable rule during both Implementation and Standards review. In this workflow, a departure in changed code or a directly affected interface is an actionable finding rather than an optional recommendation.
+Use the standards documents that the `AGENTS.md` index names for GDScript, scenes, UI, and tests, read during preflight. Apply every applicable rule, including the project rules, during both Implementation and Standards review. In this workflow, a departure in changed code or a directly affected interface is an actionable finding rather than an optional recommendation.
 
-If the document is absent, state that limit in the completion report. Continue with this profile, other repository guidance, and official Godot documentation for the project's engine version.
+If no standards document exists, state that limit in the completion report. Continue with this profile, other repository guidance, and official Godot documentation for the project's engine version.
 
 ## Repository architecture
 
@@ -16,7 +16,7 @@ Read the repository architecture document identified during preflight. Use its v
 
 Review changes for clear ownership and simple public methods, signals, and data contracts. Folder moves alone do not establish deep modules. Keep a behavior-preserving migration limited to files and references unless the request separately authorizes changes to state ownership or public contracts.
 
-Update project-specific architecture documentation when an approved change alters a documented contract. Treat the generated universal standard as policy: change it only when the user explicitly authorizes a policy change. Do not rewrite it to match legacy structure or introduce a new convention for one implementation.
+Update the project content of the architecture documents, such as the System map and the Folder map, when an approved change alters it. Never edit text inside a skill-owned block. Add a project rule below the block only when the user explicitly authorizes a policy change. Do not add a project rule to match legacy structure or to introduce a new convention for one implementation.
 
 ## Configuration and scenes
 

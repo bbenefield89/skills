@@ -35,7 +35,7 @@ That mode replaces the tracker contract, specification publication, and task pub
 
 ## Gather context
 
-Read `docs/agents/bb-skills.md` to resolve the tracker, target, classifications, release behavior, and relationships.
+Read `AGENTS.md`, and read the document that its index names for creating or changing a ticket, usually `docs/process/tickets.md`. Resolve the tracker, target, classifications, release behavior, and relationships from its Tracker contract section, and follow its rules. A repository that has not migrated points to the legacy contract `docs/agents/bb-skills.md` instead.
 If the contract is missing or inconsistent for a part that the invocation instructions leave open, direct the user to `$setup-bb-skills` before publishing.
 
 Resolve the existing ticket from the user's reference or current conversation.

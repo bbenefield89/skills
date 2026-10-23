@@ -27,6 +27,10 @@
     "Exists": true,
     "PointerCount": 1
   },
+  "GitContract": {
+    "Exists": true,
+    "PointerCount": 1
+  },
   "Labels": [
     { "Name": "ticket" },
     { "Name": "task" },

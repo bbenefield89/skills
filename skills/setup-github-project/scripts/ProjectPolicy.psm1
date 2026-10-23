@@ -304,16 +304,22 @@ function Get-GitHubProjectAssessment {
     }
 
     $githubContract = Get-PropertyValue $State 'GitHubProjectContract'
-    if (-not [bool](Get-PropertyValue $githubContract 'Exists' $false)) {
-        $errors.Add('docs/agents/github-project.md is missing.')
-        $proposed.Add('Write docs/agents/github-project.md from the bundled template.')
+    $gitContract = Get-PropertyValue $State 'GitContract'
+    foreach ($document in @(@{ Path='docs/process/project-board.md'; Value=$githubContract }, @{ Path='docs/process/git.md'; Value=$gitContract })) {
+        if (-not [bool](Get-PropertyValue $document.Value 'Exists' $false)) {
+            $errors.Add("$($document.Path) is missing.")
+            $proposed.Add("Write $($document.Path) from the bundled template.")
+        }
     }
-    foreach ($contract in @(@{ Name='BB'; Value=$bb }, @{ Name='GitHub Project'; Value=$githubContract })) {
+    foreach ($contract in @(@{ Name='BB'; Value=$bb }, @{ Name='GitHub Project'; Value=$githubContract }, @{ Name='Git'; Value=$gitContract })) {
         $pointerCount = [int](Get-PropertyValue $contract.Value 'PointerCount' 0)
         if ($pointerCount -ne 1) {
-            $errors.Add("$($contract.Name) contract instruction pointer count is $pointerCount; expected 1.")
-            $proposed.Add("Reconcile the $($contract.Name) contract instruction pointer exactly once.")
+            $errors.Add("$($contract.Name) document AGENTS.md index row count is $pointerCount; expected 1.")
+            $proposed.Add("Reconcile the $($contract.Name) document AGENTS.md index row exactly once.")
         }
+    }
+    foreach ($legacyContract in @(Get-PropertyValue $State 'LegacyContracts' @())) {
+        $legacy.Add("Legacy contract '$legacyContract' exists.")
     }
 
     foreach ($issue in $issues) {

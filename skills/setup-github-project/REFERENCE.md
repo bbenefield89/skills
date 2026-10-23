@@ -8,9 +8,9 @@ The only native issue hierarchy is `Ticket -> Task`. A lightweight Ticket is enr
 
 ## Ownership
 
-`docs/agents/bb-skills.md` is the source of truth for Ticket, Task, executor, needs-details, release, parent-child, and blocking mappings. Reuse it when complete and compatible. Coordinate `$setup-bb-skills` through its own approval gate when it is missing or incompatible.
+The Tracker contract in `docs/process/tickets.md` is the source of truth for Ticket, Task, executor, needs-details, release, parent-child, and blocking mappings. `$setup-bb-skills` owns it. Reuse it when complete and compatible. Coordinate `$setup-bb-skills` through its own approval gate when it is missing or incompatible.
 
-`docs/agents/github-project.md` is the source of truth for milestones, Project membership, views, Status behavior, and Project workflows. `setup-github-project` owns this contract and its repository-instruction pointer.
+`docs/process/project-board.md` is the source of truth for milestones, Project membership, views, Status behavior, and Project workflows. `docs/process/git.md` holds the branch, commit, pull request, and merge rules. `setup-github-project` owns the skill-owned block of each document and its `AGENTS.md` index row.
 
 ## Canonical milestones
 
@@ -94,6 +94,37 @@ Keep exactly one saved view. Prefer reconciling the default view rather than cre
 
 Workflows do not repair historical membership. Add every existing open and closed Ticket during reconciliation and verify each item.
 
+## Repository documents
+
+Write each document from its template. The repository owns all text outside the block, including its project rules. Never change that text.
+
+| Template | Target path | Block key | Values to fill | AGENTS row: Before you… |
+|---|---|---|---|---|
+| [templates/project-board.md](templates/project-board.md) | `docs/process/project-board.md` | `project-board` | Project title, number, owner, URL, repository, and the Ticket value | create or change a ticket |
+| [templates/git.md](templates/git.md) | `docs/process/git.md` | `git` | The branch prefix | create a branch, commit, or pull request |
+
+Ask the executor for the branch prefix, such as `SP` for branches named `SP-147`. Propose a prefix from existing branch names when they show one.
+
+Each block starts with `<!-- setup-github-project:<key>:start;version=<N> -->` and ends with `<!-- setup-github-project:<key>:end -->`. Compare only the block with the template filled with the approved values. Ignore line-ending differences.
+
+- **Missing:** the file does not exist. Propose to write the whole template file with the values.
+- **Current:** the block version and the filled block match. No-op.
+- **Outdated:** the block version is lower than the template version, or an approved value changed. Show the difference, and propose to replace the block.
+- **Edited block:** the version matches, but the text does not. Show the difference. Ask whether to move each edit to `## Project rules` as a P rule, or to discard it. Then replace the block.
+- **No block:** the file exists without markers, or with duplicate or malformed markers. Show the file, and ask how to proceed.
+
+To change a rule, edit only the template, and raise the version in its start marker by one in the same change.
+
+### AGENTS.md index rows
+
+Add a row to the `## Before you…` table in `AGENTS.md` for each document, with the target path in backticks in the Read column, when no row names that path. When a row for the same action exists, such as the `docs/process/tickets.md` row for tickets, add the path to that row. When `AGENTS.md` does not exist or has no such table, run `$setup-agents-md` first. It creates `AGENTS.md` as an index, and `CLAUDE.md`.
+
+Preserve all other `AGENTS.md` content.
+
+### Legacy contract
+
+Earlier releases wrote `docs/agents/github-project.md` from [templates/legacy/github-project.md](templates/legacy/github-project.md), with a pointer in `AGENTS.md` or `CLAUDE.md`. When the file matches that template, propose to delete it and its pointer in the same change that writes `docs/process/project-board.md`. Other text in the file is project guidance: ask whether to add it as a P rule or to discard it. Remove `docs/agents/` only when it becomes empty.
+
 ## Repository bootstrap
 
 Reuse an accessible GitHub repository. When none exists, propose `<sole-active-account>/<local-repository-name>` as private. Ask the executor to select an owner when multiple authenticated accounts are detected. Present repository creation and remote configuration in the approval proposal. Do not commit or push.
@@ -131,5 +162,5 @@ Confirm:
 - Status contains only `Todo`, `In Progress`, and `Done`;
 - workflows match the Ticket-only contract and auto-add-sub-issues is disabled;
 - forbidden custom fields are absent;
-- both contracts and instruction pointers exist exactly once; and
+- the tracker contract, `docs/process/project-board.md`, and `docs/process/git.md` exist, and `AGENTS.md` names each one in exactly one row; and
 - a second discovery run proposes no mutations.

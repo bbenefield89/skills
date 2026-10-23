@@ -1,6 +1,6 @@
 ---
 name: setup-github-project
-description: Creates or reconciles a private GitHub repository and repository-linked GitHub Projects V2 Ticket board, including canonical milestones, Ticket-only membership, Status workflows, BB tracker-contract coordination, and repository guidance. Use when a repository needs its GitHub planning infrastructure created, connected, repaired, or standardized.
+description: Creates or reconciles a private GitHub repository and repository-linked GitHub Projects V2 Ticket board, including canonical milestones, Ticket-only membership, Status workflows, BB tracker-contract coordination, and the project-board and git documents in docs/process/. Use when a repository needs its GitHub planning infrastructure created, connected, repaired, or standardized.
 ---
 
 # Set Up a GitHub Project
@@ -20,9 +20,9 @@ Create or reconcile the approved GitHub planning infrastructure using [REFERENCE
 
 Before every local or GitHub write:
 
-1. Read repository instructions, planning documents, and existing `docs/agents/` contracts.
+1. Read `AGENTS.md`, planning documents, `docs/process/tickets.md`, `docs/process/project-board.md`, `docs/process/git.md`, and legacy contracts in `docs/agents/`.
 2. Run `scripts/preflight.ps1`, then inspect the repository and GitHub read-only.
-3. Present the exact repository, remote, BB coordination, labels, milestones, milestone descriptions, Project, membership, views, workflows, and local files to create, reuse, change, or leave unresolved.
+3. Present the exact repository, remote, BB coordination, labels, milestones, milestone descriptions, Project, membership, views, workflows, branch prefix, and local files to create, reuse, change, or leave unresolved.
 4. Identify every inferred, missing, conflicting, legacy, and browser-only value.
 5. Wait for explicit approval from the human executor.
 
@@ -43,7 +43,7 @@ If preflight reports any other missing prerequisite, report every entry in `Miss
 
 ## BB contract gate
 
-Inspect `docs/agents/bb-skills.md` and its repository-instruction pointer. Reuse a complete compatible contract.
+Inspect the Tracker contract in `docs/process/tickets.md` and its `AGENTS.md` index row. Reuse a complete compatible contract.
 
 When the contract is absent, incomplete, contradictory, or inconsistent with GitHub, coordinate `$setup-bb-skills` through its independent discovery and approval gate. Resume Project setup only after BB verification succeeds. The BB contract owns Ticket, Task, executor, needs-details, release grouping, Task release behavior, parent-child, and blocking mappings; never duplicate those mappings in the Project contract.
 
@@ -57,7 +57,7 @@ Run `scripts/inspect.ps1 -Repository OWNER/REPO` only after preflight permits Gi
 - every Ticket, its milestone, state, and Project membership;
 - Task and unrelated Project membership;
 - Project visibility, repository linkage, fields, Status options, saved views, and workflows;
-- both repository contracts and their instruction pointers.
+- the tracker contract, the two documents that this skill owns, their `AGENTS.md` index rows, and legacy contracts.
 
 Reuse an existing compatible private Project. Create one only when none exists. Never create Tickets or Tasks.
 
@@ -75,8 +75,8 @@ After exact approval, execute in this order:
 6. Add every open and closed Ticket to the Project and verify each membership.
 7. Remove approved non-Ticket Project memberships without changing the underlying issues.
 8. Configure Ticket-only workflows and keep auto-add-sub-issues disabled.
-9. Reconcile `docs/agents/github-project.md` from [templates/github-project.md](templates/github-project.md).
-10. Add its pointer to the repository instruction file exactly once.
+9. Reconcile the skill-owned blocks of `docs/process/project-board.md` and `docs/process/git.md`, as "Repository documents" in [REFERENCE.md](REFERENCE.md) states.
+10. Add their `AGENTS.md` index rows exactly once, and remove the approved legacy contract and pointer.
 11. Run verification, then rerun discovery and require zero proposed mutations.
 
 Apply this operation ladder separately to each GitHub setting:

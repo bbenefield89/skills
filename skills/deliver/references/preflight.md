@@ -4,7 +4,7 @@ Complete preflight before editing:
 
 1. Confirm an authoritative implementation request exists.
 2. Extract concrete acceptance criteria. Ask when required behavior is ambiguous or contradictory.
-3. Read repository guidance and identify its precedence relative to the current request. For Godot, follow the AGENTS pointers and read `docs/agents/godot-architecture.md` and `docs/agents/godot-standards.md` when present. Apply the architecture document's feature ownership, placement, and public-contract rules and every applicable Godot standard to implementation and review. A missing document does not authorize generating it or block otherwise defined work.
+3. Read repository guidance and identify its precedence relative to the current request. Read `AGENTS.md` and each document that its index names for the actions that the work includes, such as changing `.gd` or `.tscn` files, changing UI, writing tests, adding or moving files, and saying that a change is complete. Apply every applicable rule, including the project rules, to implementation and review. A project rule that names a rule it replaces applies in place of that rule. In a repository that has not migrated, follow its AGENTS pointers, such as `docs/agents/godot-architecture.md` and `docs/agents/godot-standards.md`. A missing document does not authorize generating it or block otherwise defined work.
 4. Record the initial staged, unstaged, and untracked non-ignored worktree.
 5. Identify unrelated existing changes and any overlap with the requested work.
 6. Detect applicable technology profiles from repository evidence.

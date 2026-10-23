@@ -26,9 +26,18 @@ function Get-ContractMapping {
     param([string]$Content, [string]$Concept)
     if (-not $Content) { return $null }
     $escaped = [regex]::Escape($Concept)
-    $match = [regex]::Match($Content, "(?im)^\|\s*$escaped\s*\|\s*[^|]+\|\s*`?([^|`]+?)`?\s*\|$")
+    $match = [regex]::Match($Content, '(?im)^\|\s*' + $escaped + '\s*\|\s*[^|]+\|\s*`?([^|`]+?)`?\s*\|\s*$')
     if ($match.Success) { return $match.Groups[1].Value.Trim() }
     return $null
+}
+
+function Get-ManagedBlock {
+    param([string]$Content, [string]$Key)
+    if (-not $Content) { return '' }
+    $escaped = [regex]::Escape($Key)
+    $match = [regex]::Match($Content, "(?s)<!--\s*${escaped}:start;version=\d+\s*-->(.*?)<!--\s*${escaped}:end\s*-->")
+    if ($match.Success) { return $match.Groups[1].Value }
+    return ''
 }
 
 function Get-PointerCount {
@@ -44,8 +53,9 @@ $labels = @(gh label list --repo $Repository --limit 200 --json name,description
 $rawIssues = @(gh issue list --repo $Repository --state all --limit 1000 --json number,title,state,labels,url,parent,subIssuesSummary,projectItems,milestone | ConvertFrom-Json)
 $milestones = @(gh api --paginate "repos/$Repository/milestones?state=all&per_page=100" | ConvertFrom-Json)
 
-$bbContractPath = Join-Path (Get-Location) 'docs/agents/bb-skills.md'
-$bbContent = if (Test-Path -LiteralPath $bbContractPath) { Get-Content -Raw -LiteralPath $bbContractPath } else { '' }
+$bbContractPath = Join-Path (Get-Location) 'docs/process/tickets.md'
+$bbFileContent = if (Test-Path -LiteralPath $bbContractPath) { Get-Content -Raw -LiteralPath $bbContractPath } else { '' }
+$bbContent = Get-ManagedBlock $bbFileContent 'setup-bb-skills:tickets'
 $mappings = [ordered]@{
     Ticket = Get-ContractMapping $bbContent 'Ticket'
     Task = Get-ContractMapping $bbContent 'Task'
@@ -156,7 +166,9 @@ if ($ProjectNumber) {
 
 }
 
-$githubContractPath = Join-Path (Get-Location) 'docs/agents/github-project.md'
+$githubContractPath = Join-Path (Get-Location) 'docs/process/project-board.md'
+$gitContractPath = Join-Path (Get-Location) 'docs/process/git.md'
+$legacyContracts = @('docs/agents/bb-skills.md', 'docs/agents/github-project.md') | Where-Object { Test-Path -LiteralPath (Join-Path (Get-Location) $_) }
 [ordered]@{
     Repository = [ordered]@{
         Exists = $true
@@ -165,16 +177,21 @@ $githubContractPath = Join-Path (Get-Location) 'docs/agents/github-project.md'
         Visibility = "$($repo.visibility)".ToUpperInvariant()
     }
     BbContract = [ordered]@{
-        Exists = Test-Path -LiteralPath $bbContractPath
+        Exists = [bool]$bbContent
         Compatible = [bool]$bbCompatible
         Mappings = $mappings
         RequiredLabels = $requiredLabels
-        PointerCount = Get-PointerCount 'docs/agents/bb-skills.md'
+        PointerCount = Get-PointerCount 'docs/process/tickets.md'
     }
     GitHubProjectContract = [ordered]@{
         Exists = Test-Path -LiteralPath $githubContractPath
-        PointerCount = Get-PointerCount 'docs/agents/github-project.md'
+        PointerCount = Get-PointerCount 'docs/process/project-board.md'
     }
+    GitContract = [ordered]@{
+        Exists = Test-Path -LiteralPath $gitContractPath
+        PointerCount = Get-PointerCount 'docs/process/git.md'
+    }
+    LegacyContracts = @($legacyContracts)
     Labels = @($labels | ForEach-Object { [pscustomobject]@{ Name=$_.name; Description=$_.description; Color=$_.color } })
     Milestones = @($milestones | ForEach-Object { [pscustomobject]@{ Number=$_.number; Title=$_.title; State=$_.state; DueOn=$_.due_on; Description=$_.description } })
     Issues = $issues

@@ -17,8 +17,7 @@ Do not include **Current** steps as proposed setup actions. A detected Just exec
 
 | Step | Current version | Owned artifacts |
 | --- | ---: | --- |
-| Architecture document | 3 | `docs/agents/godot-architecture.md` and the `godot-architecture` AGENTS block |
-| Godot standards document | 2 | `docs/agents/godot-standards.md` and the `godot-standards` AGENTS block |
+| Repository documents | Version in each block marker | The skill-owned block of each document in [documents.md](documents.md), and its `AGENTS.md` index row |
 | Ignore rules | 2 | Managed block in `.gitignore` |
 | Just validation | 4 | Managed variables and recipes in one detected Justfile |
 | GUT smoke | 2 | `tests/test_gut_setup.gd` |
@@ -26,11 +25,7 @@ Do not include **Current** steps as proposed setup actions. A detected Just exec
 | GUT dependency | selected release | `addons/gut` plus enabled `gut` editor plugin |
 | Godot warnings | detected-engine contract | Applicable `project.godot` warning settings |
 
-The current architecture document is separate from the obsolete version-1 `docs/agents/architecture.md`. Apply [architecture-document.md](architecture-document.md) when publishing it. Its scope is the agreed vertical-slice standard; legacy Deliver-policy migration remains unchanged. Apply its Outdated classification in [architecture-document.md](architecture-document.md) for an earlier template version.
-
-The current Godot standards document is separate from the obsolete version-1 `docs/agents/gdscript.md`. Apply [standards-document.md](standards-document.md) when publishing it, including its Outdated classification for an earlier template version.
-
-Each generated text artifact carries a stable marker containing its template name and version. Markers identify prior generated intent; they never authorize overwriting user changes.
+Apply [documents.md](documents.md) to the repository documents. Each generated text artifact carries a stable marker containing its template name and version. Markers identify prior generated intent; they never authorize overwriting user changes.
 
 When a Justfile already exists, merge the required recipes into its established conventions. Version 4 makes `test-all` discover tests recursively under `tests/` only; preserve existing custom checks. An unchanged version-2 or version-3 recipe requires this narrow update, not replacement of the whole Justfile. When the project has `test_*.gd` files under `features/`, state in the setup proposal that `test-all` stops discovering them after the update and that setup does not move them. Setup never moves project files, so without this notice the tests stop running and nobody sees it. The version-2 setup smoke and runtime scripts remain current. Detect names case-insensitively. If multiple distinct Justfiles are present, treat ownership as a hard conflict. Preserve unrelated recipes and variables.
 
@@ -60,7 +55,7 @@ Their corresponding legacy AGENTS keys are:
 
 Compare candidate files and blocks with [legacy-v1.md](legacy-v1.md). Normalize only line endings before comparison. When a legacy file or block has its recognized marker and otherwise matches the canonical version-1 content, propose deletion. Any other textual change is customization: preserve it and ask whether to keep it as user-owned guidance, consolidate selected content elsewhere, or remove it. Never silently delete customized policy.
 
-Earlier setup-godot-project versions also emitted `issue-tracking`, `triage-labels`, and `domain` AGENTS blocks plus `docs/agents/issue-tracker.md` and `docs/agents/domain.md`. Preserve them as possible user-owned or legacy workflow artifacts. When tracker setup is selected, let `$setup-bb-skills` reconcile relevant tracker content into `docs/agents/bb-skills.md`; it does not own domain documentation. If ownership or customization is ambiguous, ask rather than deleting anything. Do not classify these artifacts by the obsolete Deliver-policy signatures.
+Earlier setup-godot-project versions also emitted `issue-tracking`, `triage-labels`, and `domain` AGENTS blocks plus `docs/agents/issue-tracker.md` and `docs/agents/domain.md`. Preserve them as possible user-owned or legacy workflow artifacts. When tracker setup is selected, let `$setup-bb-skills` reconcile relevant tracker content into `docs/process/tickets.md`; it does not own domain documentation. If ownership or customization is ambiguous, ask rather than deleting anything. Do not classify these artifacts by the obsolete Deliver-policy signatures.
 
 Remove `docs/agents/` only when it becomes empty. Preserve all unrelated files and AGENTS content byte-for-byte.
 
@@ -77,3 +72,18 @@ Legacy blocks use:
 Each key may occur at most once. Duplicate, malformed, nested, or contradictory unmarked guidance is a hard conflict.
 
 After applying approved migrations, rerun discovery. Every step must classify as Current, approved customization, or explicitly reduced. Do not persist a baseline-audit report that immediately becomes stale.
+
+## Legacy documents
+
+Earlier releases of this skill published two whole-file documents and two AGENTS blocks:
+
+| Legacy artifact | Canonical content | Replaced by |
+|---|---|---|
+| `docs/agents/godot-standards.md`, marker `template=godot-standards;version=2`, and the `godot-standards` AGENTS block | [assets/legacy/godot-standards-v2.md](../assets/legacy/godot-standards-v2.md) | `docs/standards/gdscript.md`, `scenes.md`, and `ui.md` |
+| `docs/agents/godot-architecture.md`, marker `template=godot-architecture;version=3`, and the `godot-architecture` AGENTS block | [assets/legacy/godot-architecture-v3.md](../assets/legacy/godot-architecture-v3.md) | `docs/architecture/file-layout.md`, `overview.md`, and `docs/standards/testing.md` |
+
+An earlier version marker of either file is also legacy. Normalize only line endings before comparison.
+
+- When a legacy file matches its canonical content, propose to delete the file and its AGENTS block in the same change that publishes the documents that replace it.
+- When a legacy file has other text, the difference is project guidance. Show it, and ask, for each difference, whether to add it as a P rule in the document that replaces it, or to discard it. Never silently delete customized guidance.
+- Cite rules in the new documents by file and number, such as "gdscript.md rule 11". The legacy IDs GD1 to GD8 map to these rules: GD1 to gdscript.md rules 1–3 and 7, GD2 to gdscript.md rules 8 and 11, GD3 to gdscript.md rule 9 and scenes.md rule 5, GD4 to scenes.md rules 1–4, GD5 to ui.md rules 1–4, GD6 to gdscript.md rule 10, GD7 to gdscript.md rules 11 and 12, and GD8 to gdscript.md rule 13.

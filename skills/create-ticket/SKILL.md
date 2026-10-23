@@ -19,11 +19,11 @@ Create the lightweight ticket that starts the workflow. Set its release grouping
 
 ## Preconditions
 
-Read `docs/agents/bb-skills.md`. If it is absent, incomplete, or contradicts the tracker, stop and direct the user to `$setup-bb-skills`.
+Read `AGENTS.md`, and read the document that its index names for creating or changing a ticket, usually `docs/process/tickets.md`. Its Tracker contract section is the tracker contract. Follow its rules and its project rules. A repository that has not migrated points to the legacy contract `docs/agents/bb-skills.md` instead. If the contract is absent, incomplete, or contradicts the tracker, stop and direct the user to `$setup-bb-skills`.
 
 Resolve the tracker target from the contract and current repository. If the target is ambiguous, ask before continuing.
 
-For GitHub Issues, also read `docs/agents/github-project.md` for milestone, Project, Status, and ordering rules.
+For GitHub Issues, also read the board document that the same index row names, usually `docs/process/project-board.md`, for milestone, Project, Status, and ordering rules. A repository that has not migrated points to the legacy `docs/agents/github-project.md` instead.
 
 ## Draft
 

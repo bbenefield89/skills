@@ -81,6 +81,19 @@ $missingBb.BbContract.Compatible = $false
 $result = Get-GitHubProjectAssessment -State $missingBb -Repository 'octocat/game'
 Assert-True (@($result.ProposedMutations | Where-Object { $_ -match 'setup-bb-skills' }).Count -gt 0) 'A missing BB contract must require BB coordination.'
 
+$missingGit = Copy-State $state
+$missingGit.GitContract.Exists = $false
+$missingGit.GitContract.PointerCount = 0
+$result = Get-GitHubProjectAssessment -State $missingGit -Repository 'octocat/game'
+Assert-False $result.Conforms 'A missing git document must fail verification.'
+Assert-True (@($result.ProposedMutations | Where-Object { $_ -match 'docs/process/git.md' }).Count -eq 1) 'A missing git document must propose the template.'
+Assert-True (@($result.Errors | Where-Object { $_ -match 'Git document AGENTS.md index row count is 0' }).Count -eq 1) 'A missing git index row must fail.'
+
+$legacyContract = Copy-State $state
+$legacyContract | Add-Member -NotePropertyName LegacyContracts -NotePropertyValue @('docs/agents/github-project.md') -Force
+$result = Get-GitHubProjectAssessment -State $legacyContract -Repository 'octocat/game'
+Assert-True (@($result.LegacyConflicts | Where-Object { $_ -match 'docs/agents/github-project.md' }).Count -eq 1) 'A legacy contract must be reported.'
+
 $badMilestone = Copy-State $state
 $badMilestone.Issues[0].Milestone.Title = 'Prototype'
 $result = Get-GitHubProjectAssessment -State $badMilestone -Repository 'octocat/game'
