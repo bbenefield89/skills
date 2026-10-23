@@ -32,12 +32,15 @@ routing mechanism, so each step sets it:
 
 1. **PR created.** The ticket goes to PR Code Review. Assign it to the first
    required reviewer.
-2. **Reviewer approves, and other required reviewers did not approve.** The
-   status stays PR Code Review. Assign the ticket to the next required reviewer.
-3. **Last required reviewer approves.** Run `Code review completed`. Assign the
-   ticket to the PR author.
-4. **Reviewer sends the PR back.** Run `Code review unsuccessful`. Assign the
-   ticket to the PR author.
+2. **Reviewer votes, and other required reviewers did not vote.** The status
+   stays PR Code Review for every vote. Assign the ticket to the next required
+   reviewer.
+3. **Last required reviewer votes, and every required vote is Approve.** Run
+   `Code review completed`. Assign the ticket to the PR author.
+4. **Last required reviewer votes, and any required vote is not Approve.** Run
+   `Code review unsuccessful`. Assign the ticket to the PR author. Approve with
+   suggestions counts as not Approve, because the author must address the
+   suggestions.
 
 The author moves the ticket from Code Review Pass to Ready for QA and assigns it
 to QA. This skill does not do that step, because the author knows if the ticket

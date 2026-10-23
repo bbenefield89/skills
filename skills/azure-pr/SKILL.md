@@ -1,7 +1,7 @@
 ---
 name: azure-pr
 description: Create an Azure DevOps PR for the current branch with required reviewers, or vote on a PR as a reviewer, and move and assign its Jira ticket to match. Use when the user says "create a PR", "open a PR with Ray and Diellza", "approve this PR", "approve with suggestions", "wait for author", or "reject the PR".
-argument-hint: "create <reviewers...> [--optional <name>] [--draft] [--target <branch>] [--yes] | review approve|suggest|wait|reject [PR id or link] [--yes]"
+argument-hint: "create [reviewers...] [--optional <name>] [--draft] [--target <branch>] [--yes] | review approve|suggest|wait|reject [PR id or link] [--yes]"
 ---
 
 # Azure PR
@@ -18,7 +18,7 @@ If the shared skill or profile is unavailable, state that limit in the response.
 
 This skill has two modes. Each mode writes to Azure DevOps and to Jira:
 
-- `create`: Create a PR for the current branch, add the reviewers, and move the
+- `create`: Create a PR for the current branch, add or pick the reviewers, and move the
   Jira ticket into review. Follow [create.md](references/create.md).
 - `review`: Cast the user's vote on a PR, and then move or hand off the Jira
   ticket. Follow [review.md](references/review.md).
@@ -55,7 +55,10 @@ no key, use the PR title. If neither has a key, ask the user.
 
 **People.** Resolve each reviewer name against the user-scoped alias file
 `~/.claude/azure-pr/reviewers.json`. Match the name, or any alias, without
-case. Each entry has `name`, `aliases`, `email`, `adoId`, and `role`.
+case. Each entry has `name`, `aliases`, `email`, `adoId`, `role`, and
+`autoPick`. Developer entries also have `region` (`US` or `Kosovo`). Create mode
+uses `region` and `autoPick` to pick reviewers when the user names none. An
+entry with `autoPick: false` is used only when the user names that person.
 
 - If a name matches two or more entries, ask which person.
 - If a name matches no entry, ask for the email. Offer to add the person to the

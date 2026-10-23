@@ -39,17 +39,24 @@ properties:
 - The reviewer is not the user and not the PR author.
 - `vote` is 0.
 
-**For `approve` and `suggest`:**
+Apply the same rule for every vote:
 
-- If one or more pending reviewers exist, assign the ticket to the first pending
-  reviewer in the `reviewers` list. Do not transition the ticket.
-- If no pending reviewer exists, and a required reviewer has a negative vote,
-  skip the Jira write. Report the reviewer and the vote.
-- If no pending reviewer exists and no required reviewer has a negative vote,
-  run `Code review completed`. Assign the ticket to the PR author.
+1. If one or more pending reviewers exist, assign the ticket to the first
+   pending reviewer in the `reviewers` list. Do not transition the ticket. The
+   other required reviewers get their turn before the ticket moves.
+2. If no pending reviewer exists, the user is the last required reviewer.
+   Examine every required reviewer's vote, and include the user's new vote:
+   - If every vote is `approve` (10), run `Code review completed`. Assign the
+     ticket to the PR author.
+   - If any vote is not 10, run `Code review unsuccessful`. Assign the ticket
+     to the PR author. `suggest` (5) counts here, because the author must
+     address the suggestions.
 
-**For `wait` and `reject`:** run `Code review unsuccessful`. Assign the ticket
-to the PR author.
+| User's vote | Pending reviewers | Every required vote is 10 | Jira write |
+|---|---|---|---|
+| Any | One or more | Not examined | Assign to the next pending reviewer |
+| Any | None | Yes | `Code review completed`, assign to the author |
+| Any | None | No | `Code review unsuccessful`, assign to the author |
 
 Apply the status guard in [jira-workflow.md](jira-workflow.md). If the ticket is
 not in PR Code Review, plan the vote only.
