@@ -17,7 +17,7 @@ The user verifies the work as each implementation task proceeds.
 Keep automated tests and manual checks in the acceptance criteria and validation of the owning implementation task.
 Do not create tasks whose only outcome is human verification, including QA, playtesting, or acceptance sign-off.
 Apply this rule throughout the breakdown, including its final task.
-Before presenting drafts, fold any task devoted only to human verification into the relevant implementation tasks.
+Before the review, fold any task devoted only to human verification into the relevant implementation tasks.
 Keep ongoing user verification outside the task dependency graph.
 
 Use the configured agent executor for work possible with available tools and access.
@@ -41,8 +41,8 @@ Keep that skill's picks and better fit. Replace its reply format with this list:
 In a table cell, write the three items on three lines without the list markers. Separate the lines with `<br>`.
 
 Use `—` as the suggestion for a task that has the human executor.
-If the suggest-model skill is unavailable, state that limit one time in the review and use `—` for every task.
-If that skill gives a note about the age of its catalog, state the note one time in the review.
+If the suggest-model skill is unavailable, state that limit one time in the overview and use `—` for every task.
+If that skill gives a note about the age of its catalog, state the note one time in the overview.
 
 ## Wide refactors
 
@@ -119,22 +119,41 @@ Read back the parent body and verify that:
 - every model suggestion matches the approved draft; and
 - the previous parent body remains unchanged below the thematic break.
 
+## Full draft
+
+Build a full draft for each task. Keep the full drafts internal. Show one only when the user asks for it.
+Make each full draft complete enough to publish with no new decision after approval. A full draft has these fields:
+
+- **Title:** The task title.
+- **Executor:** The configured agent or human classification.
+- **Suggested model:** The model suggestion list, or `—`.
+- **Blocked by:** Draft task numbers and titles, or `None`.
+- **What it delivers:** The observable result and bounded work.
+- **Context:** The decisions, starting state, and later work needed to execute this task independently.
+- **Acceptance criteria:** The observable conditions that prove completion.
+- **Validation:** The behavioral seam and checks performed as part of this task.
+
+Put every material scope, behavior, and testing choice in the full drafts.
+
 ## Review format
 
-Before publishing, present:
+Before publishing, show the overview. Do not show the full drafts.
+Write a numbered list in the proposed work order. Write these fields for each task, in this order:
 
-1. **Title:** short descriptive name
-2. **Executor:** configured agent or human classification
-3. **Blocked by:** task numbers/titles or none
-4. **What it delivers:** the observable behavior or enabling result
-5. **Suggested model:** the model suggestion list, or `—`
+1. **Title:** The task title.
+2. **Blocked by:** Draft task numbers and titles, or `None — can start immediately`.
+3. **What it delivers:** One or two sentences with the observable result.
+4. **Executor:** The configured agent or human classification.
+5. **Suggested model:** The model suggestion list from "Model suggestions", or `—`.
 
-Ask:
+Then ask:
 
-- Is the granularity too coarse or too fine?
-- Are executor choices correct?
-- Does every blocker genuinely gate the task?
-- Should anything be merged or split?
+- Does the granularity feel right? (too coarse / too fine)
+- Are the blocking edges correct: does each task only depend on tasks that genuinely gate it?
+- Should any tasks be merged or split further?
+
+End with an invitation to approve publication, to correct an executor or suggested model, or to ask for the full draft of one task or of all tasks.
+Summarize in the overview the material scope, behavior, and testing choices that the full drafts hold.
 
 ## Local task template
 

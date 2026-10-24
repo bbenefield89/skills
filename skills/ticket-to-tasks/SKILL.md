@@ -6,11 +6,11 @@ argument-hint: "Optional: jira [ticket-key], or instructions that replace the tr
 
 # Ticket to Tasks
 
-Create the specification on the existing ticket, then present task drafts for approval.
+Create the specification on the existing ticket, then present a task overview for approval.
 Keep the specification in the tracker. Show it in chat only when the user asks.
 
 A user request for this combined workflow authorizes specification publication and removal of the configured needs-details state.
-Publish child tasks and their relationships only after the user approves the task drafts.
+Publish child tasks and their relationships only after the user approves the task overview.
 
 ## Shared references
 
@@ -51,7 +51,7 @@ Resolve that choice before publishing dependent content.
 Use the specification reference's template and synthesis rules.
 Choose the highest existing behavioral testing seam and the fewest seams possible.
 Record the seam in the specification and each relevant task's validation.
-Include testing decisions in the task review instead of requesting separate testing-seam or specification approval.
+Put testing decisions in the full drafts and summarize them in the overview, instead of requesting separate testing-seam or specification approval.
 
 If a specification already exists, reuse it when it matches the clarified scope.
 If it conflicts with the requested work, resolve only the conflicting decision with the user.
@@ -72,46 +72,34 @@ Continue directly to task drafting. Keep the specification out of the chat respo
 
 ## Draft tasks for review
 
-Use the verified specification and task reference to draft complete, bounded tasks.
+Use the verified specification and task reference to build complete, bounded full drafts.
 Apply the tracer-bullet rules, or expand-contract rules for a wide refactor.
 Size each task for a fresh context window and make its result independently verifiable.
 
-Include sufficient parent context, relevant decisions, expected starting state, and downstream purpose in each draft.
-Make each draft understandable without the originating conversation or a separate specification review.
-Expose all material scope, behavior, and testing choices through the task drafts.
+Include sufficient parent context, relevant decisions, expected starting state, and downstream purpose in each full draft.
+Make each full draft understandable without the originating conversation or a separate specification review.
 
 Assign exactly one configured executor to each task.
 Apply the verification and executor rules in the task reference.
 Suggest a model for each task with the model suggestion rules in the task reference.
 Declare only genuine blocking edges.
 
-Present the drafts as a numbered list in the proposed work order. Include these fields for each task:
+Build the full drafts with the "Full draft" section of the task reference. Show the overview from its "Review format" section. Show a full draft only when the user asks for one task or for all tasks.
 
-- **Title:** The task title.
-- **Executor:** The configured agent or human classification.
-- **Suggested model:** The model suggestion line, or `—`.
-- **Blocked by:** Draft task numbers and titles, or `None`.
-- **What it delivers:** The observable result and bounded work.
-- **Context:** The decisions, starting state, and later work needed to execute this task independently.
-- **Acceptance criteria:** The observable conditions that prove completion.
-- **Validation:** The behavioral seam and checks performed as part of this task.
-
-Identify equivalent existing tasks and propose reuse in the numbered review.
+Identify equivalent existing tasks and propose reuse in the numbered overview.
 Reuse a task only after the user confirms that match.
-Keep the proposed drafts concrete enough to publish without adding material decisions after approval.
 
 Briefly confirm that the specification is posted, using the parent ticket link or local file link.
-Ask whether to publish the drafts or change their granularity, executors, blockers, or scope.
 Wait for explicit approval before publishing child tasks.
 
-Revise the drafts from the user's feedback. Update the specification behind the scenes when that feedback changes agreed decisions.
-Verify specification updates and present the affected drafts again for approval.
+Revise the full drafts from the user's feedback. Update the specification behind the scenes when that feedback changes agreed decisions.
+Verify specification updates and show the overview again for approval. Show a full draft again only when the user asks for it.
 
 ## Publish approved tasks
 
 Reread the tracker contract, parent specification, and existing children before publication.
 If a material change affects an approved draft, revise that draft and obtain approval for the changed work.
-If a new equivalent task appears, propose its reuse in the task review before creating any duplicate.
+If a new equivalent task appears, propose its reuse in the overview before creating any duplicate.
 
 Follow the task reference's publication invariants and relationship rules:
 

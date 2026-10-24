@@ -17,17 +17,18 @@ The ticket's description, fields, status, and child issues stay as they are.
 Follow "Gather context" and "Draft tasks for review" in the skill, with these changes:
 
 - Synthesize the specification from the specification reference as working context. Keep it out of the tracker.
-  Put every decision that a worker needs into the task drafts.
+  Put every decision that a worker needs into the full drafts.
 - Use `Agent` or `Human` as the executor. Apply the executor rules in the task reference.
 - Refer to blockers by draft task number and title.
-- State the resolved ticket key in the review, and state that approval posts one comment to that ticket.
-- If the ticket already has a tasks comment from this mode, state that in the review and ask whether to post a new comment.
+- Show the overview from the task reference as the review. Show a full draft only when the user asks for it.
+- State the resolved ticket key in the overview, and state that approval posts one comment to that ticket.
+- If the ticket already has a tasks comment from this mode, state that in the overview and ask whether to post a new comment.
 
 Wait for explicit approval before posting.
 
 ## Post the comment
 
-Reread the ticket's comments. Then post the approved drafts as one comment in this shape:
+Reread the ticket's comments. Then post the approved full drafts as one comment in this shape:
 
 ```markdown
 # Tasks
