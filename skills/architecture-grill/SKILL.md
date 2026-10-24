@@ -1,38 +1,39 @@
 ---
 name: architecture-grill
-description: Resolve architectural ownership and subsystem boundaries for established behavior before specification or task generation. Use after behavioral discovery when responsibilities, state ownership, authority, dependencies, or public interfaces need decisions. Excludes line-by-line implementation design.
+description: Grill architectural ownership and subsystem boundaries for established behavior before specification or task generation, and record the decisions as they settle. Use after behavioral discovery when responsibilities, state ownership, authority, dependencies, or public interfaces need decisions. Excludes line-by-line implementation design.
 ---
 
 # Architecture Grill
 
-Resolve architectural decisions after behavioral discovery and before Ticket to Spec and Spec to Tasks.
-Deliver retains authority over local implementation details within the agreed boundaries.
+Run a `/grilling` session with `/domain-modeling`, as `/grill-with-docs` does.
+Those skills own the interview: the design tree, rounds, question format, recommended answers, fact-finding, and the documents written inline.
+This skill sets the architectural lens: which decisions go on the tree, where the documents go, and what the session hands to the next step.
+
+The session sits after behavioral discovery and before `ticket-to-tasks`.
+Deliver keeps authority over local implementation details inside the agreed boundaries.
 
 ## Shared writing standard
 
-Before writing prose, read and apply [asd-ste100](../asd-ste100/SKILL.md) and its writing profile.
-Preserve this skill's question format and required detail.
+Before you write prose, read and apply [asd-ste100](../asd-ste100/SKILL.md) and its writing profile.
+Preserve the `/grilling` round format.
 If the shared guidance is unavailable, state that limit and continue with clear, precise language.
 
 ## Establish context
 
-Use the current conversation as the preferred source of agreed behavior, scope, constraints, and exclusions.
-A separate handoff document is unnecessary when that context is available.
-
+Use the current conversation as the source of agreed behavior, scope, constraints, and exclusions.
 If context is missing, recover it from the ticket, behavioral specification, interview summary, repository documentation, or related issues.
-Ask only for missing behavioral decisions that prevent architectural analysis. Treat unresolved behavior as unresolved, rather than inventing requirements.
+A behavior that is still open is a decision for the user: put it on the tree, and keep it unresolved until the user answers.
 
-Inspect relevant repository instructions, code, architecture documents, ADRs, nearby implementations, tests, and conventions.
-Keep inspection proportional to the affected responsibilities and their direct collaborators.
-Resolve environmental facts through inspection before asking the user for a decision.
+Read the repository instructions, architecture documents, decision records, glossary, and the code and tests of the affected systems and their direct collaborators.
+Keep the reading proportional to the affected responsibilities.
 
-## Identify architectural decisions
+## Build the design tree
 
-Apply this test to each uncertainty:
+A decision goes on the tree when it passes this test:
 
 > Would this decision change responsibility ownership, authority to mutate important state, subsystem dependencies, or how future features must integrate?
 
-Consider only dimensions relevant to the requested behavior:
+Consider only the dimensions the requested behavior touches:
 
 - Responsibility and mutable-state ownership.
 - Systems permitted to change state and systems permitted only to observe it.
@@ -41,65 +42,50 @@ Consider only dimensions relevant to the requested behavior:
 - Communication between systems and resolution of competing requests.
 - Execution authority, including movement and physics when relevant.
 
-Leave variable names, loops, casts, helper methods, internal calculations, and other local details to Deliver.
-Discuss a specific call only when its ownership establishes an architectural boundary, such as authority to call `move_and_slide()`.
+Variable names, loops, casts, helper methods, and internal calculations belong to Deliver.
+A specific call goes on the tree only when its ownership sets a boundary, such as authority to call `move_and_slide()`.
 
-Preserve clear, consistent existing patterns that fit the requested behavior and applicable architectural decisions.
-Record each relevant pattern, its supporting evidence, and the resulting rule without asking the user to approve it again.
-A single convenient implementation does not establish a consistent pattern.
-Surface conflicts between code, documented decisions, and the requested behavior.
+An existing pattern that is clear, consistent, and fits the behavior is a settled node.
+Record the pattern, its evidence, and the rule it gives, and build on it without a question.
+One convenient implementation is not a pattern.
+Conflicts between code, documented decisions, and the requested behavior, absent patterns, new boundaries, and transfers of responsibility are questions.
 
-Ask about conflicting patterns, absent patterns, new boundaries, or changes that expand or transfer responsibility.
-Limit questions about future integration to agreed requirements or concrete existing collaborators.
-Choose the smallest design that makes ownership explicit.
-Introduce interfaces, event buses, managers, or other abstractions only when a concrete requirement justifies them.
+Ask about future integration only for agreed requirements or concrete existing collaborators.
+Recommend the smallest design that makes ownership explicit.
+Recommend an interface, event bus, manager, or other abstraction only for a concrete requirement.
 
-If no architectural decision is necessary, finish without an interview.
-State that the work stays within existing boundaries and briefly identify the relevant ownership rules and evidence.
+If the tree has no open decision, finish without an interview.
+State that the work stays within existing boundaries, and name the ownership rules and their evidence.
 
-## Ask one question at a time
+## Keep each question short
 
-Explain the concrete behavior and unresolved boundary before each question.
-Offer meaningful alternatives. Do not invent alternatives merely to fill the format.
-Use this structure:
+Number questions continuously across rounds, so a later question can cite an earlier one by its number.
+Give each question body the behavior and the open boundary in a few sentences.
+Cite evidence as `file:line` links.
+Give each option its ownership arrangement and the consequence for the boundary.
+Tests that must keep passing and other implementation constraints go in the summary for Deliver.
 
-```markdown
-<Brief context grounded in the requested behavior and repository evidence.>
+## Record the decisions
 
-**<Architectural question>?**
+`/domain-modeling` writes as each decision settles.
+The repository's own locations and formats come first: when its instructions or architecture documents name a decision-record folder, write records there in that folder's format.
+Otherwise, use the `/domain-modeling` defaults.
+A system map or overview describes the code as it is; Deliver updates it when the change lands.
 
-1. **<Option one>.** <Ownership arrangement and consequence.>
-2. **<Option two>.** <Ownership arrangement and consequence.>
+## Hand off
 
-**My recommendation:** <Recommended arrangement and why it fits.>
+The session ends when the frontier is empty and the user confirms the shared understanding.
+Then give a concise summary in the conversation:
 
-**Trade-off:** <Specific benefit and cost of the recommendation.>
-
-<Direct invitation for the user to choose or refine the arrangement.>
-```
-
-Wait for the answer before asking dependent questions.
-When the user asks for clarification, explain the current decision before continuing the interview.
-Treat discussion, uncertainty, and requests for examples as unresolved answers.
-Use each resolved answer to identify the next relevant architectural question.
-Preserve settled behavioral decisions unless an architectural conflict requires the user to reconsider one.
-
-## Summarize the agreed boundaries
-
-Finish when all architectural uncertainties relevant to the requested behavior are resolved.
-Distinguish user decisions from preserved repository patterns. Exclude unanswered recommendations from agreed rules.
-
-Provide a concise summary in the conversation containing:
-
-- Agreed owners, permitted mutations, dependencies, interfaces, and coordination rules, where relevant.
-- The rationale and material trade-offs for new decisions, plus evidence for preserved patterns.
+- Agreed owners, permitted mutations, dependencies, interfaces, and coordination rules.
+- For each new decision, the user's choice and its trade-off. For each preserved pattern, its evidence.
 - Architectural invariants that implementation must preserve.
-- Local implementation details left to Deliver.
+- The decision records and glossary entries written.
+- Local implementation details and constraints for Deliver, including tests that must keep passing.
 
-Ticket to Spec can incorporate this summary into its Implementation Decisions section.
-The summary documents the rules without requiring another artifact in the same session.
-If the interview ends early, clearly separate settled decisions from unresolved questions.
+Separate the user's decisions from preserved patterns, and leave unanswered recommendations out of the agreed rules.
+If the session ends early, list the settled decisions apart from the open questions.
+`ticket-to-tasks` can take the summary into its Implementation Decisions section.
 
-Create a persistent summary or architecture document only when the user requests it or repository instructions require it.
-Do not generate tasks, publish a specification, or implement the feature as part of this interview.
-If later implementation requires a boundary change, surface that change for a decision before implementing it.
+The session ends at the summary: tasks, specifications, and implementation come later in their own steps.
+If later implementation needs a boundary change, put that change to the user before it is implemented.
