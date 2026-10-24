@@ -54,6 +54,8 @@ Ask about future integration only for agreed requirements or concrete existing c
 Recommend the smallest design that makes ownership explicit.
 Recommend an interface, event bus, manager, or other abstraction only for a concrete requirement.
 
+Show the settled nodes with their evidence before the first round, so the user can challenge a pattern before questions build on it.
+
 If the tree has no open decision, finish without an interview.
 State that the work stays within existing boundaries, and name the ownership rules and their evidence.
 
@@ -74,8 +76,9 @@ A system map or overview describes the code as it is; Deliver updates it when th
 
 ## Hand off
 
-The session ends when the frontier is empty and the user confirms the shared understanding.
-Then give a concise summary in the conversation:
+When the frontier is empty, give a concise summary in the conversation, and ask the user to confirm it as the shared understanding.
+The session ends when the user confirms.
+The summary contains:
 
 - Agreed owners, permitted mutations, dependencies, interfaces, and coordination rules.
 - For each new decision, the user's choice and its trade-off. For each preserved pattern, its evidence.
