@@ -52,22 +52,26 @@ Before each round, reread the ledger. For each question that the underlying skil
 
 Ask an out-of-scope question only when it is necessary to advance the `TL;DR` and no in-scope question can resolve the need. Put a `SCOPE EXCEPTION:` line with the concrete reason before that question.
 
-## Word every question
+## Make every question self-contained
 
-Rewrite each question from the underlying skills until it passes every rule below. Keep the decisions that those skills chose.
+Each question is **self-contained**: lift it out of the round, give it to someone who has not seen this conversation, and it still makes complete sense. Rewrite each question from the underlying skills until it passes every rule below. Keep the decisions that those skills chose.
 
 - **One decision per question.** Each question settles exactly one decision. When a proposed question bundles several claims, split it into one question per claim.
 - **A labeled question line.** Put the question in its own `**Question:**` line, directly under the title. It is one interrogative sentence that ends in `?`, and it is the only sentence in the question that ends in `?`.
-- **The question line stands alone.** It states the decision itself, so it makes sense with everything else hidden. Write "Should the Settings panel save each volume change itself?", not "Is that right?". It points at nothing outside itself: no "that", "this", "the above", or "the following".
-- **Name every referent.** Name the specific thing: the component, file, screen, state, rule, or glossary term. Write "the Inventory and Map panels in `HUD.tscn`", not "the panels". If you do not know the name, find it before you ask. Finding facts is your job.
-- **Bold the keywords.** In the question line, bold the named referents and the one word or phrase that carries the decision, so the eye finds them first: "Should the **Settings panel** **save each volume change** itself?". Bold two to four keywords per line; a line in which most words are bold has no keywords. Keep file and code names in backticks, inside the bold: "**`HUD.tscn`**". In `Context:`, bold only a name the first time it appears.
-- **Context supports the question line.** Put the background and options under `**Context:**` as short bullets. Context only explains the question line; it never adds a claim that the user must also accept.
+- **The question line stands alone.** It states the decision itself, so it makes sense with everything else hidden. Write "Should `SettingsPanel` save each volume change itself?", not "Is that right?". It points at nothing outside itself: no "that", "this", "the above", or "the following".
+- **Carry every fact the question relies on.** Put each fact that the answer depends on in the question's `Context:`: earlier decisions, conclusions from a discussion, constraints, and corrections to earlier statements. State each fact in full: "`MenuPanels` requires a bound save session", not "under D4" or "under your decisions". Text outside the question, such as your reply to the user's follow-up, is lost when the question is lifted out, so repeat in the question each part of it that the question needs.
+- **Use exact names.** Name each thing by its exact identifier in code format: the file, scene, class, node, method, or resource. Write "`catalog_save_preview.tscn`", not "the Catalog save preview", and "the `Inventory` and `Map` panels in `HUD.tscn`", not "the panels". A plain-English description of a named thing is not its name. If you do not know the name, find it before you ask. Finding facts is your job.
+- **Explain each name.** The first time a name appears in a question, follow it with a short parenthetical that says what kind of thing it is and what it does: "**`MenuPanels`** (the node that wraps each menu in the fullscreen frame, safe area, and background)". Do this again in every question, because each question stands alone. For a glossary term, give its definition from `GLOSSARY.md` in a few words.
+- **Bold the keywords.** In the question line, bold the named referents and the one word or phrase that carries the decision, so the eye finds them first: "Should **`SettingsPanel`** **save each volume change** itself?". Bold two to four keywords per line; a line in which most words are bold has no keywords. Keep code names in backticks, inside the bold. In `Context:`, bold only a name the first time it appears.
+- **Context supports the question line.** Put the facts and options under `**Context:**` as short bullets. Give each option its own bullet that says what it changes and what it costs. Context only explains the question line; it never adds a claim that the user must also accept.
 
-Test each question: a reader who sees only the `**Question:**` line knows exactly what decision it asks for and what a valid answer looks like.
+Test each question: give only this question to a developer who knows the codebase but not this conversation. Without asking anything, they can say what decision it asks for, what each name refers to, and what a valid answer looks like.
 
 ## Show every round
 
 Start each round with the current ledger, then show each question in the shape below. This shape replaces the `grilling` question format; keep its recommended answer, worded so that "yes" accepts it. Number questions across the whole session: the first question of a round continues from the last number shown.
+
+When the user asks about a question instead of answering it, reply, then ask the question again in full. Write the new version from the start so that it carries what your reply settled; it is never a change note against the earlier version.
 
 ```markdown
 **TL;DR:** <TL;DR>
