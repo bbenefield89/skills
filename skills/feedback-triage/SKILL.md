@@ -1,6 +1,7 @@
 ---
 name: feedback-triage
 description: Walk through review feedback one item at a time, leading each to a locked-in outcome of Fix, Do Not Fix, or Defer, ending with a summary table. Source is either /code-review findings (high/medium/low, skipping info) or open threads on an Azure DevOps PR. Use when the user says "triage the findings", "triage the PR", "triage the review", "walk me through the review threads/comments", or similar.
+argument-hint: "[pr [<PR link/ID> | <ticket>] | cr]"
 ---
 
 # Feedback triage
@@ -18,11 +19,25 @@ Take the user through every item of review feedback and land each one on a **loc
 
 ## 1. Pick the source
 
+Read the argument first:
+
+- `pr <PR link or ID>`: use **PR threads** (step 2b) for that PR.
+- `pr <ticket>`: the ticket is an issue key such as `FACS-123`. Use **PR threads** (step 2b). Step 2b finds the PR from the ticket.
+- `pr` alone: use **PR threads** (step 2b). Step 2b finds the active PR for the current git branch.
+- `cr`: use **CR findings** (step 2a), conversation only.
+- No argument: pick from the user's wording, as follows.
+
+With no argument:
+
 - If the user names a PR ("triage the PR", "triage the PR threads") or gives a PR link/ID, use **PR threads** (step 2b).
 - Else if `/code-review` findings are already in this conversation, or the user says "triage the findings/review", use **CR findings** (step 2a).
 - Else ask which source, once.
 
 ## 2a. Gather CR findings
+
+With the `cr` argument: use only the latest `/code-review` findings in this conversation. If the conversation has none, say so and stop. Do not look for a saved review document. Do not ask for a paste.
+
+With no argument:
 
 1. Findings already in this conversation from a `/code-review` run.
 2. If none: look for a saved review document for the current branch.
@@ -32,7 +47,11 @@ Group by severity — `high`, `medium`, `low` — dropping every `info` finding 
 
 ## 2b. Gather PR threads
 
-1. If no PR link/ID is already known, ask for it.
+1. Find the PR:
+   - A PR link or ID is known: use it.
+   - `pr <ticket>`: find the PR for that ticket through the project's ticket tracker (for example, the development or remote links on a Jira issue), with whatever tracker access the session has. If the tracker shows several PRs, ask the user which one. If it shows none, ask for a PR link or ID.
+   - `pr` alone: find the active PR for the current git branch in Azure DevOps. If the branch has no active PR, say so and ask for a PR link or ID.
+   - Otherwise: ask for a PR link or ID.
 2. Look at the PR directly (e.g. `az repos pr show`, the PR's web view, or whatever tool is already available in this session) and pull every **open/active** thread in full — every comment in the thread, each with its author and in chronological order, plus a link to the thread and file/line context if any. Skip threads already `Fixed`, `Closed`, or `Won't Fix`.
 3. No severity tiers here — process threads in the order they appear on the PR.
 
