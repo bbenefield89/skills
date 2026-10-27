@@ -20,7 +20,7 @@
         "./skills/code-brief",
         "./skills/goal-prompt",
         "./skills/scoped-grill-me",
-        "./skills/scoped-grill-with-docs",
+        "./skills/bb-grill",
         "./skills/setup-agents-md",
         "./skills/setup-bb-skills",
         "./skills/setup-github-project",
