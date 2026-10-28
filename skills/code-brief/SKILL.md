@@ -158,8 +158,20 @@ name, keyword, or path slug for the label. The host's CSS variables are not avai
 outside the widget, so define the same role variables in `:root` with their dark-mode
 values and set `color-scheme: dark`. The copy opens dark on every machine, whatever the
 OS theme. Inline the icon SVGs. The only external request is the esm.sh Mermaid import.
-Use the dark classDef colours. Under each rendered diagram, put that flow's raw Mermaid
-source in a `<pre>` block, so it can be pasted into a Markdown note.
+
+The widget's Mermaid setup needs three changes in the copy:
+
+- Use the dark classDef colours.
+- The host font exists only inside the widget. Give both Mermaid `fontFamily` settings
+  the copy's own `--font-sans` stack, for example `system-ui, "Segoe UI", sans-serif`.
+- Keep every diagram at its natural size. Mermaid ignores `useMaxWidth: false` here, so
+  after each render set the SVG's `width` attribute to its viewBox width and its
+  `max-width` style to `none`. Put each diagram in a box with `overflow-x: auto`, so a
+  wide flow scrolls inside its box at full text size.
+
+Under each diagram, put that flow's raw Mermaid source in a `<pre>` inside a closed
+`<details>` element whose summary reads "Mermaid source". It can then be pasted into a
+Markdown note while the page shows only the diagrams.
 
 ## Layout
 
