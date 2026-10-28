@@ -1,6 +1,6 @@
 ---
 name: bb-grill
-description: Runs /grill-with-docs with a strict scope ledger and concrete, real questions.
+description: Runs /grill-with-docs on behavior, then on architectural ownership and boundaries, with a strict scope ledger and concrete, real questions.
 disable-model-invocation: true
 ---
 
@@ -18,6 +18,15 @@ Then apply ASD-STE100 as closely as possible from the available context.
 ## Run grill-with-docs
 
 Call the Skill tool twice, for `grilling` and `domain-modeling`. This is all that `/grill-with-docs` does, and it is user-invoked, so call its two skills directly. They own the interview, the rounds, the recommended answers, and the glossary and ADR updates. Add only the rules below.
+
+## Run two phases
+
+One session runs two phases, with one ledger and one numbering of questions.
+
+1. **Behavior.** Grill what the change does. When no behavior question is open, summarize the agreed behavior, scope, constraints, and exclusions, and ask the user to confirm it. The phase is done when the user confirms.
+2. **Architecture.** Add `Architecture: ownership and boundaries for the agreed behavior` to `IN SCOPE`. This is the one `IN SCOPE` change that needs no answer from the user. Then read and apply [the architecture phase](references/architecture.md). It sets which decisions go on the design tree, where the decisions are recorded, and the summary that ends the session.
+
+With the argument `arch`, skip the behavior phase and start at the architecture phase. Use it when the behavior is already agreed in the conversation, a ticket, or a specification.
 
 ## Keep a scope ledger
 

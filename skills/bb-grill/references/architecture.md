@@ -1,22 +1,10 @@
----
-name: architecture-grill
-description: Grill architectural ownership and subsystem boundaries for established behavior before specification or task generation, and record the decisions as they settle. Use after behavioral discovery when responsibilities, state ownership, authority, dependencies, or public interfaces need decisions. Excludes line-by-line implementation design.
----
+# Architecture phase
 
-# Architecture Grill
+This phase sets the architectural lens: which decisions go on the design tree, where the documents go, and what the session hands to the next step.
+The ledger, the gate, the self-contained question rules, and the round shape in [the skill](../SKILL.md) apply to every question in this phase.
 
-Run a `/grilling` session with `/domain-modeling`, as `/grill-with-docs` does.
-Those skills own the interview: the design tree, rounds, question format, recommended answers, fact-finding, and the documents written inline.
-This skill sets the architectural lens: which decisions go on the tree, where the documents go, and what the session hands to the next step.
-
-The session sits after behavioral discovery and before `ticket-to-tasks`.
+The phase sits after behavioral discovery and before `ticket-to-tasks`.
 Deliver keeps authority over local implementation details inside the agreed boundaries.
-
-## Shared writing standard
-
-Before you write prose, read and apply [asd-ste100](../asd-ste100/SKILL.md) and its writing profile.
-Preserve the `/grilling` round format.
-If the shared guidance is unavailable, state that limit and continue with clear, precise language.
 
 ## Establish context
 
@@ -54,24 +42,22 @@ Ask about future integration only for agreed requirements or concrete existing c
 Recommend the smallest design that makes ownership explicit.
 Recommend an interface, event bus, manager, or other abstraction only for a concrete requirement.
 
-Show the settled nodes with their evidence before the first round, so the user can challenge a pattern before questions build on it.
+Show the settled nodes with their evidence before the first round of this phase, so the user can challenge a pattern before questions build on it.
 
 If the tree has no open decision, finish without an interview.
 State that the work stays within existing boundaries, and name the ownership rules and their evidence.
 
-## Keep each question short
+## Write each question
 
-Number questions continuously across rounds, so a later question can cite an earlier one by its number.
-Give each question body the behavior and the open boundary in a few sentences.
-Cite evidence as `file:line` links.
-Give each option its ownership arrangement and the consequence for the boundary.
-Tests that must keep passing and other implementation constraints go in the summary for Deliver.
+- **Evidence as links.** Cite evidence in `Context:` as `file:line` links.
+- **Ownership in each option.** Give each option its ownership arrangement and the consequence for the boundary.
+- **Constraints go to Deliver.** Tests that must keep passing and other implementation constraints go in the summary for Deliver.
 
 ## Record the decisions
 
-`/domain-modeling` writes as each decision settles.
+`domain-modeling` writes as each decision settles.
 The repository's own locations and formats come first: when its instructions or architecture documents name a decision-record folder, write records there in that folder's format.
-Otherwise, use the `/domain-modeling` defaults.
+Otherwise, use the `domain-modeling` defaults.
 A system map or overview describes the code as it is; Deliver updates it when the change lands.
 
 ## Hand off
