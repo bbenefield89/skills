@@ -77,13 +77,22 @@ After applying approved migrations, rerun discovery. Every step must classify as
 
 Earlier releases of this skill published two whole-file documents and two AGENTS blocks:
 
-| Legacy artifact | Canonical content | Replaced by |
-|---|---|---|
-| `docs/agents/godot-standards.md`, marker `template=godot-standards;version=2`, and the `godot-standards` AGENTS block | [assets/legacy/godot-standards-v2.md](../assets/legacy/godot-standards-v2.md) | `docs/standards/gdscript.md`, `scenes.md`, and `ui.md` |
-| `docs/agents/godot-architecture.md`, marker `template=godot-architecture;version=3`, and the `godot-architecture` AGENTS block | [assets/legacy/godot-architecture-v3.md](../assets/legacy/godot-architecture-v3.md) | `docs/architecture/file-layout.md`, `overview.md`, and `docs/standards/testing.md` |
+| Legacy artifact | Replaced by |
+|---|---|
+| `docs/agents/godot-standards.md` and the `godot-standards` AGENTS block | `docs/standards/gdscript.md`, `scenes.md`, and `ui.md` |
+| `docs/agents/godot-architecture.md` and the `godot-architecture` AGENTS block | `docs/architecture/file-layout.md`, `overview.md`, and `docs/standards/testing.md` |
 
-An earlier version marker of either file is also legacy. Normalize only line endings before comparison.
+Each published version of these files is kept in `assets/legacy/`. Compare a legacy file only with the copies for the version in its marker. Version 2 of the architecture file was published with three different texts.
 
-- When a legacy file matches its canonical content, propose to delete the file and its AGENTS block in the same change that publishes the documents that replace it.
-- When a legacy file has other text, the difference is project guidance. Show it, and ask, for each difference, whether to add it as a P rule in the document that replaces it, or to discard it. Never silently delete customized guidance.
+| Marker | Canonical content |
+|---|---|
+| `template=godot-standards;version=1` | [godot-standards-v1.md](../assets/legacy/godot-standards-v1.md) |
+| `template=godot-standards;version=2` | [godot-standards-v2.md](../assets/legacy/godot-standards-v2.md) |
+| `template=godot-architecture;version=2` | [godot-architecture-v2a.md](../assets/legacy/godot-architecture-v2a.md), [godot-architecture-v2b.md](../assets/legacy/godot-architecture-v2b.md), or [godot-architecture-v2c.md](../assets/legacy/godot-architecture-v2c.md) |
+| `template=godot-architecture;version=3` | [godot-architecture-v3.md](../assets/legacy/godot-architecture-v3.md) |
+
+Normalize only line endings before comparison. A file with no marker, or with a version that this table does not list, has no canonical content. Show it and ask, as for other text.
+
+- When a legacy file matches one canonical copy for its version, propose to delete the file and its AGENTS block in the same change that publishes the documents that replace it.
+- When a legacy file has other text, the difference from the closest canonical copy for its version is project guidance. Show it, and ask, for each difference, whether to add it as a P rule in the document that replaces it, or to discard it. Never silently delete customized guidance.
 - Cite rules in the new documents by file and number, such as "gdscript.md rule 11". The legacy IDs GD1 to GD8 map to these rules: GD1 to gdscript.md rules 1–3 and 7, GD2 to gdscript.md rules 8 and 11, GD3 to gdscript.md rule 9 and scenes.md rule 5, GD4 to scenes.md rules 1–4, GD5 to ui.md rules 1–4, GD6 to gdscript.md rule 10, GD7 to gdscript.md rules 11 and 12, and GD8 to gdscript.md rule 13.
