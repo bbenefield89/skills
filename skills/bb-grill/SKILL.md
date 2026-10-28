@@ -49,6 +49,8 @@ Before each round, reread the ledger. For each question that the underlying skil
 
 1. Name the one `IN SCOPE` item that the question serves. A question serves an item only when its answer settles part of that item. A question that is merely related to an item, or that only becomes useful after an out-of-scope decision, does not serve it.
 2. If no `IN SCOPE` item fits, or the question touches an `OUT OF SCOPE` item, reject it and add it to `OUT OF SCOPE`.
+3. Do not ask about tests. Decide what to test and how, and write thorough tests: cover each acceptance criterion and each error path that the change touches.
+4. If the acceptance criteria, a repository rule, or a fact you can find settles the answer, do not ask the question. Apply the answer, and state it at the start of the next round as a settled point with its source.
 
 Ask an out-of-scope question only when it is necessary to advance the `TL;DR` and no in-scope question can resolve the need. Put a `SCOPE EXCEPTION:` line with the concrete reason before that question.
 
