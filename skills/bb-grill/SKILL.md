@@ -63,13 +63,14 @@ Each question is **self-contained**: lift it out of the round, give it to someon
 - **Use exact names.** Name each thing by its exact identifier in code format: the file, scene, class, node, method, or resource. Write "`catalog_save_preview.tscn`", not "the Catalog save preview", and "the `Inventory` and `Map` panels in `HUD.tscn`", not "the panels". A plain-English description of a named thing is not its name. If you do not know the name, find it before you ask. Finding facts is your job.
 - **Explain each name.** The first time a name appears in a question, follow it with a short parenthetical that says what kind of thing it is and what it does: "**`MenuPanels`** (the node that wraps each menu in the fullscreen frame, safe area, and background)". Do this again in every question, because each question stands alone. For a glossary term, give its definition from `GLOSSARY.md` in a few words.
 - **Bold the keywords.** In the question line, bold the named referents and the one word or phrase that carries the decision, so the eye finds them first: "Should **`SettingsPanel`** **save each volume change** itself?". Bold two to four keywords per line; a line in which most words are bold has no keywords. Keep code names in backticks, inside the bold. In `Context:`, bold only a name the first time it appears.
-- **Context supports the question line.** Put the facts and options under `**Context:**` as short bullets. Give each option its own bullet that says what it changes and what it costs. Context only explains the question line; it never adds a claim that the user must also accept.
+- **Context holds facts only.** Put the facts under `**Context:**` as short bullets. Context never lists an option. Context only explains the question line; it never adds a claim that the user must also accept.
+- **Options get their own section.** Put the options under `**Options:**`, directly after `**Context:**` and before `**Serves:**`. Label each option with a letter: **A**, **B**, **C**. Start again at **A** in each question. Write each option as a statement that says what it changes and what it costs. Every question has at least two options. A plain do-it-or-not decision becomes **A** (do it, with its effect and cost) and **B** (do not, with its effect and cost).
 
 Test each question: give only this question to a developer who knows the codebase but not this conversation. Without asking anything, they can say what decision it asks for, what each name refers to, and what a valid answer looks like.
 
 ## Show every round
 
-Start each round with the current ledger, then show each question in the shape below. This shape replaces the `grilling` question format; keep its recommended answer, worded so that "yes" accepts it. Number questions across the whole session: the first question of a round continues from the last number shown.
+Start each round with the current ledger, then show each question in the shape below. This shape replaces the `grilling` question format; keep its recommended answer, and name the recommended option by its letter. "Yes" or "agree" selects the recommended option. A letter selects that option. Number questions across the whole session: the first question of a round continues from the last number shown.
 
 When the user asks about a question instead of answering it, reply, then ask the question again in full. Write the new version from the start so that it carries what your reply settled; it is never a change note against the earlier version.
 
@@ -85,9 +86,13 @@ When the user asks about a question instead of answering it, reply, then ask the
 **Question:** <one standalone interrogative sentence>
 
 **Context:**
-- <background or option>
+- <fact the question relies on>
+
+**Options:**
+- **A** - <option: what it changes and what it costs>
+- **B** - <option: what it changes and what it costs>
 
 **Serves:** <IN SCOPE item>
 
-➡️ **Recommended:** <recommended answer>
+➡️ **Recommended:** <letter> - <answer>
 ```
