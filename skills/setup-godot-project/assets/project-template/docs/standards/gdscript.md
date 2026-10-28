@@ -1,6 +1,6 @@
 # GDScript standards
 
-<!-- setup-godot-project:gdscript:start;version=1 -->
+<!-- setup-godot-project:gdscript:start;version=2 -->
 **Applies to:** All `.gd` files outside `addons/`, including tests.
 
 > **Editing this file:** The `setup-godot-project` skill owns the text between the `setup-godot-project:gdscript` markers. The skill replaces that text when its template changes, so do not edit it. Add each project rule under [Project rules](#project-rules), below the end marker. Number project rules P1, P2, and so on. Give each project rule a statement, a Correct and an Incorrect example, and a **Checked by** line. If a project rule replaces a rule in the block, name that rule in the project rule. The project rule then applies.
@@ -252,13 +252,87 @@ func _refresh() -> void:
 
 Exception: a literal or an argument list that has no shorter form can wrap, as the style guide shows.
 
+### 14. Runtime dependencies
+
+Give a script each dependency that another object passes in at runtime in one place, one time.
+
+- A class that is not a node, such as a `RefCounted` or a `Resource`, takes its dependencies as `_init()` parameters.
+- A node takes its dependencies in one method named `setup()`. `instantiate()` calls `_init()` without arguments, so a node cannot use `_init()` parameters.
+- `setup()` stores the dependencies and connects their signals. It asserts that it runs one time. Work that needs the node in the tree stays in `_ready()`.
+- Do not add other public methods that only pass in a dependency, such as `set_session()` or `bind_settings()`.
+
+A node that the scene contains when you edit it is not a runtime dependency. Rule 9 applies to it.
+
+```gdscript
+# Correct
+func setup(session: PlayerSaveSession, audio: AudioSettings) -> void:
+	assert(_session == null, "OptionsMenu receives its dependencies one time.")
+	_session = session
+	_audio = audio
+
+# A class that is not a node gets its dependencies when it is created.
+var store: ProfileStore = ProfileStore.new(storage)
+
+# Incorrect
+func set_session(session: PlayerSaveSession) -> void:
+	_session = session
+
+func set_audio(audio: AudioSettings) -> void:
+	_audio = audio
+```
+
+### 15. Method length
+
+Keep a method body at 12 lines or fewer. Count each line that has code. Do not count blank lines, comment lines, or the `func` line.
+
+When a body has 13 or more lines, see whether a split makes it easier for a person or an agent to read. The goal is readability, not the limit.
+
+- Split the body when it has separate steps that each get a clear helper name. Rule 11 applies to each helper.
+- Keep the body whole when it is one flat list, such as a `match` that maps values, a `_ready()` that connects signals, or a group of assignments to one object. A split there only moves lines.
+- Do not make a helper only to get below 12 lines.
+
+### 16. One job per method
+
+A method does the one job that its name states, at one level of detail. When a description of the method must join unrelated jobs with "and", split the method.
+
+When a method mostly reads one object to configure another object, move that work into the other object, and give it the first object. In the example, `MenuPanels` configured the settings panel piece by piece from the session. The settings panel now does that work in its own `setup()`.
+
+```gdscript
+# Correct
+# MenuPanels
+func setup(session: PlayerSaveSession) -> void:
+	assert(_session == null, "MenuPanels receives its save session one time.")
+	_session = session
+
+	settings.setup(session)
+	settings.settings_changed.connect(_on_settings_changed)
+	set_recovery_notice(session.get_recovery_notice())
+
+# SettingsPanel
+func setup(session: PlayerSaveSession) -> void:
+	_show_settings(session.get_settings())
+	set_write_result(session.get_last_write_error())
+	session.write_completed.connect(set_write_result)
+
+# Incorrect
+# MenuPanels
+func bind_save_session(session: PlayerSaveSession) -> void:
+	assert(_session == null, "MenuPanels binds its save session one time.")
+	_session = session
+	settings.configure(session.get_settings())
+	settings.set_write_result(session.get_last_write_error())
+	session.write_completed.connect(settings.set_write_result)
+	settings.settings_changed.connect(_on_settings_changed)
+	set_recovery_notice(session.get_recovery_notice())
+```
+
 ## Checked by
 
 | Rule | Check |
 |---|---|
 | 1 | The Godot warning `untyped_declaration`, when `project.godot` sets it to error. Review for `:=` where the type is not visible. |
 | 2 | The Godot warnings `unsafe_property_access`, `unsafe_method_access`, `unsafe_cast`, and `unsafe_call_argument`, when `project.godot` sets them to error. Review for broad types and `.call()`. |
-| 3–13 | Review |
+| 3–16 | Review |
 
 ## Official documentation
 

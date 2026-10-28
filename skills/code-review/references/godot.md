@@ -18,7 +18,10 @@ Report an authoring preference separately from a behavior defect.
 Before you report a departure, check for a stated exception, a native limitation, or a dynamic requirement that justifies the code.
 Respect project-owned guidance that selects another convention, such as programmatic UI.
 Rate a declaration-spacing departure Low.
-Rate a departure from gdscript.md rule 13 (readable function bodies) Low, because it does not change behavior.
+Rate a departure from gdscript.md rule 13 (readable function bodies) or rule 15 (method length) Low, because it does not change behavior.
+Report a rule 15 departure only when a split gives helpers with clear names. A flat list, such as a `match` that maps values, agrees with the rule.
+Rate a departure from gdscript.md rule 14 (runtime dependencies) or rule 16 (one job per method) Medium. A dependency that arrives in pieces can be missing or connected twice.
+In C# code, apply gdscript.md rules 13–16 with C# names: a node takes its runtime dependencies in one `Setup()` method, and a class that is not a node takes them in its constructor.
 The documentation coverage of gdscript.md rule 11 replaces the general preference to leave obvious methods without comments.
 
 A container controls its child layout. Check manual child positioning against the parent's layout behavior.
