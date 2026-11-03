@@ -7,6 +7,7 @@
       "name": "general-skills",
       "source": "./",
       "skills": [
+        "./skills/android-wireless-debug",
         "./skills/apply-pixel-filter",
         "./skills/asd-ste100",
         "./skills/brainstorming",
