@@ -1,6 +1,6 @@
 ---
 name: create-ticket
-description: Creates a lightweight tracker ticket with a plain-language title, a short TL;DR, configured classifications, relevant labels, release grouping, project position, and ticket dependencies. Use when an idea needs an initial ticket before grilling or specification.
+description: Creates a lightweight tracker ticket with a plain-language title, a What, Why, and Done body that leaves the solution to the developer, configured classifications, relevant labels, release grouping, project position, and ticket dependencies. Use when an idea needs an initial ticket before grilling or specification.
 disable-model-invocation: true
 ---
 
@@ -30,15 +30,33 @@ For GitHub Issues, also read the board document that the same index row names, u
 Use the conversation and repository vocabulary to write:
 
 - a concrete, easy-to-scan title with no corporate phrasing;
-- a TL;DR of one or two sentences describing what needs to be done and why.
+- a What of one or two sentences: the change in behavior or capability, as the user, player, or system sees it;
+- a Why of one or two sentences: the problem or value that makes the change necessary;
+- a Done list of one to four observable outcomes. A reviewer can check each outcome without reading the code.
 
 The body is exactly:
 
 ```markdown
-## TL;DR
+## What
 
 <One or two sentences.>
+
+## Why
+
+<One or two sentences.>
+
+## Done
+
+- <Observable outcome.>
 ```
+
+The ticket states the problem and the result. The developer selects the solution. Write the title, What, and Done as behavior and outcomes. Keep implementation out of them: files, classes, functions, scenes, data structures, libraries, patterns, algorithms, architecture, and implementation steps.
+
+Include a solution or implementation constraint only when the user explicitly tells you to put it in the ticket. An approach that the user mentions in passing is not such an instruction. Leave it out of the body and list it in the preview as an omitted approach.
+
+Before the preview, check each section against the context. When you cannot write a section without a guess, ask the user about that gap. Ask all of these questions in one round. Write each section that the context supports without a question.
+
+If the contract's new-ticket rule still requires a TL;DR body, use this body and tell the user to run `$setup-bb-skills` to update the rule.
 
 Search for an existing equivalent ticket before proposing a new one. Ask whether to reuse a plausible duplicate.
 
@@ -97,6 +115,7 @@ Preview:
 
 - tracker target;
 - title and complete body;
+- each omitted approach;
 - ticket classification;
 - needs-details state;
 - complete label set and the reason for each additional label;

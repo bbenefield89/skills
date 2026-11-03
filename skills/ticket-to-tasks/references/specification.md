@@ -67,4 +67,4 @@ Any further notes about the feature.
 - Respect relevant ADRs.
 - Record decisions, not speculative implementation detail.
 - Make ambiguity explicit only when the existing discussion cannot support one interpretation.
-- Keep the ticket's original TL;DR as the quick-reading entry point.
+- Keep the ticket's original body (What, Why, and Done, or a legacy TL;DR) as the quick-reading entry point.

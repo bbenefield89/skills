@@ -60,7 +60,7 @@ Keep one specification section on the original ticket.
 
 Before writing, reread the ticket to preserve intervening changes.
 Append a new specification after a thematic break, or update the existing specification as authorized above.
-Preserve the title, TL;DR, comments, release grouping, ticket classification, and unrelated body content and metadata.
+Preserve the title, the original body (What, Why, and Done, or a legacy TL;DR), comments, release grouping, ticket classification, and unrelated body content and metadata.
 Read the ticket back to verify the specification and preserved content.
 
 After the specification is verified, remove the configured needs-details state if present.

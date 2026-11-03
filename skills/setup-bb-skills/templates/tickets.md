@@ -36,18 +36,27 @@ A ticket is one deliverable result. A task is one implementation step of a ticke
 
 ### 3. New tickets
 
-A new ticket is short. It has the Ticket and the Needs details values, and its body is only a TL;DR of one or two sentences: what to do and why. Remove the Needs details value when the ticket gets its full specification.
+A new ticket is short. It has the Ticket and the Needs details values. Its body has only three sections: What (the change in behavior, in one or two sentences), Why (the problem or value, in one or two sentences), and Done (one to four observable outcomes). The ticket states the problem and the result, and the developer selects the solution. A ticket names an implementation only when the user tells it to. Remove the Needs details value when the ticket gets its full specification.
 
 ```markdown
 <!-- Correct -->
-## TL;DR
+## What
 
-Add a popup that shows the reward after each win, so that the player sees what they got.
+After each win, the player sees the rewards that they got.
 
-<!-- Incorrect: a full plan in a ticket that still needs details. -->
-## Plan
-1. ...
-2. ...
+## Why
+
+Players do not know what a win gave them, so wins feel empty.
+
+## Done
+
+- After a win, the game shows each reward that the player got.
+- The player can close the reward display and continue.
+
+<!-- Incorrect: the ticket selects the solution for the developer. -->
+## What
+
+Add a RewardPopup scene and open it from GameManager.on_win().
 ```
 
 ### 4. Task executor
