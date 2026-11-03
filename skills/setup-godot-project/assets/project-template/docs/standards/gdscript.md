@@ -1,6 +1,6 @@
 # GDScript standards
 
-<!-- setup-godot-project:gdscript:start;version=2 -->
+<!-- setup-godot-project:gdscript:start;version=3 -->
 **Applies to:** All `.gd` files outside `addons/`, including tests.
 
 > **Editing this file:** The `setup-godot-project` skill owns the text between the `setup-godot-project:gdscript` markers. The skill replaces that text when its template changes, so do not edit it. Add each project rule under [Project rules](#project-rules), below the end marker. Number project rules P1, P2, and so on. Give each project rule a statement, a Correct and an Incorrect example, and a **Checked by** line. If a project rule replaces a rule in the block, name that rule in the project rule. The project rule then applies.
@@ -326,13 +326,42 @@ func bind_save_session(session: PlayerSaveSession) -> void:
 	set_recovery_notice(session.get_recovery_notice())
 ```
 
+### 17. Properties instead of accessor methods
+
+Do not write a method that only sets one member or only returns one member. Use a property.
+
+- When other code reads or writes a value and nothing else happens, make the value a public typed `var`.
+- When a write or a read must do more, such as check the value, emit a signal, or refresh the display, put that work in the `set` or `get` block of the property. When a block grows past a few lines, call a private method from it.
+- A setter runs on each assignment, also inside the class, but not inside its own `set` block. The setter of an exported property also runs when the scene loads. Before it uses other nodes, it checks `is_node_ready()`.
+
+A dependency that another object passes in still goes through `setup()`, as rule 14 states. This rule is for values that change after setup.
+
+```gdscript
+# Correct
+var current_stock: Array[StuffieDefinition] = []
+
+var selected_index: int = -1:
+	set(value):
+		selected_index = clampi(value, -1, current_stock.size() - 1)
+		selection_changed.emit(selected_index)
+
+# Incorrect
+func set_current_stock(stock: Array[StuffieDefinition]) -> void:
+	_current_stock = stock
+
+func get_current_stock() -> Array[StuffieDefinition]:
+	return _current_stock
+```
+
+Exception: a method that a signal connects to, or that other code passes as a `Callable`, can stay a method.
+
 ## Checked by
 
 | Rule | Check |
 |---|---|
 | 1 | The Godot warning `untyped_declaration`, when `project.godot` sets it to error. Review for `:=` where the type is not visible. |
 | 2 | The Godot warnings `unsafe_property_access`, `unsafe_method_access`, `unsafe_cast`, and `unsafe_call_argument`, when `project.godot` sets them to error. Review for broad types and `.call()`. |
-| 3–16 | Review |
+| 3–17 | Review |
 
 ## Official documentation
 
