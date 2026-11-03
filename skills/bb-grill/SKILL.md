@@ -87,7 +87,15 @@ Start each round with the current ledger, then show each question in the shape b
 
 When the user asks about a question or raises a concern instead of answering it:
 
-1. **Answer briefly.** Give the direct answer in one to three sentences. When the user asked a yes-or-no question, start with "Yes" or "No".
+1. **Answer in a labeled block.** Put the answer first in the reply, before the ledger, in the shape below. The title restates the user's question, so the user sees what the block answers. The first line is the direct answer in bold; when the user asked a yes-or-no question, it starts with "Yes" or "No". At most three bullets give the reasons.
+
+   ```markdown
+   💬 **Answer - Q<number>: <the user's question, restated>**
+
+   **<Yes or No>**, <the rest of the direct answer>.
+
+   - <reason>
+   ```
 2. **Fold the concern into the options.** When the concern changes the trade-off, change the options: add an option that resolves the concern, or split an option into one variant that resolves it and one that does not, each with its cost. Never defer the concern to a later question.
 3. **Follow the user's lean.** When the user leans toward an option ("mostly A"), put the variant of that option that resolves the concern first. Recommend it unless it has a real flaw, and then say what the flaw is.
 4. **Ask the question again in full.** Write the new version from the start so that it carries what your answer settled. It is never a change note against the earlier version.
