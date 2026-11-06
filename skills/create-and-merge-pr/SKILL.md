@@ -1,6 +1,6 @@
 ---
 name: create-and-merge-pr
-description: Creates a GitHub PR from the current branch, closes its ticket, squash merges into the specified base (default main), and syncs local main. Use when the user requests this complete PR and merge workflow.
+description: Creates a GitHub PR from the current branch, closes its ticket and the ticket's direct sub-issues, squash merges into the specified base (default main), and syncs local main. Use when the user requests this complete PR and merge workflow.
 ---
 
 # Create and Merge PR
@@ -18,7 +18,7 @@ Then apply ASD-STE100 as closely as possible from the available context.
 
 ## Scope and authority
 
-A request to run this workflow authorizes publishing the current branch, creating the PR, squash merging, and closing its confirmed issue.
+A request to run this workflow authorizes publishing the current branch, creating the PR, squash merging, and closing its confirmed issue and that issue's direct sub-issues.
 It also authorizes switching to `main` and synchronizing it with the repository remote.
 Continue through these actions without another approval when the user's request covers the complete workflow.
 Honor narrower requests, such as creating a PR without merging.
@@ -44,7 +44,12 @@ Do not automatically commit, stash, discard changes, force push, delete branches
    Check the branch diff and commits against the fetched base.
    A branch number alone is not proof that an issue is the correct ticket.
    If references conflict or multiple issues fit, ask which issue to close before creating or editing a PR.
-7. Check required validation and available results for the current commit.
+7. List the direct native sub-issues of the confirmed issue. Use one level only. Ignore sub-issues of a sub-issue.
+   With GitHub CLI, use `gh api "repos/<owner>/<repo>/issues/<number>/sub_issues?per_page=100" --paginate --jq '.[] | [.repository.full_name, .number, .state, .state_reason] | @tsv'`.
+   Use the `repository.full_name` and `number` of each child as its identity. A child can belong to another repository.
+   Keep this list for the PR body, the post-merge closure, and the report. Use only native sub-issues, with no textual fallback.
+   A ticket with no sub-issues is a normal case. Continue with the confirmed issue alone.
+8. Check required validation and available results for the current commit.
    Run missing repository-required checks when feasible. Report actual results without claiming unperformed tests passed.
 
 Proceed when the source branch, base, issue, and committed scope are unambiguous.
@@ -63,11 +68,13 @@ Proceed when the source branch, base, issue, and committed scope are unambiguous
    Follow the repository PR template when present. Explain the resulting behavior, validation, and material limitations.
 5. Include a standalone `Closes #101` line for issue `#101` in the same repository.
    Use `Closes owner/repo#101` for a confirmed issue in another repository.
-   Preserve unrelated content when adding the closing line to an existing PR.
+   Add one standalone closing line for each direct sub-issue, open or closed, in the same form.
+   Use `Closes owner/repo#124` for a child in another repository.
+   Preserve unrelated content when adding the closing lines to an existing PR.
 6. Create a ready PR with explicit base and head values.
    With GitHub CLI, use `gh pr create --repo <base-repository> --base <base> --head <head> --title <title> --body-file <file>`.
    Write multiline bodies to a temporary file. Pass text through structured arguments or safe shell quoting.
-7. Read the PR from GitHub. Verify its URL, source repository, head SHA, base, body, and intended closing reference.
+7. Read the PR from GitHub. Verify its URL, source repository, head SHA, base, body, and the closing line for the issue and for each direct sub-issue.
 
 ## Squash merge and close the issue
 
@@ -90,6 +97,9 @@ Proceed when the source branch, base, issue, and committed scope are unambiguous
    If the issue remains open after the verified merge, close it as completed to satisfy this workflow.
    With GitHub CLI, use `gh issue close <number> --repo <issue-repository> --reason completed`.
    Read the issue again and verify closure. Preserve an already closed issue's reason.
+8. Read each direct sub-issue from the saved list.
+   Close each child that is still open the same way as the issue, with `--repo <child-repository>`.
+   Read each child again and verify closure. Preserve the reason of a child that is already closed.
 
 ## Switch to main and sync
 
@@ -106,15 +116,17 @@ Proceed when the source branch, base, issue, and committed scope are unambiguous
 
 ## Report and recovery
 
-Report the PR link, merge result and base, issue link and closure state, and local synchronization result.
+Report the PR link, merge result and base, issue link and closure state, the link and closure state of each direct sub-issue (or that none exist), and local synchronization result.
 Include any blocker or incomplete step. Claim completion only for states verified through readback.
 
 After an uncertain write result, read the remote state before retrying.
 Resume only confirmed missing steps. Stop if the same failure repeats.
-Continue independent post-merge synchronization if issue closure fails, and report the incomplete closure.
+Apply this recovery to each direct sub-issue as it applies to the issue.
+Continue independent post-merge synchronization if closure of the issue or of a sub-issue fails, and report each incomplete closure.
 
 ## GitHub references
 
 - [Issue closing behavior](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue)
+- [Sub-issues REST API](https://docs.github.com/en/rest/issues/sub-issues)
 - [GitHub CLI PR creation](https://cli.github.com/manual/gh_pr_create)
 - [GitHub CLI merge options and queues](https://cli.github.com/manual/gh_pr_merge)
