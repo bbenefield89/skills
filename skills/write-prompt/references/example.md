@@ -9,6 +9,7 @@ The Claude Code settings of the subagent form are `subagent_type: Explore`, `mod
 The dispatch has no `Step` line, `Input` line, or "When the step finishes" line, because the plan has one step.
 The task prompt names the API, the directories to search, and the directories to ignore.
 Its output format asks for a table of file path, line, and call form. It tells the agent to run one real search check, because the model is Haiku 5.5.
+The summary says that the prompt finds every caller of the deprecated API and that one cheap agent does the search.
 The response has no run section, because the plan has no parent step. The subagent sets its own model and effort.
 
 ## A plan with three steps
@@ -27,6 +28,7 @@ The planning finds three parts with different picks. Each part passes the cost r
    It is the only parent step. So the shared model and effort are Opus 5.5, high, in Claude Code and GPT-6.1 Sol, xhigh, in Codex.
 
 No step continues a subagent, because each step needs a different model or effort.
+The summary says that the prompt migrates every caller of the deprecated API, and that a cheap agent finds the callers, four agents migrate one module each in parallel, and the strongest model takes only the difficult cases.
 "When the plan finishes" tells the parent to give the user one table of the migrated callers for each module, the difficult cases and their result, and the test results.
 The response ends with the run section, because step 3 is a parent step. It goes after the code block:
 

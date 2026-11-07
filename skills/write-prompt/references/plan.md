@@ -3,6 +3,12 @@
 Use this format for the Plan mode. [The dispatch rules](dispatch.md#plan-the-steps) state when to use each part of it.
 
 ````text
+<summary>
+For the user. The dispatch below controls the run.
+<what the prompt does, in one sentence that starts with a third-person verb>
+<how the work runs: the steps, the parallel agents, or a gated step>
+</summary>
+
 <dispatch>
 Run the plan below. Do the steps in order. Spawn the agents of one step in one message.
 Add the reports named in the Input line of a step after the task prompt of each agent in that step.
@@ -66,6 +72,7 @@ The continue form sends the step to a subagent from an earlier step:
 
 ## Rules
 
+- Write the `<summary>` block as [the output format](../SKILL.md#output-format) states.
 - Write one `<task_prompt id="<n>">` block for each agent. Number the task prompts through the whole plan.
 - Omit the "Run only if" line when the step always runs.
 - For a step with 2 or more agents, tell the parent in "When the step finishes" how to combine the reports.

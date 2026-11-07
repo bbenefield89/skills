@@ -49,9 +49,22 @@ If the material has no gap, continue to the next step without a question.
 Put the complete output in one code block with four backticks and the `text` language. Four backticks keep inner code blocks intact.
 Add no other text, except the `**Assumed:**` line and the run section below.
 
+Start the code block with a `<summary>` block above `<dispatch>`. The summary tells the user what the pasted prompt is about when they return to the conversation later. The receiving agent reads it too, and the subagents never see it.
+Write the summary as a description of the task. An instruction there could make the agent start the work before it reads the dispatch.
+
+- Write the first line exactly: `For the user. The dispatch below controls the run.`
+- Then write one or two sentences. The first sentence states what the prompt does. It starts with a present-tense verb in the third person, such as "Migrates" or "Fixes". It is never an instruction, such as "Migrate".
+- For a Plan output only, add one clause or sentence that states how the work runs, such as the steps, the parallel agents, or a gated step.
+- Keep the summary in agreement with the task prompts. It adds no requirement, file, or step that the task prompts and the dispatch do not have.
+
 For the Inline mode:
 
 ````text
+<summary>
+For the user. The dispatch below controls the run.
+<what the prompt does, in one sentence that starts with a third-person verb>
+</summary>
+
 <dispatch>
 Do the task in <task_prompt> in this session. Do not spawn a subagent.
 Reason: <one sentence from the dispatch rules>
