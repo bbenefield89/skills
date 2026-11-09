@@ -78,7 +78,8 @@ you plan any Jira write.
 After the writes, read back each changed item and report:
 
 - The PR link and the PR state that Azure DevOps returned.
-- Each reviewer and the reviewer's required or optional state, or the vote.
+- Each reviewer and the reviewer's required or optional state and vote. For
+  review mode, show the user's rank and vote.
 - The Jira ticket link, its new status, and its new assignee.
 - Each skipped or failed step and the manual action that the user must do.
 
