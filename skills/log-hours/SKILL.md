@@ -80,8 +80,8 @@ Collect all failures into one message and halt until fixed — do not poll a hal
 Read existing worklogs for the date so newly-added time only fills the *unlogged* gap and the 8h ceiling counts everything.
 
 - Query: `worklogAuthor = currentUser() AND worklogDate = "<date>"`, then read each issue's worklogs for entries on that date.
-- ⚠️ **Read-back caveat — surface this every run.** Worklogs booked *through Tempo* are authored by *"Timesheets by Tempo - Jira Time Tracking"* (app account `557058:295406f3-a1fc-4733-b906-dd15d021bd79`), **not** the user — so `worklogAuthor = currentUser()` and email filters miss them. Treat the baseline as **best-effort**: report what was found, and explicitly note that Tempo-entered time may exist that the API did not return. Never claim the baseline is exact.
-- ⚠️ **Overhead-ticket pre-check (mandatory).** Explicitly check whether the `overhead_ticket` (e.g. `CCINT-6`) already has a worklog on the target date **before** proposing any meeting time. Signal: if the overhead ticket appears in the `worklogDate = "<date>"` match above, an entry already exists. Note that high-volume recurring tickets like `CCINT-6` return only a truncated slice of their worklog history in the `worklog` field, so the *amount* may be invisible even when the *existence* is confirmed — do **not** assume it's absent just because you can't read its minutes. When an entry already exists, default to **treating meeting time as already logged** and do not add more; only add/adjust meeting time if the user explicitly directs it, and warn them a duplicate may result (see Step 8 — you cannot delete it afterward).
+- ⚠️ **Read-back caveat.** Worklogs booked *through Tempo* are authored by *"Timesheets by Tempo - Jira Time Tracking"* (app account `557058:295406f3-a1fc-4733-b906-dd15d021bd79`), **not** the user — so `worklogAuthor = currentUser()` and email filters miss them. Treat the baseline as **best-effort** and never claim it is exact. Raise the caveat as an Unresolved issue (Step 6) only when it could change what gets posted: the baseline query found 0h, or an entry exists whose minutes cannot be read (the truncated `CCINT-6` worklog case). Otherwise say nothing about it.
+- ⚠️ **Overhead-ticket pre-check (mandatory).** Explicitly check whether the `overhead_ticket` (e.g. `CCINT-6`) already has a worklog on the target date **before** proposing any meeting time. Signal: if the overhead ticket appears in the `worklogDate = "<date>"` match above, an entry already exists. Note that high-volume recurring tickets like `CCINT-6` return only a truncated slice of their worklog history in the `worklog` field, so the *amount* may be invisible even when the *existence* is confirmed — do **not** assume it's absent just because you can't read its minutes. When an entry already exists, default to **treating meeting time as already logged** and do not add more; only add/adjust meeting time if the user explicitly directs it. When the user's hints add meeting time over an existing entry, raise it as an Unresolved issue (Step 6) because a duplicate may result (see Step 8 — you cannot delete it afterward).
 
 ## Step 4 — Poll sources in parallel
 
@@ -101,12 +101,12 @@ One parallel batch, skipping any disabled source. Capture only `ticket / signal 
 
 ## Step 5 — Build the allocation
 
-1. **Meetings** → `overhead_ticket` at their real calendar duration — **but only if the Step 3 overhead-ticket pre-check found no existing worklog for the day.** If one already exists, treat the meeting as already logged and add nothing; surface it in the table as a pre-existing entry, not a new one. Add meeting time over an existing entry only on explicit user instruction, with a duplicate warning.
-2. **Dev / review** → estimate per ticket from signal density (commits across all repos, PR activity in any state, transitions, comments, plus any Confluence/email attribution). **Reviewer-axis hits (PRs you reviewed) carry their own signal weight** — estimate review time for those tickets even when they have zero commits or authored PRs; never drop a reviewed ticket just because you didn't write code on it. Each row carries a **one-line rationale** naming its evidence (include repo names for cross-repo commits; mark review rows as review).
+1. **Meetings** → `overhead_ticket` at their real calendar duration — **but only if the Step 3 overhead-ticket pre-check found no existing worklog for the day.** If one already exists, treat the meeting as already logged and add nothing; show it in the table as a row labelled as already logged (not a new post). Add meeting time over an existing entry only on explicit user instruction, and raise the possible duplicate as an Unresolved issue (Step 6).
+2. **Dev / review** → estimate per ticket from signal density (commits across all repos, PR activity in any state, transitions, comments, plus any Confluence/email attribution). **Reviewer-axis hits (PRs you reviewed) carry their own signal weight** — estimate review time for those tickets even when they have zero commits or authored PRs; never drop a reviewed ticket just because you didn't write code on it. Each row carries a **one-line rationale** naming its evidence (include repo names for cross-repo commits; mark review rows as review). Keep the rationale internally: Step 8 uses it for `commentBody`, and Step 6 shows it only on request.
 3. **Merge user hints** (Step 1) — authoritative. They override any deduced value for the same ticket; never silently discard or reduce them.
 4. **Subtract the Step 3 baseline** so only unlogged work is added.
 5. **Fill to the target (default 8h).** The target is `workday_hours` unless the user's hints set a smaller total. If `baseline + deduced + hints < target`, distribute the remainder across the **dev/review tickets** in proportion to each ticket's signal density (its share of the total evidence count). Meetings/overhead are **never** inflated — they stay at real calendar duration; only dev/review rows absorb the fill.
-   - **No signal to weight against** (an all-meetings day, or sources returned nothing on real tickets): do **not** fabricate rows. Report the best-effort total *under* target and let the user decide (the Step 8 approval gate is the backstop).
+   - **No signal to weight against** (an all-meetings day, or sources returned nothing on real tickets): do **not** fabricate rows. Keep the best-effort total *under* target and raise it as an Unresolved issue (Step 6) so the user decides (the Step 8 approval gate is the backstop).
    - **Single dev/review ticket:** the whole gap lands on it.
    - **Explicit smaller target:** if hints specify a total below 8h, honor it and do not pad up.
 6. **Round** each entry to `rounding_minutes`, then **reconcile**: adjust the largest dev/review row by the rounding residual so the day total lands exactly on the target (prevents `7.75h` / `8.25h` drift).
@@ -115,20 +115,28 @@ One parallel batch, skipping any disabled source. Capture only `ticket / signal 
    - **Oracle API Chart Creation** (`OracleAPIChartCreation`) — Oracle/Cerner chart-creation/extraction work (e.g. Oracle-CCDA `FACS` tickets, chart-retrieval commits/PRs).
    - **IGNiTE Implementations App** (`43d9b74b-56e9-4171-a169-fa2cb24bdfe1`) — **everything else**: all other FSI dev/review (Config API, Implementation UI, JwksManager, anonymizer, general FSI) **and all meetings/overhead**. This is the default bucket.
 
-   Fetch the live picklist once — `GET https://api.tempo.io/4/work-attributes` — **only to validate the two keys still exist** (if a key has changed, halt and ask; never substitute a different project). Never suggest any other project — not `IGNiTE FHIR Writeback`, not the `API Chart Extraction *` projects, and **never an untaxable bucket** (`Internal`, `Support and Maintenance`, `Implementation`). If a row genuinely fits neither allowed project, **flag it and ask** — do not silently pick anything untaxable. Because meetings now default to IGNiTE Implementations App, per-meeting project splitting is only needed when a specific meeting is Oracle-chart-related; otherwise all meeting time is one project. The user confirms or amends the mapping before posting.
+   Fetch the live picklist once — `GET https://api.tempo.io/4/work-attributes` — **only to validate the two keys still exist** (if a key has changed, halt and ask; never substitute a different project). Never suggest any other project — not `IGNiTE FHIR Writeback`, not the `API Chart Extraction *` projects, and **never an untaxable bucket** (`Internal`, `Support and Maintenance`, `Implementation`). If a row genuinely fits neither allowed project, raise it as an Unresolved issue (Step 6) — do not silently pick anything untaxable. Because meetings now default to IGNiTE Implementations App, per-meeting project splitting is only needed when a specific meeting is Oracle-chart-related; otherwise all meeting time is one project. The user confirms or amends the mapping before posting.
 
 ## Step 6 — Show the table (always, before posting)
 
-Use **exactly** this format — three columns, one **Total** row, and **no worklog-ID column** (worklog IDs don't exist until after posting):
+**Output contract.** The approval reply holds the table and, only when an issue applies, an Unresolved issues section. Nothing else. Step 7 (over cap) and Step 8 (post report) use the same shape.
+
+Use **exactly** this table format — three columns, one **Total** row, and **no worklog-ID column** (worklog IDs don't exist until after posting). Then add `### Unresolved issues` only when one or more issues apply:
 
 ```
 | Ticket / Meeting               | Hrs   | Tempo Project              |
 |--------------------------------|-------|----------------------------|
 | FACS-746 — Oracle CCDA data    | 3.0   | Oracle API Chart Creation  |
+| FACS-839 — Review: auth retry  | 1.5   | IGNiTE Implementations App |
 | FACS-723 — Config API schema   | 2.0   | IGNiTE Implementations App |
 | CCINT-6 · Regroup FSI          | 1.5   | IGNiTE Implementations App |
-| CCINT-6 · Backlog Refinement   | 1.5   | IGNiTE Implementations App |
 | **Total**                      | **8** |                            |
+
+### Unresolved issues
+1. Baseline returned 0h — Tempo-entered time may exist that the API cannot see.
+   - a) Post as shown
+   - b) Check your Tempo timesheet first and tell me what is already there
+   - Recommended: b — a duplicate worklog cannot be deleted through the tools.
 ```
 
 Column rules:
@@ -136,15 +144,24 @@ Column rules:
 - **Hrs** — decimal hours (`1.5`, `0.5`), matching the rounded allocation.
 - **Tempo Project** — the **suggested** project label for that row (from Step 5.8). These are best-guess suggestions; the user confirms or amends before anything is posted.
 
-Below the table, list a one-line **rationale per row** (the Step 5 evidence — commits across repos, transitions, meeting topic, Confluence/email refs; note when a row includes **weighted fill** to reach 8h and how much), then state: what was already logged (with the read-back caveat), anything **not** counted and why, whether any weighted fill was applied to reach the target, and that **nothing is posted yet**.
+A pre-existing entry (Step 5.1) shows as a row labelled as already logged, so the user sees it will not be posted again.
 
-**Before showing the table, validate (mandatory):**
-- **Review self-check.** If the day has any author/dev signal but **zero** reviewer-axis signal, add a one-line flag above the table: *"No PR-review activity detected — confirm you didn't review anything today."* A silent miss must become a visible prompt, not a thin table.
-- **Total integrity.** Sum the **Hrs** column and assert it equals **both** the printed **Total** row **and** the target (`baseline + rows = workday_hours`, unless an explicit smaller target applies). If they don't match, **halt and fix** the arithmetic before asking for approval — never display a Total that differs from the row sum.
+**Unresolved issues format.** Number each issue. Give a one-line statement of the problem, two or three lettered options, and a `Recommended:` line that names one option and gives its reason in one clause. List an issue only when it applies to this run; with none, leave the section out. The issues are:
+- **Review self-check.** The day has author/dev signal but **zero** reviewer-axis signal (options: confirm no reviews, or name the PRs reviewed). A silent miss must become a visible prompt, not a thin table.
+- **Read-back caveat** (Step 3), when the baseline found 0h or an entry's minutes cannot be read.
+- **Overhead pre-check conflict** (Step 3, Step 5.1): a meeting entry exists and the user's hints add meeting time.
+- **Under target with no signal to weight against** (Step 5.5).
+- **A row that fits neither allowed Tempo project** (Step 5.8).
+- **Over the 8h ceiling** (Step 7).
+
+Everything else stays out of the reply: rationale lines, baseline narration, a "not counted" list, fill notes, "nothing is posted yet", and any closing summary. When the user asks why ("why?", "show rationale", "explain row 2"), give the per-row rationale from Step 5 (evidence, repo names, review marks, weighted-fill amount). When the user asks to see or edit the worklog comments, show the `commentBody` lines (Step 8).
+
+**Before showing the table, validate (mandatory, silent when it passes):**
+- **Total integrity.** Sum the **Hrs** column and assert it equals **both** the printed **Total** row **and** the target (`baseline + rows = workday_hours`, unless an explicit smaller target applies). If they don't match, **halt and fix** the arithmetic and show only the corrected table — never display a Total that differs from the row sum.
 
 ## Step 7 — Enforce the 8h ceiling
 
-If `baseline + new_total > workday_hours`, **stop and ask** which rows to trim — show the over-cap table and let the user decide. **Never auto-adjust.** Re-show the table after their choice.
+If `baseline + new_total > workday_hours`, **stop and ask** which rows to trim. Reply in the Step 6 shape: the over-cap table, then an Unresolved issue whose options are the rows to trim, with a `Recommended:` line. **Never auto-adjust.** Re-show the table after their choice.
 
 ## Step 8 — Post (only on explicit approval)
 
@@ -153,15 +170,15 @@ A neutral "ok"/"thanks" is not approval — wait for "post it" / "looks good, se
 - `issueIdOrKey` — the ticket key
 - `timeSpent` — Jira format: `"1h"`, `"30m"`, `"1h 30m"`
 - `started` — ISO-8601 on the target date at a safe local time with the config timezone offset, e.g. `2026-07-02T09:00:00.000-0400`, so the entry lands on the correct calendar day
-- `commentBody` — auto-generated one-liner from that ticket's signals (offer to let the user edit before posting)
+- `commentBody` — auto-generated one-liner from that ticket's Step 5 rationale (show the lines, and take edits, when the user asks to see or edit the comments)
 
 **Then set the Tempo Project on every posted worklog** — the Jira-core `addWorklogToJiraIssue` call above leaves `_Project_` **blank**, which is exactly the miscategorisation this column exists to prevent. For each row, using the confirmed mapping from Step 5.8:
 1. Find the synced Tempo worklog: `GET https://api.tempo.io/4/worklogs?from=<date>&to=<date>` and match on issue ID + time.
 2. Set the project: `PUT https://api.tempo.io/4/worklogs/{tempoWorklogId}`, echoing the worklog's existing `authorAccountId`, `description`, `startDate`, `startTime`, `timeSpentSeconds` (+ `billableSeconds`) and adding `"attributes": [{ "key": "_Project_", "value": "<project key>" }]`. (PUT replaces the worklog — always GET-then-PUT so nothing drifts.)
 3. **Split-project meetings (rare):** meetings now default to **IGNiTE Implementations App**, so a split is only needed when a specific meeting is **Oracle-chart-related** (→ Oracle API Chart Creation). In that case, shrink the original via PUT to the first meeting's hours/project, then `POST https://api.tempo.io/4/worklogs` (with `issueId`, the same fields, and the `_Project_` attribute) for each remaining meeting. Both projects must be from the allow-list.
-4. **Verify:** re-`GET` the day's worklogs and confirm **every** row shows a non-blank `_Project_` and the total still equals the approved hours, then report.
+4. **Verify:** re-`GET` the day's worklogs and confirm **every** row shows a non-blank `_Project_` and the total still equals the approved hours, then report in the Step 6 shape.
 
-After posting, report each worklog's ticket / hours / Tempo Project and the final day tally (the Step 6 table shape, now filled in). **Tempo is a hard-to-reverse system of record — confirm before writing, every time.**
+After posting, reply with the Step 6 table holding the final posted values. Add `### Unresolved issues` (same option and `Recommended:` shape) only for problems found while posting or verifying: a failed post, a blank `_Project_`, or a total that does not match the approved hours. **Tempo is a hard-to-reverse system of record — confirm before writing, every time.**
 
 ⚠️ **Posts are final — there is no delete.** The Atlassian MCP only exposes *add/update* (`addWorklogToJiraIssue`); it cannot delete a worklog, and Jira rejects a zero-time update. You **can** fix a wrong *amount* by re-calling with the `worklogId` and a new `timeSpent`, but a worklog created on the wrong ticket can only be removed by the user by hand (Jira issue → Work log tab, or the Tempo timesheet). Because of this, lean on the Step 3 overhead pre-check rather than posting speculative meeting time you'd need to undo.
 
@@ -171,8 +188,8 @@ After posting, report each worklog's ticket / hours / Tempo Project and the fina
 - **Never post without explicit approval.**
 - **User-supplied time is authoritative** — never silently overridden or trimmed without asking.
 - Meetings / non-ticket time → `overhead_ticket` (`CCINT-6`) — **only after the Step 3 pre-check confirms no meeting worklog already exists for the day.** Never blindly add meeting time; a duplicate cannot be deleted via the tools.
-- Always show the table first (the Step 6 three-column format: **Ticket / Meeting · Hrs · Tempo Project**); always surface the read-back caveat.
+- Always show the table first (the Step 6 three-column format: **Ticket / Meeting · Hrs · Tempo Project**); add `### Unresolved issues` only when an issue applies, and surface the read-back caveat there only when it applies. Every reply (approval, over-cap, post report) is the table plus that section, nothing more; show rationale or `commentBody` only on request.
 - **Every posted worklog must end with a non-blank `_Project_`.** Suggest it in the draft, confirm the mapping with the user, set it via the Tempo REST API on post, and verify no row is left blank. Never guess financial categorisation silently.
-- **Only ever use the two allowed taxable projects** — `IGNiTE Implementations App` (default, incl. meetings/overhead) and `Oracle API Chart Creation` (Oracle/Cerner chart work). Never suggest any other project, and **never an untaxable bucket** (`Internal`, `Support and Maintenance`, `Implementation`). If a row fits neither, flag it and ask.
+- **Only ever use the two allowed taxable projects** — `IGNiTE Implementations App` (default, incl. meetings/overhead) and `Oracle API Chart Creation` (Oracle/Cerner chart work). Never suggest any other project, and **never an untaxable bucket** (`Internal`, `Support and Maintenance`, `Implementation`). If a row fits neither, raise it as an Unresolved issue.
 - **Fill to `workday_hours` (8h) by default** — reconstruct and distribute time to reach 8h, weighted by signal; never exceed it. Log under 8h only when the user asks, or when the day genuinely can't justify 8h (report best-effort — **do not fabricate**). Meetings/overhead are never inflated to fill.
 - Round every entry to `rounding_minutes`.
