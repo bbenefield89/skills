@@ -85,7 +85,7 @@ One session runs all parent steps of an output. So all of them name the same mod
 Find the shared model and effort one time from the Claude Code picks and one time from the Codex picks.
 
 - The shared effort is the highest effort among the picks of the parent steps. The order is low, medium, high, xhigh, max. A step that runs above its pick costs a little more on a small step. A step that runs below its pick can give a worse result that nobody notices.
-- The shared model is the most capable model among the picks of the steps that stay parent steps. The order in Claude Code is Opus 5.5, Sonnet 5.5, Haiku 5.5. The order in Codex is GPT-6 Astra, GPT-6.1 Sol, GPT-6 Luna. No step runs on a model below its pick.
+- The shared model is the most capable model among the picks of the steps that stay parent steps. The order in Claude Code is Opus 5.5, Sonnet 5.5, Haiku 5.5. The order in Codex is GPT-6 Astra, GPT-6.1 Sol, GPT-6.1 Terra, GPT-6 Luna. No step runs on a model below its pick.
 
 A step can qualify as a parent step while its pick names a less capable model than the pick of another parent step, in one tool or in both tools. Choose one of these for that step. The choice applies in both tools:
 
