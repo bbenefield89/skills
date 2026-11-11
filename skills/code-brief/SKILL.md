@@ -1,6 +1,6 @@
 ---
 name: code-brief
-description: Brief the user on a code change with a recall infographic of what it introduced (purpose, a flow diagram of how each change works, risks, renames, new config, contracts), not a walkthrough. Use when the user asks for a code brief, wants to recall what a branch, PR, commit, or uncommitted work added, or approved a change through agentic review and wants just enough familiarity to recognise it later.
+description: Brief the user on a code change with a recall infographic of what it introduced (ticket title, purpose, a flow diagram of how each change works, risks, renames, new config, contracts), not a walkthrough. Use when the user asks for a code brief, wants to recall what a branch, PR, commit, or uncommitted work added, or approved a change through agentic review and wants just enough familiarity to recognise it later.
 argument-hint: "Optional: changes | staged | unstaged | head | branch [base] | file <path> | system <name>"
 ---
 
@@ -20,8 +20,10 @@ The infographic is the deliverable. Keep prose out of chat.
 
 ## Boundaries
 
-- Read-only. Run only non-mutating Git commands. Stay on the current branch, and leave
-  remotes alone (no fetch, no pull). The single write is the HTML copy in step 6.
+- Read-only. Run only non-mutating Git commands and the read-only ticket and pull request
+  lookups in step 4. Stay on the current branch, and leave remotes alone (no fetch, no
+  pull). The one write is the HTML copy in step 7, and the one other action is opening
+  that copy in the default browser.
 - Exclude test code from every card and every count: unit and integration tests,
   fixtures, mocks, test helpers, and test infrastructure. Apply this after resolving the
   scope. If only test code remains, say so in one sentence and stop.
@@ -89,7 +91,39 @@ Two cases have no entry point to start from:
 Done when each flow runs from its entry point to its stop point. If a flow cannot reach a
 stop point, record its name and where it stopped for the output contract.
 
-### 4. Write the purpose
+### 4. Find the ticket title
+
+Every brief opens with the title of the ticket behind the change, for every scope. Look
+for a ticket reference in this order, and stop at the first one you find:
+
+1. the branch name
+2. the commit messages in scope
+3. the open pull request for the branch, its title and body: `gh pr view --json
+   title,body` for GitHub, or `az repos pr list --source-branch <branch>` for Azure
+   DevOps, when that CLI is available
+4. the current conversation
+5. any other source you can see, such as a ticket link in the pull request body
+
+A reference takes one of two forms:
+
+- A Jira key such as `FACS-895` (pattern `[A-Z][A-Z0-9]+-\d+`): read the ticket summary
+  with the Jira tool when one is available.
+- A GitHub issue such as `#123`, or a branch named like `123-foo` or `issue-123`: read
+  the title with `gh issue view <n> --json title`.
+
+Keep the ticket text you read. Step 5 uses it to find the specifics.
+
+Done when the title line has one of these forms:
+
+- `<key or #number> · <ticket title>` when you read the title.
+- `<key or #number>` alone when you found a reference but could not read its title (no
+  Jira tool, no `gh`).
+- A short title you write, then `· no ticket found`, when no source has a reference.
+  Write it like a ticket title, in plain words with a verb and an object, for example
+  "Add due dates to tasks". Describe the change, or for `file` and `system`, what that
+  code does. The marker tells the user there is no ticket to look for.
+
+### 5. Write the purpose
 
 Write full sentences describing what this change does, from the point of view of someone
 using the product. Write one sentence per distinct change a user would notice, most
@@ -118,10 +152,10 @@ Each sentence must:
 - contain no class names, method names, HTTP codes, or acronyms
 
 To find the specifics, check route paths, page and component file names, UI labels,
-headings, button text, validation and permission logic, and commit messages. If a Jira
-tool is available and a ticket key is known, read the ticket summary. If you cannot
-identify a specific screen or reason, write the sentence anyway and add "(not clear from
-the code)" at the point you are unsure. Keep the specific in the sentence. Do not drop it.
+headings, button text, validation and permission logic, and commit messages. Use the
+ticket text from step 4 when you found one. If you cannot identify a specific screen or
+reason, write the sentence anyway and add "(not clear from the code)" at the point you
+are unsure. Keep the specific in the sentence. Do not drop it.
 
 | | Example |
 |---|---|
@@ -133,7 +167,7 @@ the code)" at the point you are unsure. Keep the specific in the sentence. Do no
 | Bad | "Keeps Save off until you change something." (save what? where?) |
 | Bad | "Introduces IBlobContainerGuard." (mechanism, jargon) |
 
-### 5. Render the widget
+### 6. Render the widget
 
 Call the visualization tool's `read_me`, then `show_widget`. The `read_me` output is
 large and is often saved to a file. Grep that file for the CSS variables, the Rules
@@ -149,7 +183,7 @@ from [Layout](#layout).
 Run the read-aloud check from [Writing standard](#writing-standard) on every line before
 you render, including every node sentence in "How it works".
 
-### 6. Save the HTML copy
+### 7. Save and open the HTML copy
 
 A rendered widget loses its layout when copied into chat. Write the same infographic as
 one self-contained HTML file in the OS temp directory (`$env:TEMP` on Windows, `$TMPDIR`
@@ -173,13 +207,21 @@ Under each diagram, put that flow's raw Mermaid source in a `<pre>` inside a clo
 `<details>` element whose summary reads "Mermaid source". It can then be pasted into a
 Markdown note while the page shows only the diagrams.
 
+When the file is written, open it in the user's default browser: `Start-Process
+"<path>"` on Windows, `open "<path>"` on macOS, or `xdg-open "<path>"` on Linux. The
+widget in chat stays as it is.
+
 ## Layout
 
 Top to bottom:
 
-**A. Purpose.** The purpose sentences at the very top, 17px, plain text. With more than
-one sentence, put each on its own line with a small check or arrow icon in front. This
-is the first thing the user reads.
+**Ticket title.** The title line from step 4, alone on the first line, 20px, weight 500.
+Set the key or `#number` in mono. Set the `· no ticket found` marker smaller, in
+`--text-secondary`. It appears in the widget and in the HTML copy.
+
+**A. Purpose.** The purpose sentences directly under the ticket title, 17px, plain text.
+With more than one sentence, put each on its own line with a small check or arrow icon
+in front. They are the first sentences the user reads.
 
 **B. Top strip.** A thin bordered row, mono 13px, with the scope text from step 1, for
 example `<branch> vs local main · merge-base <short-sha> · <k> of <n> commits are this
