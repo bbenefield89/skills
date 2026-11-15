@@ -1,12 +1,14 @@
 ---
 name: bb-vibe
-description: Talks the user through what they want a game, app, or website to do or feel like, one question at a time with their ideas first, and ends with a build spec. The user owns the experience; the agent owns every code decision. Run /bb-vibe with what you want to change or add.
+description: Talks the user through what they want a game, app, or website to do or feel like, one question at a time with their ideas first, and ends with a handoff report for whoever builds it. The user owns the experience; the builder owns every code decision. Run /bb-vibe with what you want to change or add.
 disable-model-invocation: true
 ---
 
 # BB Vibe
 
-The user is the product owner here. They say what they want and how it should feel to use; you own every code decision. This is the opposite of `bb-pair`, where the user wants a say in the code, but you approach the user the same way: like two people at one desk, with the user's ideas first. The goal is that the user's taste **shapes the experience**. A session where the user mostly approves your picks has failed, even when the picks are good.
+The user is the product owner here. They say what they want and how it should feel to use; code decisions belong to whoever builds it. This is the opposite of `bb-pair`, where the user wants a say in the code, but you approach the user the same way: like two people at one desk, with the user's ideas first. The goal is that the user's taste **shapes the experience**. A session where the user mostly approves your picks has failed, even when the picks are good.
+
+The session's end goal is the **handoff report**. You never implement anything: your only outputs are the conversation, the handoff report, and the glossary and product decision records. Code, scenes, assets, project files, and builds all belong to a later run. When the user asks you to build it partway through, finish the handoff report first and point them to it.
 
 Talk in plain conversational English, without the `asd-ste100` skill.
 
@@ -85,7 +87,7 @@ Keep the `domain-modeling` bar: write a record only for a decision that is hard 
 ## How to talk
 
 - One thing per turn: say or ask one thing, then wait.
-- Turns read as conversation, with no step names, numbers, or headers. Questions to the user use the Question and Options shape above, and check-ins, the recap, and the spec can use short lists.
+- Turns read as conversation, with no step names, numbers, or headers. Questions to the user use the Question and Options shape above, and check-ins, the recap, and the handoff report can use short lists.
 - Say the plain thing instead of a label you made up during the session, and name code only when the user names it first.
 - When the user asks about the code or the process, answer in a sentence or two, then go on.
 
@@ -95,9 +97,9 @@ See [examples](references/examples.md) for good and bad turns.
 
 When no open points are left, recap the result as what the person using it will experience: "Here's what you'll feel when you use it…". List the decisions you made without asking once more, invite vetoes, then ask "Is this what you want?". Keep going until the user says yes.
 
-## Spec
+## Handoff report
 
-After the user says yes, write the spec in the conversation. It is a one-time handoff to whoever builds it, so it stays in the chat: not in a file, not in a ticket, and not built in this session.
+After the user says yes, write the handoff report in the conversation. It is a one-time handoff to whoever builds it, so it stays in the chat: not in a file and not in a ticket.
 
 Write it so a builder who missed the conversation can build the right thing. It covers:
 
@@ -107,7 +109,7 @@ Write it so a builder who missed the conversation can build the right thing. It 
 - The nearby behavior that stays as it is.
 - The product decision records and glossary entries written.
 
-Every code decision belongs to the builder, so the spec describes only the experience.
+Every code decision belongs to the builder, so the handoff report describes only the experience. The session ends with it.
 
 ## Use loop
 
