@@ -94,6 +94,6 @@ Check the finished prompt against each point:
 ## Refresh
 
 1. Read the sources above. Find a prompting page for each new model, and read it.
-2. Update the rules, the "Do not include" list, the structure, and [the dispatch rules](dispatch.md).
+2. Update the rules, the "Do not include" list, and the structure.
 3. Remove each rule that the current sources do not support.
 4. Set the `As of` date to the current date.
