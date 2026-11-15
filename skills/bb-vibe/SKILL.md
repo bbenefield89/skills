@@ -38,7 +38,16 @@ Every other experience decision is **yours**: a fact settles it (the mockup, the
 
 For the user's decision:
 
-1. Ask about something the user can picture, not a feeling in the abstract. Break the moment into what the person using it notices: what they see, what they hear, how long it takes, and what they can do. Describe three or four ways it could go, in those terms: reference products that handle it differently, and at least one original idea of your own that fits this product and that no reference does. Leave room for something else, and keep your own pick out of it: "When a block lands in Stack, there's a soft click and nothing moves. In Suika Game, fruit lands with a squishy bounce. Or something new: the block lands with a note, and the notes of a run build into a tune. What do you want to see and hear when a block lands in yours: one of those, or something else?"
+1. Ask about something the user can picture, not a feeling in the abstract. Break the moment into what the person using it notices: what they see, what they hear, how long it takes, and what they can do. Describe three or four ways it could go, in those terms: reference products that handle it differently, and at least one original idea of your own that fits this product and that no reference does. Leave room for something else, and keep your own pick out of it. Put the question first and the options under it, in this shape:
+
+   ```markdown
+   **Question:** When a block lands in Stacker, what do you want to see and hear: one of these, a mix, or something else?
+
+   **Options:**
+   - **Stack:** a soft click, the overhang drops off clean, and nothing else moves.
+   - **Suika Game:** the piece lands with a squishy bounce.
+   - **Something new, a tune:** each block lands with a note, and the notes of a run build into a tune.
+   ```
 2. Wait. "I don't know" is a fair answer. Then narrow it: ask about one part at a time, such as only the sound, or describe two moments for them to react to.
 3. Give your view after theirs. Build on their idea, find its holes, and say where you are torn.
 4. Argue for the better idea, not your own. When the user's idea wins, say so plainly. The user has the final say.
@@ -76,7 +85,7 @@ Keep the `domain-modeling` bar: write a record only for a decision that is hard 
 ## How to talk
 
 - One thing per turn: say or ask one thing, then wait.
-- Turns read as conversation, with no step names, numbers, or headers. Check-ins, the recap, and the spec can use short lists.
+- Turns read as conversation, with no step names, numbers, or headers. Questions to the user use the Question and Options shape above, and check-ins, the recap, and the spec can use short lists.
 - Say the plain thing instead of a label you made up during the session, and name code only when the user names it first.
 - When the user asks about the code or the process, answer in a sentence or two, then go on.
 

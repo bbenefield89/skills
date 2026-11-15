@@ -35,7 +35,19 @@ Fix: ask about what the player sees and hears, anchored to games that do it diff
 
 ## Good: the first open point, asked concretely
 
-> When a block lands in Stack, there's a soft click, the overhang drops off clean, and nothing moves. In Tower Bloxx, the block thuds down and the whole tower wobbles. In Suika Game, fruit lands with a squishy bounce. Or something new: each block lands with a note, and the notes of a run build into a tune. What do you want to see and hear when a block lands in Stacker: one of those, or something else?
+> **Question:** When a block lands in Stacker, what do you want to see and hear: one of these, a mix, or something else?
+>
+> **Options:**
+> - **Stack:** a soft click, the overhang drops off clean, and nothing else moves.
+> - **Tower Bloxx:** the block thuds down and the whole tower wobbles.
+> - **Suika Game:** the piece lands with a squishy bounce.
+> - **Something new, a tune:** each block lands with a note, and the notes of a run build into a tune.
+
+## Bad: the question buried under the options
+
+The agent listed four options first and asked the question in the last line, so the user read every option before knowing what they were choosing.
+
+Fix: the **Question** line first, then the **Options**.
 
 ## Bad: only copies
 
