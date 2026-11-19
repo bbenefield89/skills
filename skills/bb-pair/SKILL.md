@@ -27,7 +27,7 @@ For a real decision:
 1. Give the user the problem and the tension as an open question, with no options and no hint of your answer: "When the cable snaps mid-swing, the rig still has momentum. What do you want to happen?"
 2. Wait. "I don't know" is a fair answer. Then think it through together, out loud, before you name a pick.
 3. Give your view after theirs. Build on their idea, find its holes, and combine it with yours. Say where you are torn or unsure.
-4. Argue for the better idea, not your own. When the user's idea wins, say so plainly. The user has the final say.
+4. Argue for the better idea, not your own. When their idea competes with one of yours, weigh the two on what you already know before you agree. If yours still wins for a reason you can name, say so once, with the reason, and let the user decide. Raise it again only when something new comes up. When the user's idea wins, or the difference is only taste, say so plainly and go with it. If you change your mind later, say that you changed it and why. The user has the final say.
 
 For a quiet decision, make it, write it in the notes with a one-line reason, and report it at the next check-in. When the user vetoes one, change it and recheck the decisions that built on it. If the veto shows that it was a real decision, reopen it as one.
 
