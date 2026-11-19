@@ -1,6 +1,6 @@
 # Tickets
 
-<!-- setup-bb-skills:tickets:start;version=1 -->
+<!-- setup-bb-skills:tickets:start;version=2 -->
 **Applies to:** Each ticket and task in the tracker.
 
 > **Editing this file:** The `setup-bb-skills` skill owns the text between the `setup-bb-skills:tickets` markers. The skill writes the [Tracker contract](#tracker-contract) from the values that the user confirms, and replaces the block when its template changes, so do not edit it. To change a tracker value, run `setup-bb-skills` again. Add each project rule under [Project rules](#project-rules), below the end marker. Number project rules P1, P2, and so on. Give each project rule a statement, a Correct and an Incorrect example, and a **Checked by** line. If a project rule replaces a rule in the block, name that rule in the project rule. The project rule then applies.
@@ -36,13 +36,13 @@ A ticket is one deliverable result. A task is one implementation step of a ticke
 
 ### 3. New tickets
 
-A new ticket is short. It has the Ticket and the Needs details values. Its body has only three sections: What (the change in behavior, in one or two sentences), Why (the problem or value, in one or two sentences), and Done (one to four observable outcomes). The ticket states the problem and the result, and the developer selects the solution. A ticket names an implementation only when the user tells it to. Remove the Needs details value when the ticket gets its full specification.
+A new ticket is short. It has the Ticket and the Needs details values. Its body has only three sections: What (the behavior that should exist after the work, written with "should", in one or two sentences), Why (the problem or value, in one or two sentences), and Done (one to four observable outcomes). The ticket states the problem and the result, and the developer selects the solution. A ticket names an implementation only when the user tells it to. Remove the Needs details value when the ticket gets its full specification.
 
 ```markdown
 <!-- Correct -->
 ## What
 
-After each win, the player sees the rewards that they got.
+After each win, the player should see each reward that they got.
 
 ## Why
 

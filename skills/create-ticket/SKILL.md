@@ -30,7 +30,7 @@ For GitHub Issues, also read the board document that the same index row names, u
 Use the conversation and repository vocabulary to write:
 
 - a concrete, easy-to-scan title with no corporate phrasing;
-- a What of one or two sentences: the change in behavior or capability, as the user, player, or system sees it;
+- a What of one or two sentences: the behavior or capability that should exist after the work, as the user, player, or system sees it. Write it with "should", for example "After each win, the player should see each reward that they got.";
 - a Why of one or two sentences: the problem or value that makes the change necessary;
 - a Done list of one to four observable outcomes. A reviewer can check each outcome without reading the code.
 
@@ -39,7 +39,7 @@ The body is exactly:
 ```markdown
 ## What
 
-<One or two sentences.>
+<One or two sentences about what should be true after the work.>
 
 ## Why
 
@@ -56,7 +56,7 @@ Include a solution or implementation constraint only when the user explicitly te
 
 Before the preview, check each section against the context. When you cannot write a section without a guess, ask the user about that gap. Ask all of these questions in one round. Write each section that the context supports without a question.
 
-If the contract's new-ticket rule still requires a TL;DR body, use this body and tell the user to run `$setup-bb-skills` to update the rule.
+If the contract's new-ticket rule still requires a TL;DR body, or describes What as the current behavior without "should", use this body and the What guidance above. Tell the user to run `$setup-bb-skills` to update the rule.
 
 Search for an existing equivalent ticket before proposing a new one. Ask whether to reuse a plausible duplicate.
 
